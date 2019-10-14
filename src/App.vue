@@ -21,7 +21,7 @@ export default {
   },
   computed: mapGetters(["UId", "CssdId"]),
   created() {
-    console.console.log((123));
+
     
     window.VueVm = new Vue();//用于beforeRouteEnter钩子函数的消息提示
     let loading;
