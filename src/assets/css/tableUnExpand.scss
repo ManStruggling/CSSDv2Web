@@ -1,0 +1,49 @@
+.table_unExpand {
+    .el-table {
+        font-size: 18px;
+        font-family: Microsoft YaHei;
+        th {
+            color: rgba(135, 141, 159, 1);
+            height: 60px;
+            background: rgba(247, 248, 250, 1);
+            &.is-leaf {
+                border: 0;
+            }
+            &:nth-child(1) {
+                div {
+                    padding-left: 40px;
+                }
+            }
+        }
+        tbody {
+            color: rgba(35, 46, 65, 1);
+            tr {
+                height: 65px;
+                td {
+                    &:nth-child(1) {
+                        >div {
+                            padding-left: 40px;
+                        }
+                    }
+                    .cell {
+                        overflow: visible;
+                        .el-input-number {
+                            width: 50px;
+                            height: 24px;
+                            .el-input {
+                                width: 100%;
+                                height: 100%;
+                                input {
+                                    padding: 0;
+                                    &:focus {
+                                        border-color: rgba(0, 193, 107, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

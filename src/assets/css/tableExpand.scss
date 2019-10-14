@@ -1,0 +1,76 @@
+.table_expand {
+    .el-table {
+        font-size: 18px;
+        font-family: Microsoft YaHei;
+        th {
+            color: rgba(135, 141, 159, 1);
+            height: 60px;
+            background: rgba(247, 248, 250, 1);
+            &:nth-child(1) {
+                div {
+                    padding-left: 40px;
+                }
+            }
+        }
+        tbody {
+            color: rgba(35, 46, 65, 1);
+            tr {
+                // &:nth-child(even) {
+                //     display: none;
+                //     td {
+                //         border: 0;
+                //     }
+                // }
+                .el-table__expanded-cell {
+                    border: 0;
+                    .table_detail {
+                        display: none;
+                    }
+                }
+                &:nth-child(odd) {
+                    height: 65px;
+                    td {
+                        &:nth-child(1) {
+                            div {
+                                padding-left: 40px;
+                            }
+                        }
+                    }
+                }
+                &.el-table__row {
+                    cursor: pointer;
+                }
+            }
+            .el-table__expanded-cell {
+                padding: 0;
+                background: #F7F8FA;
+                .myTableTitle {
+                    display: flex;
+                    padding: 20px 0 0 40px;
+                    p {
+                        width: 160px;
+                        margin-right: 50px;
+                        font-size: 18px;
+                        font-family: Microsoft YaHei;
+                        color: rgba(135, 141, 159, 1);
+                        line-height: 24px;
+                    }
+                }
+                ul {
+                    li {
+                        display: flex;
+                        margin: 20px 0 20px 40px;
+                        p {
+                            width: 160px;
+                            margin-right: 50px;
+                            font-size: 18px;
+                            font-family: Microsoft YaHei;
+                            color: rgba(35, 46, 65, 1);
+                            line-height: 24px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,129 @@
+//导航栏
+.cssd_box {
+    height: 100%;
+    position: relative;
+    padding-top: 80px;
+    box-sizing: border-box;
+    .cssd_title {
+        height: 80px;
+        background: #182B37;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        border-bottom: 1px solid rgba(51, 64, 72, 1);
+        box-sizing: border-box;
+        .cssd_menu {
+            display: flex;
+            flex: 1;
+            color: #fff;
+            li {
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                margin: 0 40px;
+                font-size: 18px;
+                p {
+                    align-items: center;
+                    font-weight: bold;
+                }
+            }
+        }
+        .cssd_title_right {
+            display: flex;
+            margin-right: 40px;
+            font-size: 18px;
+            color: rgba(208, 212, 218, 1);
+            p.search_date {
+                width: 350px;
+                margin-right: 40px;
+                .el-date-editor {
+                    width: 100%;
+                    background: #182b37;
+                    border: 1px solid #C4C9D1;
+                    &.is-active {
+                        border-color: #00C16B;
+                    }
+                    .el-range-separator {
+                        color: #d0d4da;
+                        font-size: 18px;
+                        font-family: Microsoft YaHei;
+                    }
+                    input {
+                        font-size: 18px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        padding: 0 10px 0 5px;
+                    }
+                    .el-range__close-icon {
+                        display: none;
+                    }
+                }
+            }
+            p {
+                >span {
+                    font-family: Microsoft YaHei;
+                    font-weight: bold;
+                    margin-right: 10px;
+                }
+                margin-right: 10px;
+                &:nth-child(3) {
+                    margin-left: 30px;
+                }
+                .el-button--primary {
+                    margin-right: 10px;
+                }
+                .el-date-editor {
+                    width: 160px;
+                    font-size: 18px;
+                    font-family: Microsoft YaHei;
+                    font-weight: bold;
+                    input {
+                        background: rgba(24, 43, 55, 1);
+                        color: #fff;
+                        padding: 0 10px 0 35px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        &:focus {
+                            border-color: rgba(0, 193, 107, 1);
+                        }
+                    }
+                }
+                .el-button {
+                    line-height: 40px;
+                    width: 120px;
+                    font-size: 18px;
+                    font-family: Microsoft YaHei;
+                    color: rgba(255, 255, 255, 1);
+                }
+                .el-button--default {
+                    background: rgba(24, 43, 55, 1);
+                }
+                .el-button--primary {
+                    background: rgba(0, 193, 107, 1);
+                    border-color: rgba(0, 193, 107, 1);
+                }
+                .el-select {
+                    .el-input {
+                        &.is-focus {
+                            input {
+                                border-color: rgba(0, 193, 107, 1);
+                            }
+                        }
+                        input {
+                            background: rgba(24, 43, 55, 1);
+                            border-color: rgba(158, 166, 178, 1);
+                        }
+                    }
+                }
+            }
+            .hasCarrierData {
+                color: #fff;
+            }
+        }
+    }
+}

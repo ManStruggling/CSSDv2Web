@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link href="css/master.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="wrap">
+        <div id="header">
+            <h1>
+                CSSD 测试</h1>
+            <div>
+                C# 和 JS 互调
+            </div>
+        </div>
+        <div id="content">
+            <div id="param">
+                <img src="" alt="Alternate Text" style="width:200px;height:200px;" />
+
+                <button onclick="GetPrinterList();">
+                获取打印机列表</button>
+                <button onclick="GetMediaList();">
+                获取摄像头列表
+            <button  onclick="OpenMedia();">
+                    打开摄像头
+                </button>
+                <button onclick="CloseMedia();">
+                    关闭摄像头
+                </button>
+                <button onclick="testPrint();">
+                测试打印
+            </button>
+                <button onclick="send();">
+                    测试交互
+                </button>
+
+            </div>
+            <br />
+            <div id="msgTable">
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function send() {
+        //alert(JSManager);
+        JSManager.ShowMsg("Hello C#,我需要打印条码");
+    }
+
+    function startLoad(msg) {
+        //alert(msg);
+        var msgTable = document.getElementById("msgTable");
+        var a = document.createElement('p');
+        a.innerText = msg;
+        msgTable.appendChild(a);
+    }
+
+    function testPrint() {
+        var list = new Array();
+        var model = {
+            Barcode: "801903030001",
+            UserName: "张三"
+        };
+        list.push(model);
+
+        JSManager.TestPrint(JSON.stringify(list));
+    }
+
+    function GetPrinterList() {
+        var response = JSManager.GetPrinterList();
+        response = JSON.parse(response);
+        alert(response);
+    }
+
+    function GetMediaList() {
+        var response = JSManager.GetMediaList();
+        response = JSON.parse(response);
+        alert(response);
+    }
+
+    function OpenMedia() {
+        JSManager.OpenVideo();
+    }
+
+    function CloseMedia() {
+        JSManager.CloseVideo();
+    }
+
+    function updateImage(img) {
+        document.getElementsByTagName('img')[0].src = img;
+    }
+</script>
+
+</html>

@@ -1,0 +1,251 @@
+.review_check {
+    display: flex;
+    padding: 0;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    .cssd_table_left {
+        height: 100%;
+        width: 250px;
+        color: #fff;
+        box-sizing: border-box;
+        .cssd_talbe_left_menu {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            background: url("../../assets/images/background.png") repeat-y;
+            dl {
+                &.isActive {
+                    dt {
+                        &::after {
+                            transform: rotate(-180deg);
+                        }
+                    }
+                }
+                dt {
+                    padding: 0 20px;
+                    cursor: pointer;
+                    line-height: 60px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    span {
+                        font-size: 20px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                    }
+                    &::after {
+                        content: "";
+                        width: 18px;
+                        height: 10px;
+                        background: url("../../assets/images/arrow_white.png");
+                    }
+                }
+                dd.reviewDd {
+                    display: none;
+                    .el-tabs {
+                        width: 250px;
+                        .el-tabs__header {
+                            margin: 0;
+                            width: 100%;
+                            .el-tabs__nav-wrap {
+                                margin: 0;
+                                &::after {
+                                    display: none;
+                                }
+                                .el-tabs__active-bar {
+                                    display: none;
+                                    overflow: visible;
+                                }
+                                .el-tabs__item {
+                                    width: 240px;
+                                    transition: all 0s;
+                                    color: #fff;
+                                    font-size: 20px;
+                                    font-family: Microsoft YaHei;
+                                    font-weight: bold;
+                                    text-align: left;
+                                    text-indent: 20px;
+                                    &.is-active {
+                                        width: 250px;
+                                        background: #00C16B;
+                                        border-radius: 0 4px 4px 0;
+                                    }
+                                }
+                            }
+                        }
+                        .el-tabs__content {
+                            position: absolute;
+                            left: 240px;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            margin: auto;
+                            color: #999;
+                            .el-tab-pane {
+                                height: 100%;
+                                .tab_content {
+                                    padding: 30px 40px 90px;
+                                    box-sizing: border-box;
+                                    height: 100%;
+                                    overflow-y: scroll;
+                                    .timerBox {
+                                        display: flex;
+                                        p {
+                                            font-size: 30px;
+                                            font-family: Microsoft YaHei;
+                                            font-weight: bold;
+                                            color: rgba(35, 46, 65, 1);
+                                            line-height: 40px;
+                                        }
+                                        span {
+                                            width: 14px;
+                                            height: 14px;
+                                            background: url("../../assets/images/reset.png") no-repeat;
+                                            background-size: 14px 14px;
+                                            margin: 18px 0 8px 10px;
+                                            cursor: pointer;
+                                        }
+                                    }
+                                    .checkStatusBox {
+                                        display: flex;
+                                        line-height: 40px;
+                                        p {
+                                            font-size: 16px;
+                                            font-family: Microsoft YaHei;
+                                            color: rgba(135, 141, 159, 1);
+                                            margin-right: 10px;
+                                        }
+                                        .el-select {
+                                            width: 160px;
+                                            font-size: 16px;
+                                            font-family: Microsoft YaHei;
+                                            color: rgba(196, 201, 209, 1);
+                                            .el-input,
+                                            input {
+                                                font: inherit;
+                                            }
+                                        }
+                                        .unqualifiedCarrier {
+                                            display: flex;
+                                            margin-left: 94px;
+                                            span {
+                                                margin: 0 10px;
+                                                font-size: 16px;
+                                                font-family: Microsoft YaHei;
+                                                font-weight: bold;
+                                                color: rgba(51, 51, 51, 1);
+                                            }
+                                            b {
+                                                cursor: pointer;
+                                                font-size: 18px;
+                                                font-family: Microsoft YaHei;
+                                                font-weight: bold;
+                                                color: rgba(0, 193, 107, 1);
+                                            }
+                                        }
+                                    }
+                                    ul {
+                                        li {
+                                            float: left;
+                                            line-height: 40px;
+                                            margin: 30px 94px 0 0;
+                                            p {
+                                                float: left;
+                                                text-align: right;
+                                                width: 96px;
+                                                font-size: 16px;
+                                                font-family: Microsoft YaHei;
+                                                color: rgba(135, 141, 159, 1);
+                                                margin-right: 16px;
+                                            }
+                                            span {
+                                                float: left;
+                                                width: 160px;
+                                                font-size: 16px;
+                                                font-family: Microsoft YaHei;
+                                                font-weight: bold;
+                                                color: rgba(51, 51, 51, 1);
+                                                text-overflow: ellipsis;
+                                                white-space: nowrap;
+                                                overflow: hidden;
+                                            }
+                                            .el-select {
+                                                width: 160px;
+                                                font-size: 16px;
+                                                font-family: Microsoft YaHei;
+                                                font-weight: bold;
+                                                color: rgba(51, 51, 51, 1);
+                                                .el-input {
+                                                    font: inherit;
+                                                    input {
+                                                        font: inherit;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        li.myTextarea {
+                                            width: 620px;
+                                            .el-textarea {
+                                                width: 508px;
+                                                height: 40px;
+                                                .el-textarea__inner {
+                                                    padding: 0 10px;
+                                                    height: 40px;
+                                                    line-height: 40px;
+                                                    font-size: 16px;
+                                                    font-family: Microsoft YaHei;
+                                                    font-weight: bold;
+                                                    color: rgba(51, 51, 51, 1);
+                                                    &::-webkit-input-placeholder {
+                                                        font-weight: normal;
+                                                        color: #C4C9D1;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .el-table {
+                                        width: 1101px;
+                                        margin-top: 40px;
+                                        border-radius: 4px;
+                                        .el-input-number {
+                                            width: 100%;
+                                            height: 100%;
+                                        }
+                                    }
+                                    h4 {
+                                        margin-top: 40px;
+                                        .el-button {
+                                            font-size: 18px;
+                                            font-family: Microsoft YaHei;
+                                            color: rgba(255, 255, 255, 1);
+                                        }
+                                    }
+                                    .tab_content_bottom {
+                                        background: #fff;
+                                        box-shadow: 0px 0px 20px 0px rgba(0, 54, 125, 0.2);
+                                        padding-right: 40px;
+                                        display: flex;
+                                        justify-content: flex-end;
+                                        align-items: center;
+                                        height: 60px;
+                                        position: absolute;
+                                        left: 0;
+                                        right: 0;
+                                        bottom: 0;
+                                        z-index: 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .cssd_table_right {
+        flex: 1;
+    }
+}

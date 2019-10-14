@@ -1,0 +1,51 @@
+// total bottom bar
+.cssd_totalBar {
+    overflow-x: hidden;
+    padding-bottom: 60px;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+    .cssd_table_bottom {
+        display: flex;
+        justify-content: space-between;
+        height: 60px;
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: #fff;
+        z-index: 5;
+        box-shadow: 0px 0px 20px 0px rgba(0, 54, 125, 0.2);
+        p {
+            line-height: 60px;
+            margin-left: 40px;
+            font-size: 20px;
+            font-family: Microsoft YaHei;
+            font-weight: bold;
+            color: rgba(35, 46, 65, 1);
+            .el-button {
+                width: 150px;
+                height: 40px;
+                font-size: 20px;
+                font-family: Microsoft YaHei;
+                font-weight: bold;
+                border-radius: 4px;
+                border: 0;
+                padding: 0;
+                span {
+                    font-weight: inherit;
+                    font-family: inherit;
+                }
+            }
+            .el-button--primary {
+                background: rgba(0, 193, 107, 1);
+                margin-right: 40px;
+            }
+            .el-button--default {
+                background: #fff;
+                color: rgba(0, 193, 107, 1);
+            }
+        }
+    }
+}

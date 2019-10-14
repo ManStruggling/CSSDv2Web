@@ -1,0 +1,557 @@
+<template>
+  <div class="cssd_box tabs_half_bar" id="provideRegistration">
+    <div class="cssd_title">
+      <ul class="cssd_menu">
+        <router-link to="/" tag="li">
+          <p>返回</p>
+        </router-link>
+        <li @click="handleShowManualEnter">
+          <p>手工录入</p>
+        </li>
+        <router-link to="/provide/borrowRegistration" tag="li">
+          <p>借用</p>
+        </router-link>
+        <router-link to="/provide/record" tag="li">
+          <p>发放记录</p>
+        </router-link>
+      </ul>
+      <div class="cssd_title_right">
+        <p>
+          <span v-show="hasNewTask">有新任务</span>
+          <i @click="refresh"></i>
+        </p>
+      </div>
+    </div>
+    <div class="cssd_table_center">
+      <div class="cssd_table_left">
+        <div class="cssd_talbe_left_menu">
+          <el-tabs :tab-position="'left'" v-model="tabActiveName" @tab-click="handleTabClick">
+            <el-tab-pane v-for="(item,index) in provideTaskList" :key="index" :name="index+''">
+              <div slot="label">
+                <h3>{{item.ClinicName}}</h3>
+                <p>
+                  <span>剩余总发放数:</span>
+                  <b>{{countRemainProvideQuantity(index)}}</b>
+                </p>
+              </div>
+              <div class="tab_content table_collapse table_unExpand">
+                <div class="selectSubClinic">
+                  <p>本次发放科室</p>
+                  <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="provideSubClinicChange(index)">
+                    <el-option label="全部" :value="0"></el-option>
+                    <el-option
+                      v-for="(value,idx) in item.SubClinics"
+                      :key="idx"
+                      :label="value.SubClinicName"
+                      :value="value.SubClinicId"
+                    ></el-option>
+                  </el-select>
+                </div>
+                <div class="content_title">
+                  <p>包名称</p>
+                  <p>回收时间</p>
+                  <p>回收科室</p>
+                  <p>发放科室</p>
+                  <p style="width:90px;">预计发放数</p>
+                  <p style="width:80px;">库存数</p>
+                  <p style="width:100px;">剩余发放数</p>
+                  <p style="width:100px;">本次发放数</p>
+                </div>
+                <el-collapse v-model="activeName" accordion>
+                  <el-collapse-item
+                    v-for="(value,collapseIndex) in item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails"
+                    :key="collapseIndex"
+                    :name="collapseIndex+''"
+                    :class="value.IsNotPrintBarCode?'collapseUnExpand':''"
+                  >
+                    <div slot="title" class="collapseTh">
+                      <!-- 包名称 -->
+                      <div class="collapseTd">
+                        <p>{{value.ProductName}}</p>
+                      </div>
+                      <!-- 回收时间 -->
+                      <div class="collapseTd">
+                        <p>{{value.RecycleDateTime}}</p>
+                      </div>
+                      <!-- 回收科室 -->
+                      <div class="collapseTd">
+                        <p>{{value.RecycleSubClinic}}</p>
+                      </div>
+                      <!-- 发放科室 -->
+                      <div class="collapseTd">
+                        <p>{{value.ProvideSubClinic}}</p>
+                      </div>
+                      <!-- 预计发放数 -->
+                      <div class="collapseTd" style="width:130px;">
+                        <p>{{value.ScheduledQuantity}}</p>
+                      </div>
+                      <!-- 库存数 -->
+                      <div class="collapseTd" style="width:120px;">
+                        <p>{{value.InventoryQuantity}}</p>
+                      </div>
+                      <!-- 剩余发放数 -->
+                      <div class="collapseTd" style="width:140px;">
+                        <p>
+                          {{value.RemainQuantity}}
+                          <span
+                            class="expeditedTag"
+                            v-if="value.ExpeditedPackageQuantity!=0"
+                          >加急 : {{value.ExpeditedPackageQuantity}}</span>
+                        </p>
+                      </div>
+                      <!-- 本次发放数 -->
+                      <div class="collapseTd" style="width:140px;">
+                        <p
+                          v-if="!value.IsNotPrintBarCode"
+                        >{{countThisProvideNumber(value.ProvidePackages,value)}}</p>
+                        <p v-if="value.IsNotPrintBarCode">
+                          <el-input-number
+                            v-model="value.ThisTimeProvideQuantity"
+                            :min="0"
+                            :max="value.MaxLimit=value.InventoryQuantity>value.RemainQuantity?value.RemainQuantity:value.InventoryQuantity"
+                            :controls="false"
+                            size="mini"
+                            @click.native.stop="GLOBAL.cancelBubble"
+                            @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails,value)})"
+                          ></el-input-number>
+                        </p>
+                      </div>
+                    </div>
+                    <el-table :data="value.ProvidePackages" v-if="!value.IsNotPrintBarCode">
+                      <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
+                      <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
+                      <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                      <el-table-column label="操作" width="210">
+                        <template slot-scope="props">
+                          <el-button
+                            @click="deleteProvidePackage(value.ProvidePackages,props.$index)"
+                          >删除</el-button>
+                        </template>
+                      </el-table-column>
+                      <el-table-column></el-table-column>
+                    </el-table>
+                  </el-collapse-item>
+                </el-collapse>
+                <div class="tab_content_bottom">
+                  <p>
+                    共计
+                    <span>{{countPackageNumber(item.SubClinicTasks[item.SelectedSubClinicId])}}</span> 包
+                  </p>
+                  <p>
+                    <el-button type="primary" @click="provideSubmit(index)" class="btn150x40main">发放完成</el-button>
+                  </p>
+                </div>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </div>
+      <div class="cssd_table_right"></div>
+    </div>
+    <transition
+      name="fade"
+      enter-active-class="animated fadeIn faster"
+      leave-active-class="animated fadeOut faster"
+    >
+      <!-- 手工录入 -->
+      <ManualEnter
+        v-if="isShowManualEnter"
+        @to-father="packageData2father"
+        :BarCodeList="barCodeList"
+        :ApiUrl="'/api/Scanner/IncludePackages/Provide'"
+      ></ManualEnter>
+    </transition>
+  </div>
+</template>
+
+<script>
+import ManualEnter from "../common/ManualEnter";
+export default {
+  data() {
+    return {
+      hasNewTask:false,
+      activeName: "-1",
+      tabActiveName: "0",
+      isShowManualEnter: false,
+      provideTaskList: [],
+      barCodeList: [] //已录入包的列表  用于检测是否重复
+    };
+  },
+  components: {
+    ManualEnter
+  },
+  created() {
+    CSManager.handleDataThis = this;
+    axios({ url: `/api/Provide/ProvideTasks` })
+      .then(res => {
+        if (res.data.Code == 200) {
+          //处理数据 循环接口数据
+          let getData = res.data.Data;
+          for(let i=0;i<res.data.Data.length;i++){
+            getData[i].SubClinicTasks={};
+            getData[i].SelectedSubClinicId=0;
+            for(let j=0;j<getData[i].SubClinics.length;j++){
+              //循环子科室
+              getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId]={
+                ProvideSubClinicId:getData[i].SubClinics[j].SubClinicId,
+                ThisClinicProvideNumber:0,
+                ProvideTaskDetails:[]
+              };
+              for(let k=0;k<getData[i].TasksOfFixedSubClinic.length;k++){
+                //循环固定科室
+                if(getData[i].SubClinics[j].SubClinicId===getData[i].TasksOfFixedSubClinic[k].ProvideSubClinicId){
+                  getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.push(getData[i].TasksOfFixedSubClinic[k]);
+                }
+              }
+              getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails=getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.concat(getData[i].TasksOfCanBeModifySubClinic);
+              getData[i].SubClinicTasks[0]={
+                ProvideSubClinicId:0,
+                ThisClinicProvideNumber:0,
+                ProvideTaskDetails:[]
+              }
+              getData[i].SubClinicTasks[0].ProvideTaskDetails=getData[i].TasksOfFixedSubClinic.concat(getData[i].TasksOfCanBeModifySubClinic);
+            }
+          }
+          this.provideTaskList = getData;
+        } else {
+          this.showInformation({ classify: "message", msg: res.data.Msg });
+        }
+      })
+      .catch(err => {});
+  },
+  mounted() {
+    this.GLOBAL.initWebSorcket(this,"ProvideState");
+  },
+  beforeDestroy() {
+    CSManager.handleDataThis = null;
+  },
+  methods: {
+    refresh() {
+      window.location.reload();
+    },
+    //发放子科室change
+    provideSubClinicChange(index){
+      this.provideTaskList[index].TasksOfCanBeModifySubClinic.forEach(element=>{
+        if(element.IsNotPrintBarCode){
+          element.ThisTimeProvideQuantity=0;
+        }else{
+          element.ProvidePackages=[];
+        }
+      })
+      this.provideTaskList[index].TasksOfFixedSubClinic.forEach(element=>{
+        if(element.IsNotPrintBarCode){
+          element.ThisTimeProvideQuantity=0;
+        }else{
+          element.ProvidePackages=[];
+        }
+      })
+      this.activeName="-1";
+    },
+    //tab click 事件
+    handleTabClick(vm) {
+      this.activeName = "-1";
+    },
+    //计数包数量修改
+    handleCountNumberPackage(newValue, oldValue, list, value) {
+      //计算该类包的已选数量value
+      if (newValue == undefined) {
+        setTimeout(() => {
+          value.ThisTimeProvideQuantity = 0;
+        }, 0);
+      } else {
+        let num = 0; //统计页面目前已录该包的数量
+        list.forEach(val => {
+          if (value.ProductId == val.ProductId) {
+            num += val.ThisTimeProvideQuantity;
+          }
+        });
+        if (num > value.InventoryQuantity) {
+          setTimeout(() => {
+            value.ThisTimeProvideQuantity = oldValue;
+          }, 0);
+          this.showInformation({
+            classify: "message",
+            msg: "您所选的数量大于库存数！",
+            type: "warning"
+          });
+        }
+      }
+    },
+    //处理手工录入
+    handleShowManualEnter() {
+      this.getBarCodeArray();
+      this.isShowManualEnter = true;
+    },
+    getBarCodeArray() {
+      if(this.provideTaskList.length>0){
+        if(this.provideTaskList[this.tabActiveName].SelectedSubClinicId===0){
+          this.showInformation({
+            classify: "message",
+            msg: "请选择发放子科室",
+          });
+          return;
+        }
+        let tempArr = [];
+        let currentTaskList = this.provideTaskList[this.tabActiveName].SubClinicTasks[this.provideTaskList[this.tabActiveName].SelectedSubClinicId].ProvideTaskDetails;
+        for(let i=0;i<currentTaskList.length;i++){
+          if(currentTaskList[i].ProvidePackages){
+            for(let j=0;j<currentTaskList[i].ProvidePackages.length;j++){
+              tempArr.push(currentTaskList[i].ProvidePackages[j]);
+            }
+          }
+        }
+        this.barCodeList = tempArr;
+      }
+    },
+    //发放完成
+    provideSubmit(index) {
+      if(this.provideTaskList[this.tabActiveName].SelectedSubClinicId===0){
+        this.showInformation({
+          classify: "message",
+          msg: "请选择发放子科室",
+        });
+        return;
+      }
+      if (
+        this.GLOBAL.VerificationHandle([
+          {
+            val: this.provideTaskList[this.tabActiveName].SubClinicTasks[this.provideTaskList[this.tabActiveName].SelectedSubClinicId].ThisClinicProvideNumber,
+            type: "NumberNotZero",
+            msg: "您还没有发放包，请至少添加一个包！"
+          }
+        ])
+      ) {
+        axios({
+          url: `/api/Provide/ProvideComplete`,
+          method: "POST",
+          data: this.provideTaskList[this.tabActiveName].SubClinicTasks[this.provideTaskList[this.tabActiveName].SelectedSubClinicId]
+        })
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              type = "success";
+              this.websocket.send(JSON.stringify({
+                CssdId: this.GLOBAL.UserInfo.ClinicId,
+                ReserveCheckState: false,
+                PackageState: false,
+                ProvideState:true
+              }));
+              res.data.Data.forEach(element => {
+                CSManager.PrintBarcode(JSON.stringify(element));
+              });
+              this.$router.go(0);
+            } else {
+              type = "error";
+            }
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
+          })
+          .catch(err => {});
+      }
+    },
+    //删除包
+    deleteProvidePackage(ProvidePackages, $index) {
+      ProvidePackages.splice($index, 1);
+    },
+    //手工录入信息传递
+    packageData2father(data) {
+      this.isShowManualEnter = false;
+      if (data) {
+        data.forEach(val => {
+          this.handleAddData(val);
+        });
+      }
+    },
+    //数据添加处理 data一个package model
+    handleAddData(data) {
+      if(this.provideTaskList[this.tabActiveName].SelectedSubClinicId===0){
+        this.showInformation({
+          classify: "message",
+          msg: "请选择发放子科室",
+        });
+        return;
+      }
+      let currentTaskList=this.provideTaskList[this.tabActiveName].SubClinicTasks[this.provideTaskList[this.tabActiveName].SelectedSubClinicId].ProvideTaskDetails;
+      for (let j = 0;j < currentTaskList.length;j++) {
+        //find包 并且本次发放数小于剩余发放数才添加
+        if (currentTaskList[j].ProductId ==data.ProductId &&currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
+          this.activeName = j + "";
+          currentTaskList[j].ProvidePackages.push(data);
+          currentTaskList[j].ThisTimeProvideQuantity += 1;
+          return;
+        }
+      }
+      this.showInformation({classify:"message",msg:"扫入的包与该科室不匹配！或者发放已经到达最大数！"});
+    },
+    handleBarCode(msg) {
+      this.getBarCodeArray();
+      let onOff = true;
+      this.barCodeList.forEach(item => {
+        //发现已录入
+        if (item.BarCode == msg.toUpperCase()) {
+          this.showInformation({
+            classify: "message",
+            msg: "该条码已录入！",
+            type: "warning"
+          });
+          onOff = false;
+          return;
+        }
+      });
+      if (onOff) {
+        axios({ url: `/api/Scanner/IncludePackages/Provide/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.packageData2father(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
+      }
+    }
+  },
+  computed: {
+    //计算本次科室发放包数量
+    countPackageNumber() {
+      return (obj, index) => {
+        let num = 0;
+        obj.ProvideTaskDetails.forEach(val => {
+          num += val.ThisTimeProvideQuantity;
+        });
+        obj.ThisClinicProvideNumber=num;
+        return num;
+      };
+    },
+    //计算本次发放数
+    countThisProvideNumber() {
+      return (list, value) => {
+        value.ThisTimeProvideQuantity = list.length;
+        return list.length;
+      };
+    },
+    //科室剩余发放总数
+    countRemainProvideQuantity() {
+      return index => {
+        let num = 0;
+        this.provideTaskList[index].SubClinicTasks[0].ProvideTaskDetails.forEach(element => {
+          num += element.RemainQuantity;
+        });
+        return num;
+      };
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+@import "../../assets/css/tableNav";
+@import "../../assets/css/tabsHalfBar";
+@import "../../assets/css/tableCollapse";
+@import "../../assets/css/tableUnExpand";
+#provideRegistration {
+  .cssd_title_right {
+    p {
+      display: flex;
+      align-items: center;
+      span {
+        margin-right: 20px;
+      }
+      i {
+        width: 22px;
+        height: 20px;
+        background: url("../../assets/images/refresh.png") no-repeat;
+        background-size: 100% 100%;
+        cursor: pointer;
+      }
+    }
+  }
+  .cssd_table_center {
+    .el-tabs{
+      .el-tabs__item {
+        padding: 24px 20px;
+        &.is-active {
+          p {
+            color: #c6f3df;
+          }
+        }
+        h4 {
+          text-align: left;
+          font-size: 16px;
+          font-family: Microsoft YaHei;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 1);
+          line-height: 21px;
+        }
+        h3 {
+          text-align: left;
+          font-size: 20px;
+          font-family: Microsoft YaHei;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 1);
+          line-height: 26px;
+        }
+        p {
+          line-height: 20px;
+          text-align: left;
+          color: #d0d4da;
+          font-size: 14px;
+          font-family: Microsoft YaHei;
+          font-weight: bold;
+        }
+      }
+      .el-tabs__content{
+        .tab_content{
+          .selectSubClinic{
+            display: flex;
+            color: #878D9F;
+            line-height: 40px;
+            padding-bottom: 20px;
+            p{
+              font-size:16px;
+              margin-right: 10px;
+            }
+            .el-select{
+              width: 160px;
+              .el-input{
+                input{
+                  font-size:16px;
+                  color: #333;
+                  font-weight: bold;
+                }
+              }
+            }
+          }
+          .tab_content_bottom{
+            p{
+              &:first-child{
+                color: #232E41;
+                font-size:20px;
+                font-family: Microsoft YaHei;
+                font-weight:bold;
+                margin-left: 40px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .el-table {
+      .cell {
+        .el-button {
+          border: 0;
+          font-size: 18px;
+          font-family: Microsoft YaHei;
+          color: rgba(249, 62, 62, 1);
+          &:hover {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

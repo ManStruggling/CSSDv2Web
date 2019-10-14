@@ -1,0 +1,23 @@
+基础资料：
+    器械组件：
+        路由监听：
+            step1:根据路由监听取到器械类型Type --- 取到的是String类型
+            step2:改变器械组件thi.Type类型
+            step3:改变addNewTrData的Type类型
+            step4：改变editBoxData （ addNewTrData --》editBoxData）    //尝试删除
+            step5：根据this.Type请求数据 传给 totalTableData
+            step6：totalTableData传给table_data
+        新增：
+            step1：this.model --》 ‘add’
+            step2：this.showEditBox --》 true;
+            step3: addNewTrData --》editBoxData
+         删：
+            //待更新
+        改:
+            step1: this.model --》 ‘update’
+            step2：this.showEditBox --》 true;
+            step3：this.table_data的对应要编辑的数据 --》editBoxData
+    器械弹框组件：
+        model
+        Type
+        editBoxData
