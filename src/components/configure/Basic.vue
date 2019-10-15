@@ -22,6 +22,7 @@
 export default {
   created() {
   },
+  //路由前置守卫
   beforeRouteEnter(to, from, next) {
     if (sessionStorage.userInfo) {
       if(UserInfo.JobAndCompetence.includes('000')){

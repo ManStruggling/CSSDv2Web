@@ -12,23 +12,6 @@ const router = new Router({
                 import ('./components/index/Index')
         },
         {
-            path: '/configure',
-            name: 'configure',
-            component: () =>
-                import ('./components/configure/Basic'),
-            children: [{
-                path: '/configure/system',
-                name: 'SystemConfigure',
-                component: () =>
-                    import ('./components/configure/SystemConfigure')
-            }, {
-                path: '/configure/console',
-                name: 'configureConsole',
-                component: () =>
-                    import ('./components/configure/Console')
-            }]
-        },
-        {
             path: '/basic',
             name: 'basic',
             component: () =>
@@ -483,6 +466,12 @@ const router = new Router({
                     name: 'managementViewReportForm',
                     component: () =>
                         import ('./components/management/ViewReportForm')
+                },
+                {
+                    path: '/management/configure',
+                    name: 'managementConfigure',
+                    component: () =>
+                        import ('./components/management/Configure')
                 }
             ]
         }

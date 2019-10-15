@@ -20,6 +20,7 @@
         <el-table-column label="外包装名称" prop="Name" width="240"></el-table-column>
         <el-table-column label="有效期天数" prop="ValidDays" width="210"></el-table-column>
         <el-table-column label="恶劣天气有效期天数" prop="ValidDaysOnBadWeather" width="210"></el-table-column>
+        <el-table-column v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')" label="Id" prop="Id" width="210"></el-table-column>
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>

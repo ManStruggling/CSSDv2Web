@@ -271,21 +271,7 @@ export default {
         CarrierName: "",
         SenderName: "",
         Clinics: []
-      },
-      options5: [
-        {
-          value: "HTML",
-          label: "HTML"
-        },
-        {
-          value: "CSS",
-          label: "CSS"
-        },
-        {
-          value: "JavaScript",
-          label: "JavaScript"
-        }
-      ]
+      }
     };
   },
   components: {
@@ -492,6 +478,10 @@ export default {
           }
         ])
       ) {
+        if(this.waitToAllocation.length>0){
+          this.showInformation({classify:"message",msg:"待分配通用包还未分配回收回收科室！"});
+          return;
+        }
         axios({
           url: url,
           method: method,

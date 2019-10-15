@@ -32,6 +32,7 @@
         <el-table-column label="科室电话" prop="Telephone" width="210">
           <template slot-scope="props">{{props.row.Telephone==""?"-":props.row.Telephone}}</template>
         </el-table-column>
+        <el-table-column v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')" label="Id" prop="Id" width="210"></el-table-column>
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>

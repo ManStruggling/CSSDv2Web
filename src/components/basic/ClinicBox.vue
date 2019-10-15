@@ -45,6 +45,7 @@
               <el-input v-model.trim="props.row.Telephone"></el-input>
             </template>
           </el-table-column>
+          <el-table-column v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')" label="Id" prop="Id" width="210"></el-table-column>
           <el-table-column label="操作" width="210">
             <template slot-scope="props">
               <a class="delete_this_tr" @click.stop="deleteThisEditBoxTr(props.$index)">删除</a>

@@ -236,6 +236,8 @@ export default {
     } else {
       next("/login");
     }
+  },
+  created(){
   }
 };
 </script>

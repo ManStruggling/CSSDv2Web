@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  //路由前置守卫
   beforeRouteEnter (to, from, next) {
     if(sessionStorage.userInfo){
       if(UserInfo.JobAndCompetence.includes('141')||UserInfo.JobAndCompetence.includes('142')||UserInfo.JobAndCompetence.includes('000')||UserInfo.JobAndCompetence.includes('100')||UserInfo.JobAndCompetence.includes('102')){

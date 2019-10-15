@@ -36,7 +36,7 @@
           </li>
         </ol>
         <!-- 同济版本 -->
-        <template v-if="GLOBAL.UserInfo.HospitalVersion='TONGJI'">
+        <template v-if="GLOBAL.UserInfo.HospitalVersion=='TONGJI'">
           <ul v-if="!submitData.IsBackupPackage">
             <li>
               <p class="font16gray">住院号</p>

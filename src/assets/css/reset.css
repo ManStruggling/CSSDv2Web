@@ -500,7 +500,8 @@ html body .el-loading-spinner .el-loading-text,
 html body .el-loading-spinner i,
 html body .el-select-dropdown.is-multiple .el-select-dropdown__item.selected,
 html body .el-button--text:focus,
-html body .el-button--text:hover {
+html body .el-button--text:hover,
+html body .el-year-table td.today .cell {
     color: #00C16B;
 }
 

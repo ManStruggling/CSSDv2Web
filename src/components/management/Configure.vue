@@ -1,13 +1,5 @@
 <template>
   <div class="cssd_box" id="systemConfigure">
-    <div class="cssd_title">
-      <ul class="cssd_menu">
-        <router-link to="/" tag="li">
-          <p>返回</p>
-        </router-link>
-      </ul>
-      <div class="cssd_title_right"></div>
-    </div>
     <div class="cssd_table_center cssd_totalBar">
       <div class="table_box">
         <ul>
@@ -32,7 +24,7 @@
               @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'EarlyWarningDays')})"
             ></el-input-number>
           </li>
-          <li>
+          <!-- <li>
             <p>开始时间</p>
             <el-date-picker
               v-model="setData.WorkCountStartTime"
@@ -61,6 +53,23 @@
               @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'WorkIntervalTime')})"
             ></el-input-number>
           </li>
+          <li>
+            <p>
+
+            </p>
+            <el-date-picker
+              v-model="value2"
+              type="datetimerange"
+              :clearable="false"
+              :picker-options="GLOBAL.pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              align="right"
+              value-format="timestamp"
+            >
+            </el-date-picker>
+          </li> -->
         </ul>
       </div>
       <div class="cssd_table_bottom">
@@ -82,7 +91,8 @@ export default {
         WorkCountStartTime: "",
         WorkCountEndTime: "",
         WorkIntervalTime: ""
-      }
+      },
+      // value2:""
     };
   },
   created() {

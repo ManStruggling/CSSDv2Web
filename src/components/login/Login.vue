@@ -136,6 +136,7 @@ export default {
             let type;
             if (res.data.Code == 200) {
               type = "success";
+              Object.assign(res.data.Data,this.versionMsg)
               sessionStorage.userInfo = JSON.stringify(res.data.Data);
               window.location.href = "/";
             } else {

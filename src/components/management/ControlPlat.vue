@@ -21,9 +21,11 @@
             mode="vertical"
             @select="handleSelect"
             :unique-opened="true"
+            router
           >
-            <el-menu-item index="0">
-                <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link>
+            <el-menu-item index="/management/control">
+            我的桌面
+              <!-- <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link> -->
             </el-menu-item>
             <el-submenu index="1">
               <template slot="title">数据报表</template>
@@ -32,6 +34,12 @@
               </el-menu-item>
               <el-menu-item index="1-2">
                 <router-link to="/management/reportForm" :active-class="'isActive'">编辑报表</router-link>
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="2">
+              <template slot="title">系统配置</template>
+              <el-menu-item index="2-1">
+                <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -54,6 +62,7 @@ export default {
     return {
     };
   },
+  //路由前置守卫
   beforeRouteEnter(to, from, next) {
     if (sessionStorage.userInfo) {
       if (
@@ -149,6 +158,12 @@ export default {
         .el-menu {
           background-color: transparent;
           border: 0;
+          >.el-menu-item{
+            &.is-active{
+              background: #00c16b;
+              border-radius: 0 8px 8px 0;
+            }
+          }
           .el-submenu {
             position: relative;
             width: 240px;
@@ -183,10 +198,10 @@ export default {
             padding: 0 !important;
             min-width: auto;
             height: 60px;
-            &:focus,
-            &:hover {
-              background-color: transparent;
-            }
+            // &:focus,
+            // &:hover {
+            //   background-color: transparent;
+            // }
             a {
               padding-left: 40px;
               display: block;

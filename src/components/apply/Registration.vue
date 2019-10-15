@@ -222,6 +222,9 @@
           <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
           <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
           <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+          <el-table-column label="住院号" width="210">
+            <template slot-scope="props" v-if="props.row.IsOuterProduct">{{props.row.PatientHospitalId}}</template>
+          </el-table-column>
           <el-table-column label="操作" width="210">
             <template slot-scope="props">
               <el-button @click.stop="deletePackage(props.$index)">删除</el-button>
@@ -292,6 +295,7 @@ export default {
   components: {
     ManualEnter
   },
+  //路由前置守卫
   beforeRouteEnter (to, from, next) {
     if(sessionStorage.userInfo){
       if(UserInfo.JobAndCompetence.includes('271')||UserInfo.JobAndCompetence.includes('272')||UserInfo.JobAndCompetence.includes('000')||UserInfo.JobAndCompetence.includes('200')||UserInfo.JobAndCompetence.includes('202')){
@@ -348,16 +352,15 @@ export default {
       ) {
         axios({ url: `/api/Apply/MessageOfPatient/${this.search_HospitalId}` })
           .then(res => {
-            this.forbid = false;
             let type;
             if (res.data.Code == 200) {
               type = "success";
+              this.forbid = false;
               this.submitData.Patient = res.data.Data.Patient;
-            } else if (res.data.Code == 300) {
-              type = "warning";
+              this.submitData.Packages=[];
             } else {
-              //400
               type = "error";
+              this.forbid = false;
               this.submitData.Patient = {
                 HospitalId: this.search_HospitalId,
                 PatientName: "",
@@ -376,6 +379,7 @@ export default {
                 SurgicalDate: "",
                 Stage:""
               };
+              this.submitData.Packages=[];
             }
             this.showInformation({classify:"message",msg:res.data.Msg,type:type});
           })

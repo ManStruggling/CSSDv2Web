@@ -188,11 +188,13 @@ function VerificationHandle(arr) {
 
 let UId = 0;
 
+//退出登录
 function logOut() {
     sessionStorage.userInfo = "";
     window.location.href = "/login";
 }
 
+//时间范围选择器配置
 let pickerOptions = {
     shortcuts: [{
             text: "最近一周",
@@ -244,11 +246,10 @@ function showInformation(option) {
             break;
         default:
             break;
-
     }
 }
 
-
+//初始化websocket
 function initWebSorcket(that, origin) {
     that.websocket = new WebSocket(`ws://192.168.1.24:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
     //连接发生错误的回调方法
