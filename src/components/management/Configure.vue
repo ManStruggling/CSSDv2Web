@@ -92,7 +92,6 @@ export default {
         WorkCountEndTime: "",
         WorkIntervalTime: ""
       },
-      // value2:""
     };
   },
   created() {

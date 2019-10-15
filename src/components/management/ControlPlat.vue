@@ -21,11 +21,9 @@
             mode="vertical"
             @select="handleSelect"
             :unique-opened="true"
-            router
           >
-            <el-menu-item index="/management/control">
-            我的桌面
-              <!-- <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link> -->
+            <el-menu-item index="0">
+              <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link>
             </el-menu-item>
             <el-submenu index="1">
               <template slot="title">数据报表</template>
@@ -198,10 +196,10 @@ export default {
             padding: 0 !important;
             min-width: auto;
             height: 60px;
-            // &:focus,
-            // &:hover {
-            //   background-color: transparent;
-            // }
+            &:focus,
+            &:hover {
+              background-color: transparent;
+            }
             a {
               padding-left: 40px;
               display: block;
