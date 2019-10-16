@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <transition
-        name="fade"
-        enter-active-class="animated  faster fadeInRight"
-        leave-active-class="animated  faster fadeOutLeft"
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
       >
         <router-view></router-view>
       </transition>
@@ -21,7 +21,6 @@ export default {
   },
   computed: mapGetters(["UId", "CssdId"]),
   created() {
-    console.log(321)
     window.VueVm = new Vue();//用于beforeRouteEnter钩子函数的消息提示
     let loading;
     //配置发送请求前的拦截器 可以设置token信息 

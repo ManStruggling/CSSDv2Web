@@ -1,5 +1,5 @@
 <template>
-  <div id="cssd_table">
+  <div id="cssd_table" class="cssd_home">
     <div class="head_box">
       <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
       <div class="head_user">
@@ -244,113 +244,121 @@ export default {
 
 <style lang="scss" scoped>
 @import "../../assets/css/tableHead.scss";
-.cssd_index {
-  height: 100%;
-  padding-bottom: 40px;
-  box-sizing: border-box;
-  overflow-y: scroll;
-  dl {
-    dt {
-      padding-left: 40px;
-      font-size: 24px;
-      font-family: Microsoft YaHei;
-      font-weight: bold;
-      color: rgba(35, 46, 65, 1);
-      line-height: 32px;
-      margin: 40px 0 20px;
-    }
-    dd {
-      ul {
-        display: flex;
-        flex-wrap: wrap;
+#cssd_table.cssd_home{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  .cssd_index {
+    height: 100%;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    dl {
+      dt {
         padding-left: 40px;
-        a {
-          margin:0 40px 20px 0;
-          li {
-            width: 200px;
-            height: 240px;
-            box-shadow: 0px 0px 10px 0px rgba(70, 79, 131, 0.2);
-            border-radius: 10px;
-            padding: 30px 25px;
-            box-sizing: border-box;
-            transition: 0.3s;
-            &:hover {
-              box-shadow: 0px 0px 10px 0px rgba(0, 193, 107, 0.2);
-            }
-            p {
-              width: 150px;
-              height: 150px;
-              background-size: 150px 150px;
-              &.cssd_index_outerPackage {
-                background-image: url("/images/outerpackage.png");
+        font-size: 24px;
+        font-family: Microsoft YaHei;
+        font-weight: bold;
+        color: rgba(35, 46, 65, 1);
+        line-height: 32px;
+        margin: 40px 0 20px;
+      }
+      dd {
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          padding-left: 40px;
+          a {
+            margin:0 40px 20px 0;
+            li {
+              width: 200px;
+              height: 240px;
+              box-shadow: 0px 0px 10px 0px rgba(70, 79, 131, 0.2);
+              border-radius: 10px;
+              padding: 30px 25px;
+              box-sizing: border-box;
+              transition: 0.3s;
+              &:hover {
+                box-shadow: 0px 0px 10px 0px rgba(0, 193, 107, 0.2);
               }
-              &.cssd_index_newPurchasing {
-                background-image: url("/images/newpurchasing.png");
+              p {
+                width: 150px;
+                height: 150px;
+                background-size: 150px 150px;
+                &.cssd_index_outerPackage {
+                  background-image: url("/images/outerpackage.png");
+                }
+                &.cssd_index_newPurchasing {
+                  background-image: url("/images/newpurchasing.png");
+                }
+                &.cssd_index_recycle {
+                  background-image: url("/images/recycle.png");
+                }
+                &.cssd_index_clean {
+                  background-image: url("/images/clean.png");
+                }
+                &.cssd_index_package {
+                  background-image: url("/images/package.png");
+                }
+                &.cssd_index_sterilize {
+                  background-image: url("/images/sterilize.png");
+                }
+                &.cssd_index_provide {
+                  background-image: url("/images/provide.png");
+                }
+                &.cssd_index_unqualified {
+                  background-image: url("/images/unqualified.png");
+                }
+                &.cssd_index_apply {
+                  background-image: url("/images/apply.png");
+                }
+                &.cssd_index_inventory {
+                  background-image: url("/images/inventory.png");
+                }
+                &.cssd_index_inventoryCounting {
+                  background-image: url("/images/inventoryCounting.png");
+                }
+                &.cssd_index_packageTrack {
+                  background-image: url("/images/packageTrack.png");
+                }
+                &.cssd_index_patientTrack {
+                  background-image: url("/images/patientTrack.png");
+                }
+                &.cssd_index_oprationTrack {
+                  background-image: url("/images/oprationTrack.png");
+                }
+                &.cssd_index_basicResource {
+                  background-image: url("/images/basicResource.png");
+                }
+                &.cssd_index_schedule {
+                  background-image: url("/images/searchSchedule.png");
+                }
+                &.cssd_index_searchSchedule {
+                  background-image: url("/images/Schedule.png");
+                }
+                &.cssd_index_reserve {
+                  background-image: url("/images/reserve.png");
+                }
+                &.cssd_index_putInInventory {
+                  background-image: url("/images/putInInventory.png");
+                }
+                &.cssd_index_reserveCheck {
+                  background-image: url("/images/reserveCheck.png");
+                }
               }
-              &.cssd_index_recycle {
-                background-image: url("/images/recycle.png");
+              span {
+                display: block;
+                margin-top: 9px;
+                font-size: 16px;
+                font-family: Microsoft YaHei;
+                font-weight: bold;
+                color: rgba(35, 46, 65, 1);
+                line-height: 21px;
+                text-align: center;
               }
-              &.cssd_index_clean {
-                background-image: url("/images/clean.png");
-              }
-              &.cssd_index_package {
-                background-image: url("/images/package.png");
-              }
-              &.cssd_index_sterilize {
-                background-image: url("/images/sterilize.png");
-              }
-              &.cssd_index_provide {
-                background-image: url("/images/provide.png");
-              }
-              &.cssd_index_unqualified {
-                background-image: url("/images/unqualified.png");
-              }
-              &.cssd_index_apply {
-                background-image: url("/images/apply.png");
-              }
-              &.cssd_index_inventory {
-                background-image: url("/images/inventory.png");
-              }
-              &.cssd_index_inventoryCounting {
-                background-image: url("/images/inventoryCounting.png");
-              }
-              &.cssd_index_packageTrack {
-                background-image: url("/images/packageTrack.png");
-              }
-              &.cssd_index_patientTrack {
-                background-image: url("/images/patientTrack.png");
-              }
-              &.cssd_index_oprationTrack {
-                background-image: url("/images/oprationTrack.png");
-              }
-              &.cssd_index_basicResource {
-                background-image: url("/images/basicResource.png");
-              }
-              &.cssd_index_schedule {
-                background-image: url("/images/searchSchedule.png");
-              }
-              &.cssd_index_searchSchedule {
-                background-image: url("/images/Schedule.png");
-              }
-              &.cssd_index_reserve {
-                background-image: url("/images/reserve.png");
-              }
-              &.cssd_index_putInInventory {
-                background-image: url("/images/putInInventory.png");
-              }
-              &.cssd_index_reserveCheck {
-                background-image: url("/images/reserveCheck.png");
-              }
-            }
-            span {
-              display: block;
-              margin-top: 9px;
-              font-size: 16px;
-              font-family: Microsoft YaHei;
-              font-weight: bold;
-              color: rgba(35, 46, 65, 1);
-              line-height: 21px;
-              text-align: center;
             }
           }
         }

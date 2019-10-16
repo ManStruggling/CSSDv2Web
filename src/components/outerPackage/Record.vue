@@ -195,15 +195,7 @@ export default {
     this.search_date = [date,date];
     this.searchRecordsData();
   },
-  mounted() {
-    // $(".outerPackageRegistrationRecord").on("click", ".el-table__row", function(e) {
-    //   $(this)
-    //     .next()
-    //     .find("td")
-    //     .stop()
-    //     .slideToggle("fast");
-    // });
-  },
+  mounted() {},
   methods: {
     //二次请求
     collapseChange(index) {

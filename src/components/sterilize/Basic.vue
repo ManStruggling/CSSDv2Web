@@ -5,9 +5,9 @@
       <div class="head_user"><p>{{GLOBAL.UserInfo.ClinicName}}</p><p>{{GLOBAL.UserInfo.UserName}}</p><a @click="GLOBAL.logOut" class="logOut"></a></div>
     </div>
     <transition
-      name="fade"
-      enter-active-class="animated  faster fadeInRight"
-      leave-active-class="animated  faster fadeOutLeft"
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
     >
       <router-view></router-view>
     </transition>

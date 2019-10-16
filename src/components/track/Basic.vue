@@ -4,7 +4,13 @@
       <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
       <div class="head_user"><p>{{GLOBAL.UserInfo.ClinicName}}</p><p>{{GLOBAL.UserInfo.UserName}}</p><a @click="GLOBAL.logOut" class="logOut"></a></div>
     </div>
-    <router-view></router-view>
+    <transition
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
+    >
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 

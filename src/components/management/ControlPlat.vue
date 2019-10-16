@@ -44,9 +44,9 @@
         </div>
       </div>
       <transition
-        name="fade"
-        enter-active-class="animated  faster fadeIn"
-        leave-active-class="animated  faster fadeOut"
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
       >
         <router-view></router-view>
       </transition>

@@ -1,9 +1,9 @@
 <template>
   <div class="cleanReview">
     <transition
-        name="fade"
-        enter-active-class="animated  faster fadeInRight"
-        leave-active-class="animated  faster fadeOutLeft"
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
       >
       <div class="cssd_box" id="cleanCheck" v-show="isShowCleanView">
         <div class="cssd_title">
@@ -166,9 +166,9 @@
       </div>
     </transition>
     <transition
-        name="fade"
-        enter-active-class="animated  faster fadeInRight"
-        leave-active-class="animated  faster fadeOutLeft"
+        name="slide"
+        :enter-active-class="`animated  faster slideInRight`"
+        :leave-active-class="`animated  faster slideOutRight`"
       >
       <CleanFailedPackages 
         v-if="isShowCleanFailedPackages" 
@@ -361,8 +361,14 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/review";
 .cleanReview{
-  height: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  bottom: 0;
+  margin: auto;
   #cleanCheck {
+    top: 0;
     .checkStatusBox {
       .el-select {
         font-size: 16px;

@@ -9,9 +9,9 @@
       </div>
     </div>
     <transition
-      name="fade"
-      enter-active-class="animated  faster fadeInRight"
-      leave-active-class="animated  faster fadeOutLeft"
+        name="slide"
+        :enter-active-class="`animated  faster ${transitionEnterName}`"
+        :leave-active-class="`animated  faster ${transitionLeaveName}`"
     >
       <router-view></router-view>
     </transition>
