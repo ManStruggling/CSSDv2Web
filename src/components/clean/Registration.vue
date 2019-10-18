@@ -74,7 +74,7 @@
       <CleanSelectBox
         v-if="isShowCleanSelect"
         @to-father="deviceProgram2father"
-        :deviceId="selectedDeviceId"
+        :deviceId="submitData.DeviceModelId"
       ></CleanSelectBox>
     </transition>
     <!-- 照片 -->
@@ -106,7 +106,6 @@ export default {
   data() {
     return {
       cleanFailedCarriers:[],//清洗失败的网篮
-      selectedDeviceId:0,//选择的设备id
       activeName: "0",
       isShowPhoto:false,//显示照片
       isShowManualEnter: false, //显示手工录入
@@ -141,7 +140,6 @@ export default {
             let data = res.data.Data;
             this.submitData.DeviceModelName = data.DeviceModelName;
             this.submitData.DeviceModelId = data.DeviceModelId;
-            this.selectedDeviceId = this.submitData.DeviceModelId;
             this.submitData.DeviceModelProgramName =
               data.DeviceModelProgramName;
             this.submitData.DeviceModelProgramId = data.DeviceModelProgramId;

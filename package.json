@@ -12,6 +12,7 @@
         "core-js": "^2.6.5",
         "echarts": "^4.2.1",
         "element-ui": "^2.8.2",
+        "file-saver": "^2.0.2",
         "jquery": "^3.4.1",
         "sortablejs": "^1.10.0-rc3",
         "swiper": "^4.5.0",

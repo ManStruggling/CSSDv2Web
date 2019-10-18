@@ -153,6 +153,9 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/tableTotalBottomBar";
 #systemConfigure {
+  position: static;
+  height: 100%;
+  padding-top: 0;
   .cssd_table_center {
     .table_box {
       height: 100%;

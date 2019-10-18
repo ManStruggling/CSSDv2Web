@@ -212,6 +212,9 @@ export default {
   mounted() {
     this.GLOBAL.initWebSorcket(this);
   },
+  beforeDestroy() {
+    this.websocket.close();
+  },
   methods: {
     handleNumberChange(row){
       if(row.ProductQuantity==undefined){

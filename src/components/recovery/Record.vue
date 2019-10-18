@@ -87,6 +87,7 @@
               <el-table-column label="包名称" prop="PackageName" width="210"></el-table-column>
               <el-table-column label="回收科室" prop="ProvideSubClinicName" width="210"></el-table-column>
               <el-table-column label="包数量" prop="PackageQuantity" width="210"></el-table-column>
+              <el-table-column label="单包网篮名称" prop="SingleProductCarrierName" width="210"></el-table-column>
               <el-table-column
                 label="丢失器械总数"
                 prop="LostInstrumentTotalCount"

@@ -327,7 +327,6 @@ export default {
                 val.RemainingTime--;
                 if (val.RemainingTime <= 0) {
                   clearInterval(val["Countdown" + index]);
-                  this.$router.go(0);
                 }
               }, 1000);
             });

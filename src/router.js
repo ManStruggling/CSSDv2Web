@@ -614,13 +614,13 @@ const router = new Router({
 });
 router.beforeEach((to, from, next) => {
     if (from.meta.index === undefined) {
-        //reload路由判断层级
+        //reload路由判断层级  reload的from.meta没有key
         Vue.prototype.transitionEnterName = "slideInRight";
         Vue.prototype.transitionLeaveName = "slideOutLeft";
         next();
     } else {
         if (to.query.recordId || from.query.recordId) {
-            //记录修改判路由层级
+            //记录修改判路由层级 记录修改与记录路由层级相等 记录修改的key：query有recordId
             if (to.query.recordId) {
                 Vue.prototype.transitionEnterName = "slideInRight";
                 Vue.prototype.transitionLeaveName = "slideOutLeft";

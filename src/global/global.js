@@ -244,6 +244,14 @@ function showInformation(option) {
                 dangerouslyUseHTMLString: option.dangerouslyUseHTMLString
             });
             break;
+        case "notify":
+            TipsMsg.$notify({
+                type: option.type,
+                title: '通知',
+                message: option.msg,
+                duration: option.duration,
+              })
+            break;
         default:
             break;
     }
@@ -251,10 +259,10 @@ function showInformation(option) {
 
 //初始化websocket
 function initWebSorcket(that, origin) {
-    that.websocket = new WebSocket(`ws://192.168.1.24:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
+    that.websocket = new WebSocket(`ws:127.0.0.1:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
     //连接发生错误的回调方法
     that.websocket.onerror = err => {
-        that.showInformation({ classify: "message", msg: err });
+        that.showInformation({ classify: "notify", msg: "websocket连接失败！" });
     };
     //连接成功建立的回调方法
     that.websocket.onopen = event => {
@@ -270,10 +278,6 @@ function initWebSorcket(that, origin) {
         if (origin && that.GLOBAL.UserInfo.ClinicId === JSON.parse(event.data).CssdId) {
             that.hasNewTask = JSON.parse(event.data)[origin];
         }
-    };
-    //连接关闭的回调方法
-    that.websocket.onclose = () => {
-
     };
     //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
     window.onbeforeunload = function() {

@@ -56,7 +56,7 @@
                 <el-button
                   :disabled="item.Status==0?false:true"
                   @click="selectProgram(index,idx)"
-                >{{val.ProgramName}}</el-button>
+                >{{val.IsDbTestProgram?`${val.ProgramName}(DB测试程序)`:val.ProgramName}}</el-button>
               </li>
             </ol>
           </div>
@@ -112,7 +112,8 @@ export default {
           deviceName: this.deviceList[index].SterilizeDeviceName,
           deviceId: this.deviceList[index].SterilizeDeviceId,
           programName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
-          programId: this.deviceList[index].SterilizePrograms[idx].ProgramId
+          programId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
+          isDbTestProgram:this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram
         }
       });
     },

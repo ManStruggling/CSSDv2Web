@@ -9,13 +9,18 @@
         :enter-active-class="`animated  faster ${transitionEnterName}`"
         :leave-active-class="`animated  faster ${transitionLeaveName}`"
     >
-      <router-view></router-view>
+      <router-view :selectData="selectData"></router-view>
     </transition>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      selectData:{}
+    }
+  },
   //路由前置守卫
   beforeRouteEnter (to, from, next) {
     if(sessionStorage.userInfo){
@@ -34,7 +39,9 @@ export default {
     }else{
       next('/login')
     }
-  }
+  },
+  created(){},
+  beforeDestroy() {},
 };
 </script>
 

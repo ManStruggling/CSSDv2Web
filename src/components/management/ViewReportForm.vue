@@ -23,7 +23,10 @@
         ></el-date-picker>
         <el-button type="primary" class="btn120x40" @click="creatReport">查询报表</el-button>
       </p>
+      <p>
+        <el-button class="btn120x40empty" @click="exportData">导出报表</el-button>
       <el-button @click="setpdf">打印</el-button>
+      </p>
     </div>
     <el-table :data="tableData" show-summary row-key="Id" border height="100%">
       <el-table-column
@@ -43,6 +46,7 @@
 
 <script>
 import Sortable from "sortablejs";
+import toExcel from '@/utils/json2excel'
 export default {
   data() {
     return {
@@ -266,8 +270,8 @@ export default {
         }
       });
     },
+    //打印pdf文件
     setpdf() {
-      //打印pdf文件
       let jubuHtml = `<div id="viewEffect"><table class="table table-bordered table-striped text-center" cellpadding="10" cellspacing="10" width="100%"><thead><tr class="tr_th">`;
       this.dropCol.forEach(element => {
         jubuHtml += `<th>${element.DisplayName}</th>`;
@@ -296,6 +300,17 @@ export default {
         }
       }
       this.$router.go(0);
+    },
+    exportData(){
+      const th = [];
+      const filterVal = [];
+      this.columnList.forEach(element=>{
+        th.push(element.DisplayName);
+        filterVal.push(element.SpliceName);
+      })
+      const data = this.tableData.map(v => filterVal.map(k => v[k]))
+      const [fileName, fileType, sheetName] = ['测试下载', 'xlsx', '测试页']
+      toExcel({th, data, fileName, fileType, sheetName})
     }
   }
 };
@@ -336,6 +351,7 @@ export default {
       color: #fff;
       background: #00c16b;
       border: 0;
+      line-height: 40px;
       &.el-button--default {
         background: #fff;
         color: #00c16b;

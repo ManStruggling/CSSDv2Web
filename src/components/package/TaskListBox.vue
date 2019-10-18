@@ -3,15 +3,15 @@
     <ul>
       <li>
         <h4>包名称</h4>
-        <p>{{submitData.ProductName}}</p>
+        <p>{{submitData.Packages[0].ProductName}}</p>
       </li>
       <li>
         <h4>所属科室</h4>
-        <p>{{submitData.SubClinicName}}</p>
+        <p>{{submitData.Packages[0].SubClinicName}}</p>
       </li>
       <li>
         <h4>本次配包数量</h4>
-        <p>{{submitData.ThisTimePackageQuantity}}</p>
+        <p>{{submitData.Packages[0].ThisTimePackageQuantity}}</p>
       </li>
       <li>
         <h4>已拍照片</h4>
@@ -61,7 +61,12 @@ export default {
       isShowPhoto: false,
       submitData: {
         Pictures: [],
-        ReviewerBarCode: ""
+        ReviewerBarCode: "",
+        Packages:[{
+          ProductName:"",
+          SubClinicName:"",
+          ThisTimePackageQuantity:0,
+        }]
       }
     };
   },
@@ -75,16 +80,16 @@ export default {
   mounted() {
     this.$props.data.Pictures = [];
     this.$props.data.ReviewerBarCode = "";
-    this.submitData = Object.assign({}, this.$props.data);
-    this.submitData.ThisTimePackageQuantity =
-      this.submitData.NumberProductQuantity > 0
-        ? this.submitData.ThisTimePackageQuantity *
-            this.submitData.NumberProductQuantity >
-          this.submitData.CanBePackagedQuantity
-          ? this.submitData.CanBePackagedQuantity
-          : this.submitData.ThisTimePackageQuantity *
-            this.submitData.NumberProductQuantity
-        : this.submitData.ThisTimePackageQuantity;
+    Object.assign(this.submitData.Packages[0],this.data);
+    this.submitData.Packages[0].ThisTimePackageQuantity =
+      this.submitData.Packages[0].NumberProductQuantity > 0
+        ? this.submitData.Packages[0].ThisTimePackageQuantity *
+            this.submitData.Packages[0].NumberProductQuantity >
+          this.submitData.Packages[0].CanBePackagedQuantity
+          ? this.submitData.Packages[0].CanBePackagedQuantity
+          : this.submitData.Packages[0].ThisTimePackageQuantity *
+            this.submitData.Packages[0].NumberProductQuantity
+        : this.submitData.Packages[0].ThisTimePackageQuantity;
   },
   methods: {
     //图片数据传递
@@ -97,7 +102,7 @@ export default {
     },
     //取消提交
     cancelSubmit() {
-      this.$emit("to-father", "");
+      window.location.href = `/package/taskList?origin=${this.origin}`;
     },
     //确定提交
     submitConfirm() {
@@ -124,16 +129,13 @@ export default {
                 CSManager.PrintBarcode(JSON.stringify(element));
               });
               this.$emit("to-father", {
-                data: {
                   CssdId: this.GLOBAL.UserInfo.ClinicId,
                   ReserveCheckState: false,
                   PackageState: true,
-                  ProvideState: false
-                },
-                origin: this.$props.origin
-              });
+                  ProvideState: false,
+                  origin: this.$props.origin
+                },this.$props.origin);
             } else {
-              this.forbid = false;
               type = "error";
             }
             this.showInformation({

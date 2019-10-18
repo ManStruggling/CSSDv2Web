@@ -27,7 +27,7 @@
             :disabled="BiologicalTestForbit"
           ></el-switch>
         </b>
-        <b>{{submitData.DeviceModelName}}:{{submitData.DeviceModelProgramName}}</b>
+        <b>{{submitData.DeviceModelName}}:{{submitData.IsDbTestProgram?`${submitData.DeviceModelProgramName}(DB测试程序)`:submitData.DeviceModelProgramName}}</b>
         <a @click="reSelect">重新选择</a>
       </div>
     </div>
@@ -176,6 +176,7 @@ export default {
         DeviceId: this.$route.query.deviceId - 0,
         DeviceModelProgramName: this.$route.query.programName,
         DeviceProgramId: this.$route.query.programId - 0,
+        IsDbTestProgram:this.$route.query.isDbTestProgram,
         Carriers: [],
         NotInCarrierPackages: []
       }
@@ -283,18 +284,10 @@ export default {
         this.activeName = "-1";
         let onOff = true;
         for (let i = 0; i < data.length; i++) {
-          for (
-            let j = 0;
-            j < this.submitData.NotInCarrierPackages.length;
-            j++
-          ) {
-            if (
-              data[i].ProductId ==
-              this.submitData.NotInCarrierPackages[j].ProductId
-            ) {
+          for (let j = 0;j < this.submitData.NotInCarrierPackages.length;j++) {
+            if (data[i].ProductId == this.submitData.NotInCarrierPackages[j].ProductId) {
               onOff = false;
-              this.submitData.NotInCarrierPackages[j].ProductQuantity +=
-                data[i].ProductQuantity;
+              this.submitData.NotInCarrierPackages[j].ProductQuantity += data[i].ProductQuantity;
             }
           }
           if (onOff) {
@@ -352,43 +345,46 @@ export default {
         url = `/api/Sterilize/SterilizeRecordModify`;
         method = "PUT";
       }
-      if (
-        this.GLOBAL.VerificationHandle([
-          {
-            val: this.submitData.TotalNumber,
-            type: "NumberNotZero",
-            msg: "您没有添加包或网篮！请至少添加一个包！"
-          }
-        ])
-      ) {
-        //转换数据格式
-        for(let i=0;i<this.submitData.NotInCarrierPackages.length;i++){
-          if(this.submitData.NotInCarrierPackages[i].IsSubstitution){
-            this.submitData.HelpSterilizeQuantity = this.submitData.NotInCarrierPackages[i].ProductQuantity;
-            this.submitData.NotInCarrierPackages.splice(i,1);
-            break;
-          }
-        }
-        axios({ url: url, method: method, data: this.submitData })
-          .then(res => {
-            let type;
-            if (res.data.Code == 200) {
-              type = "success";
-              res.data.Data.forEach(element => {
-                CSManager.PrintBarcode(JSON.stringify(element));
-              });
-              if (this.sterilizeRecordModle) {
-                this.$router.push({path:"/sterilize/record"});
-              }else{
-                this.$router.push({ path: "/sterilize/select" });
-              }
-            } else {
-              type = "error";
+      //非DB测试程序
+      if(!this.submitData.IsDbTestProgram){
+        if (this.GLOBAL.VerificationHandle([{val: this.submitData.TotalNumber,type: "NumberNotZero",msg: "您没有添加包或网篮！请至少添加一个包！"}])) {
+          //转换数据格式
+          for(let i=0;i<this.submitData.NotInCarrierPackages.length;i++){
+            if(this.submitData.NotInCarrierPackages[i].IsSubstitution){
+              this.submitData.HelpSterilizeQuantity = this.submitData.NotInCarrierPackages[i].ProductQuantity;
+              this.submitData.NotInCarrierPackages.splice(i,1);
+              break;
             }
-            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
-          })
-          .catch(err => {});
+          }
+        }else{
+          return;
+        }
+      }else{
+        //BD测试程序
+        if(this.submitData.TotalNumber){
+          this.showInformation({classify:"message",msg:"BD测试程序不能录入包！请删除！"});
+          return;
+        }
       }
+      axios({ url: url, method: method, data: this.submitData })
+        .then(res => {
+          let type;
+          if (res.data.Code == 200) {
+            type = "success";
+            res.data.Data.forEach(element => {
+              CSManager.PrintBarcode(JSON.stringify(element));
+            });
+            if (this.sterilizeRecordModle) {
+              this.$router.push({path:"/sterilize/record"});
+            }else{
+              this.$router.push({ path: "/sterilize/select" });
+            }
+          } else {
+            type = "error";
+          }
+          this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+        })
+        .catch(err => {});
     },
     //重新选择
     reSelect() {
@@ -431,6 +427,8 @@ export default {
         this.submitData.DeviceModelProgramName = data.ProgramName;
         this.$route.query.programId = data.ProgramId;
         this.submitData.DeviceProgramId = data.ProgramId;
+        this.$route.query.isDbTestProgram = data.IsDbTestProgram;
+        this.submitData.IsDbTestProgram = data.IsDbTestProgram;
       }
     },
     //删除网篮

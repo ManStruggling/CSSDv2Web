@@ -82,6 +82,14 @@
                     ></el-input-number>
                   </template>
                 </el-table-column>
+                <el-table-column label="BD测试程序">
+                  <template slot-scope="props">
+                    <el-select v-model="props.row.IsDbTestProgram" class="green18x10">
+                      <el-option label="否" :value="false"></el-option>
+                      <el-option label="是" :value="true"></el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作" width="210">
                   <template slot-scope="props">
                     <a class="deleteThisProg" @click="editBoxDeleteThisProgm(index,props.$index)">删除</a>
@@ -277,7 +285,8 @@ export default {
     editBoxAddProgm(index) {
       this.editBoxData.DeviceModel[index].DevicePrograms.push({
         Name: "",
-        Duration: 0
+        Duration: 0,
+        IsDbTestProgram:false
       });
     },
     //editBox 删除程序

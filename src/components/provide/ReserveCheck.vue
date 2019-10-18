@@ -161,6 +161,9 @@ export default {
   mounted() {
     this.GLOBAL.initWebSorcket(this,"ReserveCheckState");
   },
+  beforeDestroy() {
+    this.websocket.close();
+  },
   methods: {
     //刷新
     refresh() {

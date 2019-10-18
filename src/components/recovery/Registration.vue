@@ -305,6 +305,7 @@ export default {
     this.GLOBAL.initWebSorcket(this);
   },
   beforeDestroy() {
+    this.websocket.close();
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -513,12 +514,7 @@ export default {
                   }
                 });
               } else {
-                this.$router.go({
-                  path: `/recovery/registration`,
-                  query: {
-                    message: "test"
-                  }
-                });
+                this.$router.go({path: `/recovery/registration`});
               }
             } else {
               type = "error";

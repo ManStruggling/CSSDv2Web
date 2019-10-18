@@ -464,6 +464,9 @@ export default {
   mounted() {
     this.GLOBAL.initWebSorcket(this);
   },
+  beforeDestroy() {
+    this.websocket.close();
+  },
   methods: {
     goBack() {
       if (this.outerPackageChangeMode) {

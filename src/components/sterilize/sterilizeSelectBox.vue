@@ -37,10 +37,10 @@
               :key="idx"
             >
               <el-button
-                :disabled="$props.deviceId==item.SterilizeDeviceId||item.Status==0?false:true"
+                :disabled="deviceId==item.SterilizeDeviceId||item.Status==0?false:true"
                 :class="$route.query.deviceId==item.SterilizeDeviceId&&$route.query.programId==val.ProgramId?'is-selected':''"
                 @click="selectProgram(index,idx)"
-              >{{val.ProgramName}}</el-button>
+              >{{val.IsDbTestProgram?`${val.ProgramName}(DB测试程序)`:val.ProgramName}}</el-button>
             </li>
           </ol>
         </div>
@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  props:['DeviceId'],
+  props:['deviceId'],
   data() {
     return {
       deviceList: []
@@ -69,7 +69,6 @@ export default {
                 val.CurrentTime--
                 if(val.CurrentTime<=0){
                   clearInterval(val['Countdown'+index]);
-                  this.$router.go(0);
                 }
               }, 1000);
             }
@@ -93,7 +92,8 @@ export default {
         DeviceName: this.deviceList[index].SterilizeDeviceName,
         DeviceId: this.deviceList[index].SterilizeDeviceId,
         ProgramName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
-        ProgramId: this.deviceList[index].SterilizePrograms[idx].ProgramId
+        ProgramId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
+        IsDbTestProgram:this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram
       });
     },
     //重置设备状态

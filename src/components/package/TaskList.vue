@@ -187,7 +187,8 @@
                       </div>
                       <!-- 单网篮包 -->
                       <div class="collapseTd">
-                        <div>{{value.SingleCarrierName}}</div>
+                        <div v-if="value.IsSingleCarrierProduct">{{value.SingleCarrierName}}</div>
+                        <div v-else>-</div>
                       </div>
                     </div>
                     <div
@@ -406,6 +407,7 @@ export default {
     this.GLOBAL.initWebSorcket(this,"PackageState");
   },
   beforeDestroy() {
+    this.websocket.close();
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -427,17 +429,17 @@ export default {
     },
     searchSinglePackage(data,origin){
       if(this.tableData[origin]){
-        this.selectOrigin=origin;
         //优先匹配加急包
         for(let i=0;i<this.tableData[origin].length;i++){
           for(let j=0;j<this.tableData[origin][i].PackageTasks.length;j++){
-            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity&&this.tableData[origin][i].PackageTasks[j].ExpeditedPackageQuantity){
+            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity&&this.tableData[origin][i].PackageTasks[j].ExpeditedPackageQuantity&&!this.tableData[origin][i].PackageTasks[j].SingleCarrierId){
               this.tableData[origin][i].PackageTasks[j].SingleCarrierId=data.SingleCarrierId;
               this.tableData[origin][i].PackageTasks[j].SingleCarrierName=data.SingleCarrierName;
               this.tabActiveName=i+"";
               this.activeName=j+"";
               this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
               this.templateSelection = this.tableData[origin][i].PackageTasks[j];
+              this.selectOrigin=origin;
               return true;
             }
           }
@@ -445,13 +447,14 @@ export default {
         //匹配非加急包
         for(let i=0;i<this.tableData[origin].length;i++){
           for(let j=0;j<this.tableData[origin][i].PackageTasks.length;j++){
-            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity){
+            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity&&!this.tableData[origin][i].PackageTasks[j].SingleCarrierId){
               this.tableData[origin][i].PackageTasks[j].SingleCarrierId=data.SingleCarrierId;
               this.tableData[origin][i].PackageTasks[j].SingleCarrierName=data.SingleCarrierName;
               this.tabActiveName=i+"";
               this.activeName=j+"";
               this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
               this.templateSelection = this.tableData[origin][i].PackageTasks[j];
+              this.selectOrigin=origin;
               return true;
             }
           }
@@ -519,6 +522,7 @@ export default {
     //PackageList组件传递的值
     packgeList2father(data) {
       this.isShowPackageList = false;
+      CSManager.handleDataThis = this;
       if (data) {
         this.tableData = data;
         this.selectOrigin = "PackageTasksFromSupportMaterialProduct";
@@ -533,13 +537,10 @@ export default {
       }
     },
     //taskListBox传递过来的值
-    taskListBox2father(data) {
-      if(data==""){
-        this.isShowTaskListBox = false;
-      }
+    taskListBox2father(data,origin) {
       if (data) {
-        this.websocket.send(JSON.stringify(data.data));
-        window.location.href = `/package/taskList?origin=${data.origin}`;
+        this.websocket.send(JSON.stringify(data));
+        window.location.href = `/package/taskList?origin=${origin}`;
       }
     },
     //配包完成
@@ -564,6 +565,7 @@ export default {
             this.showInformation({classify:"message",msg:"单网篮包必须绑定网篮！"});
             return;
           }
+          //单网篮包一次只能配一个
           this.templateSelection.ThisTimePackageQuantity = 1;
         }
         this.isShowTaskListBox = true;
@@ -580,6 +582,7 @@ export default {
     //   //获取选中数据
     //   this.templateSelection = value;
     // },
+    //选择的任务改变
     collapseChange(activeName, index) {
       if (activeName != "") {
         this.selectRadio = this.tableData[this.selectOrigin][
@@ -620,14 +623,64 @@ export default {
         this.selectRadio = 0;
       }
     },
+    //处理条码
     handleBarCode(msg){
-      axios({url:`/api/Scanner/Package/SingleProductCarrier/${msg}`}).then(res=>{
-        if(res.data.Code==200){
-          this.scanner2father(res.data.Data);
-        }else{
-          this.showInformation({classify:"message",msg:res.data.Msg});
+      if(/^RY/.test(msg.toUpperCase())){
+        let submitData={
+          Pictures:[],
+          ReviewerBarCode:msg,
+          Packages:[]
+        };
+        for(let key in this.tableData){
+          if(key==="TasksOfCanBePackage"||key==="PackageTasksFromSterilizeFailed"){
+            if(this.tableData[key]){
+              for(let i=0;i<this.tableData[key].length;i++){
+                for(let j=0;j<this.tableData[key][i].PackageTasks.length;j++){
+                  if(this.tableData[key][i].PackageTasks[j].SingleCarrierId){
+                    this.tableData[key][i].PackageTasks[j].ThisTimePackageQuantity = 1;
+                    submitData.Packages.push(this.tableData[key][i].PackageTasks[j]);
+                  }
+                }
+              }
+            }
+          }
         }
-      }).catch(err=>{})
+        if(submitData.Packages==""){
+          this.showInformation({classify:"message",msg:"单网篮包没有绑定单包网篮！"})
+          return;
+        }
+        axios({url:`/api/Package/PackageTaskReceiveAndReturnPrintModel`,method:"POST",data:submitData}).then(res=>{
+          let type;
+          if(res.data.Code==200){
+            type = "success";
+            res.data.Data.forEach(element => {
+              CSManager.PrintBarcode(JSON.stringify(element));
+            });
+            this.websocket.send(JSON.stringify({
+              CssdId: this.GLOBAL.UserInfo.ClinicId,
+              ReserveCheckState: false,
+              PackageState: true,
+              ProvideState: false,
+            }))
+            window.location.href = `/package/taskList?origin=${this.selectOrigin}`;
+          }else{
+            type = "error";
+          }
+          this.showInformation({
+            classify: "message",
+            msg: res.data.Msg,
+            type: type
+          });
+        });
+      }else{
+        axios({url:`/api/Scanner/Package/SingleProductCarrier/${msg}`}).then(res=>{
+          if(res.data.Code==200){
+            this.scanner2father(res.data.Data);
+          }else{
+            this.showInformation({classify:"message",msg:res.data.Msg});
+          }
+        }).catch(err=>{})
+      }
     }
   }
 };

@@ -37,7 +37,7 @@
               :key="idx"
             >
               <el-button
-                :disabled="item.CleanDeviceType===1||$props.deviceId==item.Id||item.Status==0?false:true"
+                :disabled="item.CleanDeviceType===1||deviceId==item.Id||item.Status==0?false:true"
                 :class="$route.query.deviceId==item.Id&&$route.query.programId==val.Id?'is-selected':''"
                 @click="selectProgram(index,idx)"
               >{{val.Name}}</el-button>
@@ -60,6 +60,7 @@ export default {
     };
   },
   created() {
+    console.log(this.deviceId)
     axios({ url: `/api/Clean/CleanDevices` })
       .then(res => {
         if (res.data.Code == 200) {
@@ -71,7 +72,6 @@ export default {
                 val.CurrentTime--;
                 if (val.CurrentTime <= 0) {
                   clearInterval(val["Countdown" + index]);
-                  this.$router.go(0);
                 }
               }, 1000);
             }

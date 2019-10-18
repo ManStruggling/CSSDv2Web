@@ -223,6 +223,7 @@ export default {
     this.GLOBAL.initWebSorcket(this,"ProvideState");
   },
   beforeDestroy() {
+    this.websocket.close();
     CSManager.handleDataThis = null;
   },
   methods: {

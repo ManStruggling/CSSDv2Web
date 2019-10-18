@@ -63,9 +63,12 @@
                     @change="((newValue,oldValue)=>{packageNumberChange(newValue,oldValue,index,idx)})"
                   ></el-input-number>
                 </p>
-                <p v-if="val.IsSingleCarrierProduct" class="singleCarrierBox">
-                  <el-input type="text" v-model.trim="val.SingleCarrierName" placeholder="输入单包网篮(必填)" @blur="inputBlur(val)" :disabled="val.SingleCarrierId===0?false:true"></el-input>
-                  <i class="deleteSingleCarrier el-icon-error" @click="deleteSingleCarrier(val)" v-show="val.SingleCarrierId!=0"></i>
+                <p class="singleCarrierBox">
+                  <template v-if="val.IsSingleCarrierProduct">
+                    <el-input type="text" v-model.trim="val.SingleCarrierName" placeholder="输入单包网篮(必填)" @blur="inputBlur(val)" :disabled="val.SingleCarrierId===0?false:true"></el-input>
+                    <i class="deleteSingleCarrier el-icon-error" @click="deleteSingleCarrier(val)" v-show="val.SingleCarrierId!=0"></i>
+                  </template>
+                  <template v-else>{{"-"}}</template>
                 </p>
               </li>
             </ol>
@@ -163,6 +166,7 @@ export default {
     this.GLOBAL.initWebSorcket(this);
   },
   beforeDestroy() {
+    this.websocket.close();
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -272,6 +276,7 @@ export default {
                   sendData.ProvideState = false;
                 }
                 this.websocket.send(JSON.stringify(sendData));
+                
                 if (method == "POST") {
                   this.$router.go(0);
                 } else {
@@ -517,6 +522,10 @@ export default {
           margin-right: 10px;
           display: flex;
           align-items: center;
+          font-size:18px;
+          font-family:Microsoft YaHei;
+          font-weight:bold;
+          color:rgba(35,46,65,1);
           &.singleCarrierBox{
             position: relative;
             i{
