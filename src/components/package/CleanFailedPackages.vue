@@ -44,10 +44,11 @@
                     :max="value.OriginalQuantity"
                     @change="((newValue,oldValue)=>{handelNumberChange(newValue,oldValue,value)})"
                   ></el-input-number>
-                  <p v-if="!value.IsOuterProduct">{{value.CanNotBePackagedCount}}</p>
+                  <p v-else>{{value.CanNotBePackagedCount}}</p>
                 </div>
               </div>
-              <el-table v-if="!value.IsOuterProduct" :data="value.Instruments">
+              <!-- 以器械为审核对象 -->
+              <el-table v-show="!value.IsOuterProduct" :data="value.Instruments">
                 <el-table-column label="器械名称" prop="InstrumentName" width="240"></el-table-column>
                 <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
                 <el-table-column label="器械总数" width="210">

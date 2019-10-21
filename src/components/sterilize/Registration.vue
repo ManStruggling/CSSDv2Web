@@ -27,7 +27,7 @@
             :disabled="BiologicalTestForbit"
           ></el-switch>
         </b>
-        <b>{{submitData.DeviceModelName}}:{{submitData.IsDbTestProgram?`${submitData.DeviceModelProgramName}(DB测试程序)`:submitData.DeviceModelProgramName}}</b>
+        <b>{{submitData.DeviceModelName}}:{{submitData.IsDbTestProgram?`${submitData.DeviceModelProgramName}(BD测试程序)`:submitData.DeviceModelProgramName}}</b>
         <a @click="reSelect">重新选择</a>
       </div>
     </div>
@@ -345,7 +345,7 @@ export default {
         url = `/api/Sterilize/SterilizeRecordModify`;
         method = "PUT";
       }
-      //非DB测试程序
+      //非BD测试程序
       if(!this.submitData.IsDbTestProgram){
         if (this.GLOBAL.VerificationHandle([{val: this.submitData.TotalNumber,type: "NumberNotZero",msg: "您没有添加包或网篮！请至少添加一个包！"}])) {
           //转换数据格式

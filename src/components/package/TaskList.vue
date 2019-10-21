@@ -243,6 +243,7 @@
         :data="templateSelection"
         @to-father="taskListBox2father"
         :origin="selectOrigin"
+        :tabIndex="tabActiveName"
       ></TaskListBox>
     </transition>
     <transition
@@ -389,9 +390,13 @@ export default {
   },
   created() {
     CSManager.handleDataThis = this;
-    let origin = window.location.search.split("=")[1];
+    let origin = this.GLOBAL.getParams('origin');
+    let tabIndex = this.GLOBAL.getParams('tabIndex');
     if (origin) {
       this.selectOrigin = origin;
+    }
+    if(tabIndex){
+      this.tabActiveName = tabIndex;
     }
     axios({ url: "/api/Package/PackageTasks" })
       .then(res => {
@@ -440,6 +445,7 @@ export default {
               this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
               this.templateSelection = this.tableData[origin][i].PackageTasks[j];
               this.selectOrigin=origin;
+              this.$forceUpdate();
               return true;
             }
           }
@@ -455,6 +461,7 @@ export default {
               this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
               this.templateSelection = this.tableData[origin][i].PackageTasks[j];
               this.selectOrigin=origin;
+              this.$forceUpdate();
               return true;
             }
           }
@@ -537,10 +544,10 @@ export default {
       }
     },
     //taskListBox传递过来的值
-    taskListBox2father(data,origin) {
+    taskListBox2father(data,origin,tabIndex) {
       if (data) {
         this.websocket.send(JSON.stringify(data));
-        window.location.href = `/package/taskList?origin=${origin}`;
+        window.location.href = `/package/taskList?origin=${origin}&tabIndex=${tabIndex}`;
       }
     },
     //配包完成
@@ -626,6 +633,7 @@ export default {
     //处理条码
     handleBarCode(msg){
       if(/^RY/.test(msg.toUpperCase())){
+        //提交
         let submitData={
           Pictures:[],
           ReviewerBarCode:msg,
@@ -662,7 +670,7 @@ export default {
               PackageState: true,
               ProvideState: false,
             }))
-            window.location.href = `/package/taskList?origin=${this.selectOrigin}`;
+            window.location.href = `/package/taskList?origin=${this.selectOrigin}&clinicId=${this.tabActiveName}`;
           }else{
             type = "error";
           }

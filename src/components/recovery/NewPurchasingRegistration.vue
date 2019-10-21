@@ -47,6 +47,7 @@
               <p>包名称</p>
               <p>包数量</p>
               <p>单包网篮</p>
+              <p>单包网篮名称</p>
             </div>
             <ol>
               <li v-for="(val,idx) in item.Packages" :key="idx">
@@ -65,11 +66,12 @@
                 </p>
                 <p class="singleCarrierBox">
                   <template v-if="val.IsSingleCarrierProduct">
-                    <el-input type="text" v-model.trim="val.SingleCarrierName" placeholder="输入单包网篮(必填)" @blur="inputBlur(val)" :disabled="val.SingleCarrierId===0?false:true"></el-input>
+                    <el-input type="text" v-model.trim="val.SingleCarrierBarCode" placeholder="输入单包网篮(必填)" @blur="inputBlur(val)" :disabled="val.SingleCarrierId===0?false:true"></el-input>
                     <i class="deleteSingleCarrier el-icon-error" @click="deleteSingleCarrier(val)" v-show="val.SingleCarrierId!=0"></i>
                   </template>
                   <template v-else>{{"-"}}</template>
                 </p>
+                <p>{{val.SingleCarrierName}}</p>
               </li>
             </ol>
           </div>
@@ -174,15 +176,16 @@ export default {
     deleteSingleCarrier(val){
       this.singleCarrierIds = this.singleCarrierIds.filter(value=>{return value!=val.SingleCarrierId});
       val.SingleCarrierId=0;
-      val.SingleCarrierName="";
+      val.SingleCarrierBarCode="";
+      val.SingleCarrierName = "";
     },
     // 单包网篮输入框失焦
     inputBlur(val){
-      if(val.SingleCarrierName){
-        axios({url:`/api/Scanner/NewPurchasing/SingleProductCarrier/${val.SingleCarrierName}`}).then(res=>{
+      if(val.SingleCarrierBarCode){
+        axios({url:`/api/Scanner/NewPurchasing/SingleProductCarrier/${val.SingleCarrierBarCode}`}).then(res=>{
           if(res.data.Code==200){
             if(this.singleCarrierIds.includes(res.data.Data.SingleCarrierId)){
-              val.SingleCarrierName="";
+              val.SingleCarrierBarCode="";
               this.showInformation({classify:"message",msg:"录入的网篮重复！"});
               return;
             }
@@ -526,6 +529,7 @@ export default {
           font-family:Microsoft YaHei;
           font-weight:bold;
           color:rgba(35,46,65,1);
+          white-space: nowrap;
           &.singleCarrierBox{
             position: relative;
             i{

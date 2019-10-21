@@ -288,9 +288,20 @@ function initWebSorcket(that, origin) {
 //取消事件冒泡
 function cancelBubble() {}
 
+//获取地址栏参数
+function getParams(key){
+    let arr = window.location.search.substr(1).split("&");
+    let obj = {};
+    arr.forEach(val=>{
+        obj[val.split("=")[0]]=val.split("=")[1];
+    })
+    return obj[key];
+}
+
 Vue.prototype.showInformation = showInformation;
 
 export default {
+    getParams,
     initWebSorcket,
     cancelBubble,
     pickerOptions,

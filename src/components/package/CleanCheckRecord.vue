@@ -25,14 +25,14 @@
         </p>
       </div>
     </div>
-    <div class="cssd_table_center cssd_record_ui">
+    <div class="cssd_table_center cssd_table_expand cssd_record_ui table_expand">
       <div class="content_title">
         <p>审核日期</p>
         <p>清洗编号</p>
         <p>审核人</p>
         <p>审核结果</p>
       </div>
-      <el-collapse accordion>
+      <el-collapse accordion @change="collapseChange">
         <el-collapse-item
           v-for="(item,collapseIndex) in recordList"
           :key="collapseIndex"
@@ -92,6 +92,33 @@
             <p>备注</p>
             <span>{{item.Remark}}</span>
           </div>
+          <el-table :data="item.Carriers" :default-expand-all="true">
+            <el-table-column label="网篮条码" prop="BarCode" width="240"></el-table-column>
+            <el-table-column label="网篮名称" prop="Name" width="210"></el-table-column>
+            <el-table-column label="包数量" prop="PackageQuantityInCarriers" width="210"></el-table-column>
+            <el-table-column></el-table-column>
+            <el-table-column type="expand" width="1">
+              <template slot-scope="props">
+                <div class="table_detail">
+                  <div class="myTableTitle">
+                    <p>所属科室</p>
+                    <p>包名称</p>
+                    <p>数量</p>
+                  </div>
+                  <ul>
+                    <li
+                      v-for="(selfs,myTableIndex) in props.row.PackageBarCodeDetailList"
+                      :key="myTableIndex"
+                    >
+                      <p>{{selfs.ProvideSubClinicName}}</p>
+                      <p>{{selfs.Name}}</p>
+                      <p>{{selfs.Quantity}}</p>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-collapse-item>
       </el-collapse>
       <div class="recordNoData" v-show="recordList==''">暂无数据</div>
@@ -133,10 +160,25 @@ export default {
   },
   mounted() {},
   methods: {
+    //二次请求
+    collapseChange(index) {
+      if (index != "" && !this.recordList[index].Carriers) {
+        axios({url: `/api/Clean/CleanRecordDetailBy/${this.recordList[index].Id}`}).then(res => {
+          if (res.data.Code == 200) {
+            this.recordList[index].Carriers = res.data.Data;
+            this.$forceUpdate();
+          } else {
+            this.showInformation({classify:"message",msg:res.data.Msg});
+          }
+        }).catch(err => console.log(err));
+      }
+    },
+    //查看失败的器械
     lookFailedInstruments(val) {
       this.record_id = val;
       this.isShowFailedInstruments = true;
     },
+    //失败的器械与父组件通信
     failedInstruments2father() {
       this.isShowFailedInstruments = false;
     },
@@ -149,6 +191,7 @@ export default {
         }
       });
     },
+    //查询记录数据
     searchRecordsData() {
       this.GLOBAL.searchRecord(
         this.search_date[0],
@@ -164,8 +207,9 @@ export default {
 
 <style lang="scss">
 @import "../../assets/css/tableNav";
-@import "../../assets/css/tableCollapse";
+// @import "../../assets/css/tableCollapse";
 @import "../../assets/css/cssdRecord";
+@import "../../assets/css/tableExpand";
 
 #cleanReviewRecords {
   .record_detail {
@@ -200,9 +244,6 @@ export default {
   }
   .cssd_table_center {
     .el-table {
-      width: 1101px;
-      margin: 0 40px;
-      border-radius: 4px;
       td,
       th {
         background: #fff;
@@ -213,7 +254,9 @@ export default {
       tbody {
         td {
           padding: 0;
-          height: 60px;
+        }
+        .el-table__expanded-cell{
+          background: #F7F8FA;
         }
       }
     }

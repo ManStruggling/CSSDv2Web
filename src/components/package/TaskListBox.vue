@@ -70,7 +70,7 @@ export default {
       }
     };
   },
-  props: ["data", "origin"],
+  props: ["data", "origin","tabIndex"],
   components: {
     PhotoView
   },
@@ -133,8 +133,7 @@ export default {
                   ReserveCheckState: false,
                   PackageState: true,
                   ProvideState: false,
-                  origin: this.$props.origin
-                },this.$props.origin);
+                },this.$props.origin,this.$props.tabIndex);
             } else {
               type = "error";
             }

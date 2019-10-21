@@ -323,12 +323,14 @@ export default {
           //开启计时器do countdown  RemainingTime
           if (this.sterilizeTask.Sterilizing) {
             this.sterilizeTask.Sterilizing.forEach((val, index) => {
-              val["Countdown" + index] = setInterval(() => {
-                val.RemainingTime--;
-                if (val.RemainingTime <= 0) {
-                  clearInterval(val["Countdown" + index]);
-                }
-              }, 1000);
+              if(val.RemainingTime>0){
+                val["Countdown" + index] = setInterval(() => {
+                  val.RemainingTime--;
+                  if (val.RemainingTime <= 0) {
+                    clearInterval(val["Countdown" + index]);
+                  }
+                }, 1000);
+              }
             });
           }
         } else {

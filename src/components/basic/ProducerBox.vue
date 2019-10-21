@@ -75,14 +75,14 @@
                   <template slot-scope="props">
                     <el-input-number
                       v-model="props.row.Duration"
-                      :min="1"
+                      :min="0"
                       :max="300"
                       :controls="false"
                       @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,index,props.$index)})"
                     ></el-input-number>
                   </template>
                 </el-table-column>
-                <el-table-column label="BD测试程序">
+                <el-table-column label="DB测试程序">
                   <template slot-scope="props">
                     <el-select v-model="props.row.IsDbTestProgram" class="green18x10">
                       <el-option label="否" :value="false"></el-option>
@@ -380,6 +380,9 @@ export default {
             }
             .el-input-number {
               width: 160px;
+              input{
+                text-indent: 15px;
+              }
             }
             input {
               font-size: 16px;

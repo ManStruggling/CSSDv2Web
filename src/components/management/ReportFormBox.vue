@@ -140,29 +140,27 @@ export default {
         let reportTypeStr=``;
         let select_str=``;
         let expand_str = ``;
+        
+        //报表类型
         for(let i=0;i<this.allKeys.length;i++){
           if(this.ReportType===this.allKeys[i].MainReportId){
             reportTypeStr = `/odata/${this.allKeys[i].UrlString}?`;
             break;
           }
         }
-        for (
-          let i = 0;
-          i < this.editBoxData.MainReport.Parameters.length;
-          i++
-        ) {
-          for (let j = 0; j < this.keyList.length; j++) {
-            if (
-              this.editBoxData.MainReport.Parameters[i] === this.keyList[j].Id
-            ) {
-              if (this.keyList[j].Type === 0) {
-                select_str = select_str + this.keyList[j].UrlString + ",";
+
+        //拼接select and expand
+        for (let i = 0;i < this.editBoxData.MainReport.Parameters.length;i++) {
+          // for (let j = 0; j < this.keyList.length; j++) {
+            // if (this.editBoxData.MainReport.Parameters[i].Id === this.keyList[j].Id) {
+              if (this.editBoxData.MainReport.Parameters[i].Type === 0) {
+                select_str = select_str + this.editBoxData.MainReport.Parameters[i].UrlString + ",";
               } else {
-                expand_str = expand_str + this.keyList[j].UrlString + ",";
+                expand_str = expand_str + this.editBoxData.MainReport.Parameters[i].UrlString + ",";
               }
-              this.editBoxData.MainReport.Parameters[i] = this.keyList[j];
-            }
-          }
+              // this.editBoxData.MainReport.Parameters[i] = this.keyList[j];
+            // }
+          // }
         }
         if(expand_str){
           expand_str = "&$expand=" + expand_str.substr(0,expand_str.length-1);

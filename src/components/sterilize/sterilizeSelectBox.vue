@@ -40,7 +40,7 @@
                 :disabled="deviceId==item.SterilizeDeviceId||item.Status==0?false:true"
                 :class="$route.query.deviceId==item.SterilizeDeviceId&&$route.query.programId==val.ProgramId?'is-selected':''"
                 @click="selectProgram(index,idx)"
-              >{{val.IsDbTestProgram?`${val.ProgramName}(DB测试程序)`:val.ProgramName}}</el-button>
+              >{{val.IsDbTestProgram?`${val.ProgramName}(BD测试程序)`:val.ProgramName}}</el-button>
             </li>
           </ol>
         </div>
