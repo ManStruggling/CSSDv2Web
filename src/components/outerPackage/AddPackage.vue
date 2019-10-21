@@ -11,6 +11,7 @@
               @change="supplierChange"
               :disabled="$props.mode"
               class="green24x13"
+              placeholder="送包单位(必填)"
             >
               <el-option
                 v-for="(item,index) in SupplierList.Suppliers"
@@ -22,7 +23,7 @@
           </li>
           <li>
             <p class="font16gray">送包人</p>
-            <el-input v-model.trim="outerPackageVm.DeliveryPerson"></el-input>
+            <el-input v-model.trim="outerPackageVm.DeliveryPerson" placeholder="送包人(必填)"></el-input>
           </li>
           <li>
             <p class="font16gray">包名称</p>
@@ -32,6 +33,7 @@
               @change="productChange"
               :disabled="$props.mode"
               class="green24x13"
+              placeholder="包名称(必填)"
             >
               <el-option
                 v-for="(item,index) in SupplierList.Products"
@@ -60,7 +62,7 @@
           </li>
           <li>
             <p class="font16gray">清洗架</p>
-            <el-input v-model.trim="outerPackageVm.CarrierName" @blur="getCarrierData(outerPackageVm.CarrierName)"></el-input>
+            <el-input v-model.trim="outerPackageVm.CarrierName" @blur="getCarrierData(outerPackageVm.CarrierName)" placeholder="清洗架(必填)" :disabled="$props.mode"></el-input>
           </li>
           <li>
             <p class="font16gray">器械总数</p>

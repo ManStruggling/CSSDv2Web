@@ -2,10 +2,13 @@
   <div id="transferBox">
     <div class="box">
       <div class="title">
-        <span :class="{active: leftSelect === data1.length}" @click="selectAll(data1)">未选报表参数</span>
+         <el-checkbox
+            :indeterminate="isIndeterminateOfSource"
+            v-model="sourceCheckAll"
+            @change="((val)=>{handleCheckAllChange(val,changeSourceData,0)})"
+          >未选报表参数</el-checkbox>
         <span>{{leftSelect ? leftSelect : 0}}/{{data1.length}}</span>
       </div>
-
       <div @drop="dropPub($event, 2)" @dragover.prevent class="left">
         <div
           @drag="ondrag"
@@ -14,10 +17,11 @@
           draggable="true"
           class="hover-color"
           :class="{active: item.IsSelect }"
-          v-on:click="hanldleClick(data1, item.Id)"
           v-for="(item,index) in changeSourceData"
           :key="index"
-        >{{item.DisplayName}}</div>
+        >
+          <el-checkbox v-model="item.IsSelect" @change="selectChange(changeSourceData,0)">{{item.DisplayName}}</el-checkbox>
+        </div>
       </div>
     </div>
 
@@ -32,7 +36,11 @@
 
     <div class="box">
       <div class="title">
-        <span :class="{active: rightSelect === data2.length}" @click="selectAll(data2)">已选报表参数</span>
+        <el-checkbox
+          :indeterminate="isIndeterminateOfTarget"
+          v-model="TargetCheckAll"
+          @change="((val)=>{handleCheckAllChange(val,changeTargetData,1)})"
+        >未选报表参数</el-checkbox>
         <span>{{rightSelect ? rightSelect : 0}}/{{data2.length}}</span>
       </div>
 
@@ -44,10 +52,11 @@
           @dragend="dragend"
           draggable="true"
           :class="{active: item.IsSelect }"
-          v-on:click="hanldleClick(data2, item.Id)"
           v-for="(item,index) in changeTargetData"
           :key="index"
-        >{{item.DisplayName}}</div>
+        >
+          <el-checkbox v-model="item.IsSelect" @change="selectChange(changeTargetData,1)">{{item.DisplayName}}</el-checkbox>
+        </div>
       </div>
     </div>
   </div>
@@ -64,15 +73,13 @@ export default {
       //目标选择数据
       type: Array
     }
-    // changeSourceData:{
-    //     type:Array
-    // },
-    // changeTargetData:{
-    //     type:Array
-    // },
   },
   data() {
     return {
+      sourceCheckAll: false,
+      isIndeterminateOfSource: false,
+      TargetCheckAll:false,
+      isIndeterminateOfTarget:false,
       data1: [],
       data2: [],
       target: {
@@ -80,8 +87,6 @@ export default {
         y: "",
         Id: ""
       },
-      // sourceData: '',
-      // targetData: '',
       changeSourceData: [],
       changeTargetData: []
     };
@@ -164,6 +169,54 @@ export default {
     }
   },
   methods: {
+    //参数选择change事件
+    selectChange(data,type){
+      let checkeds = data.filter(item=>{return item.IsSelect==true;});
+      if(checkeds.length==0){
+        //type == 0   source    type == 1   target
+        if(type){
+          this.isIndeterminateOfTarget = false;
+          this.TargetCheckAll = false;
+        }else{
+          this.isIndeterminateOfSource = false;
+          this.sourceCheckAll = false;
+        }
+      }else if(checkeds.length==data.length){
+        if(type){
+          this.isIndeterminateOfTarget = false;
+          this.TargetCheckAll = true;
+        }else{
+          this.isIndeterminateOfSource = false;
+          this.sourceCheckAll = true;
+        }
+      }else{
+        if(type){
+          this.isIndeterminateOfTarget = true;
+        }else{
+          this.isIndeterminateOfSource = true;
+        }
+      }
+    },
+    //参数全选change事件
+    handleCheckAllChange(val,data,type){
+      if(val){
+        data.map(item=>{
+          item.IsSelect = true;
+          return item;
+        });
+      }else{
+        data.map(item=>{
+          item.IsSelect = false;
+          return item;
+        });
+      }
+      //type==0 source  type==1 target
+      if(type){
+        this.isIndeterminateOfTarget = false;  
+      }else{
+        this.isIndeterminateOfSource = false;
+      }
+    },
     ondrag(event) {
       this.target.y = event.y;
       this.target.x = event.x;
@@ -257,19 +310,11 @@ export default {
         item.IsSelect = false;
         target.push(item);
       });
+      this.isIndeterminateOfSource = false;
+      this.isIndeterminateOfTarget = false;
+      this.sourceCheckAll = false;
+      this.TargetCheckAll = false;
       this.$emit("transfer-to-father", this.changeTargetData);
-    },
-    selectAll(data) {
-      let IsSelectAll = data.every(item => {
-        return item.IsSelect == true;
-      });
-      data.forEach(item => {
-        if (IsSelectAll) {
-          item.IsSelect = false;
-        } else {
-          item.IsSelect = true;
-        }
-      });
     }
   },
   computed: {
@@ -295,113 +340,120 @@ export default {
   display: flex;
   align-items: center;
   padding: 20px 30px;
+  .el-checkbox {
+    .el-checkbox__input {
+      width: 16px;
+      height: 16px;
+      .el-checkbox__inner {
+        width: 100%;
+        height: 100%;
+        &::after{
+          left: 5px;
+          top: 2px;
+        }
+      }
+    }
+  }
   .box {
     border: 1px solid rgb(235, 238, 245);
     width: 300px;
-  }
-  .box .title {
-    font-size: 14px;
-    box-sizing: border-box;
-    display: flex;
-    padding-right: 10px;
-    justify-content: space-between;
-    height: 40px;
-    line-height: 40px;
-    background: #f7f8fa;
-  }
-  .box .title span:first-child {
-    display: inline-block;
-    background-image: url("/images/check-box-outline-blank.png");
-    background-repeat: no-repeat;
-    background-position: 10px center;
-    background-size: 20px 20px;
-    padding-left: 35px;
-    cursor: pointer;
-    font-size: 16px;
-    font-family: Microsoft YaHei;
-    color: rgba(135, 141, 159, 1);
-  }
-  .box .title span:last-child {
-    font-size: 12px;
-    font-family: Microsoft YaHei;
-    color: rgba(135, 141, 159, 1);
-  }
-  .box .title span:first-child.active {
-    background-image: url("/images/check_box.png");
-  }
-  .left,
-  .right {
-    height: 360px;
-    padding: 5px 0;
-    box-sizing: border-box;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
-  .left > div,
-  .right > div {
-    cursor: pointer;
-    text-align: left;
-    background-image: url("/images/check-box-outline-blank.png");
-    background-repeat: no-repeat;
-    background-position: 10px center;
-    background-size: 20px 20px;
-    font-size: 14px;
-    padding-left: 35px;
-    line-height: 30px;
-    font-size: 18px;
-    font-family: Microsoft YaHei;
-    color: #232e41;
-    font-weight: bold;
-    height: 44px;
-    line-height: 44px;
-  }
-  .left > div.active,
-  .right > div.active {
-    background-image: url("/images/check_box.png");
-  }
-  .left > div.hover-color:hover,
-  .right > div.hover-color:hover,
-  .left > div.hover-color.active,
-  .right > div.hover-color.active {
-    color: #00c16b;
+    .title {
+      font-size: 14px;
+      box-sizing: border-box;
+      display: flex;
+      padding: 0 20px;
+      justify-content: space-between;
+      height: 40px;
+      line-height: 40px;
+      background: #f7f8fa;
+      .el-checkbox {
+        .el-checkbox__label {
+          font-size:16px;
+          font-family: Microsoft YaHei;
+          color: #878D9F;
+        }
+      }
+      >span{
+        font-size:12px;
+        font-family: Microsoft YaHei;
+        color: #878D9F;
+      }
+    }
+    .left,
+    .right {
+      height: 360px;
+      padding: 5px 0;
+      box-sizing: border-box;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      .el-checkbox {
+        width: 100%;
+        .el-checkbox__label {
+          font-size: 18px;
+          color: #232E41;
+          font-weight: bold;
+          font-family: Microsoft YaHei;
+        }
+      }
+      >div {
+        cursor: pointer;
+        text-align: left;
+        font-size: 14px;
+        padding: 0 20px;
+        line-height: 30px;
+        font-size: 18px;
+        font-family: Microsoft YaHei;
+        color: #232e41;
+        font-weight: bold;
+        height: 44px;
+        line-height: 44px;
+        &.active{
+          .el-checkbox__label{
+            color: #00c16b;
+          }
+        }
+      }
+    }
   }
   .middle {
     margin: 0 20px;
-  }
-  .middle > div {
-    margin: 10px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    font-size: 12px;
-    background-color: #cccccc;
-    .el-icon-arrow-left {
-      width: 10px;
-      height: 20px;
-      background-image: url(../../assets/images/arrow_white_left.png);
-      background-size: 10px 20px;
-      &::before {
-        content: "";
+    > div {
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 12px;
+      background-color: #cccccc;
+      &.active {
+        background-color: #00c16b;
+        border-color: #00c16b;
+        color: #ffffff;
+      }
+      .el-icon-arrow-left {
+        margin-left: -4px;
+        width: 10px;
+        height: 20px;
+        background-image: url(../../assets/images/arrow_white_left.png);
+        background-size: 10px 20px;
+        &::before {
+          content: "";
+        }
+      }
+      .el-icon-arrow-right {
+        margin-right: -4px;
+        width: 10px;
+        height: 20px;
+        background-image: url(../../assets/images/arrow_white_right.png);
+        background-size: 10px 20px;
+        &::before {
+          content: "";
+        }
       }
     }
-    .el-icon-arrow-right {
-      width: 10px;
-      height: 20px;
-      background-image: url(../../assets/images/arrow_white_right.png);
-      background-size: 10px 20px;
-      &::before {
-        content: "";
-      }
-    }
-  }
-  .middle > div.active {
-    background-color: #00c16b;
-    border-color: #00c16b;
-    color: #ffffff;
   }
 }
 </style>

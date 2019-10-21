@@ -2,7 +2,7 @@
   <div class="table_box" id="jubu">
     <div class="madeBySelfBox">
       <p>
-        <el-select v-model="selectReport" class="green18x10">
+        <el-select v-model="selectReportId" class="green18x10">
           <el-option
             v-for="(item,index) in reportList"
             :key="index"
@@ -51,12 +51,12 @@ export default {
   data() {
     return {
       search_date: [],
-      selectReport: "",
+      selectReportId: "",
       reportList: [],
       columnList: [],
       dropCol: [],
       tableData: [],
-      emptyColumns: []
+      currentReportId:0,
     };
   },
   created() {
@@ -88,7 +88,7 @@ export default {
       if (
         this.GLOBAL.VerificationHandle([
           {
-            val: this.selectReport,
+            val: this.selectReportId,
             type: "StringNotEmpty",
             msg: "请选择报表！"
           },
@@ -101,7 +101,7 @@ export default {
       ) {
         let url = "";
         for (let i = 0; i < this.reportList.length; i++) {
-          if (this.selectReport === this.reportList[i].ReportId) {
+          if (this.selectReportId === this.reportList[i].ReportId) {
             url = this.reportList[i].ReportUrl;
             this.columnList = JSON.parse(
               JSON.stringify(this.reportList[i].Parameters)
@@ -118,6 +118,7 @@ export default {
           } and CreatedTime le ${this.search_date[1]}`
         )
           .then(res => {
+            this.currentReportId = this.selectReportId;
             let getData = res.data.value;
             let data = [];
             for (let i = 0; i < getData.length; i++) {
@@ -308,8 +309,9 @@ export default {
         th.push(element.DisplayName);
         filterVal.push(element.SpliceName);
       })
-      const data = this.tableData.map(v => filterVal.map(k => v[k]))
-      const [fileName, fileType, sheetName] = ['测试下载', 'xlsx', '测试页']
+      const data = this.tableData.map(v => filterVal.map(k => v[k]));
+      let excelName = this.reportList.filter(item=>{return item.ReportId === this.currentReportId;})[0].ReportName;
+      const [fileName, fileType, sheetName] = [excelName, 'xlsx', 'Sheet1']
       toExcel({th, data, fileName, fileType, sheetName})
     }
   }

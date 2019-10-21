@@ -45,6 +45,7 @@
                   v-model.trim="submitData.Patient.HospitalId"
                   :disabled="true"
                   class="font16blod"
+                  placeholder="住院号(必填)"
                 ></el-input>
               </div>
             </li>
@@ -55,6 +56,7 @@
                   v-model.trim="submitData.Patient.BedId"
                   :disabled="forbid"
                   class="font16blod"
+                  placeholder="床号(必填)"
                 ></el-input>
               </div>
             </li>
@@ -65,6 +67,7 @@
                   v-model.trim="submitData.Patient.PatientName"
                   :disabled="forbid"
                   class="font16blod"
+                  placeholder="病人姓名(必填)"
                 ></el-input>
               </div>
             </li>
@@ -75,6 +78,7 @@
                   v-model="submitData.OutpatientType"
                   :disabled="forbid"
                   class="font16blod green24x13"
+                  placeholder="门诊类型(必填)"
                 >
                   <el-option label="择期" :value="0"></el-option>
                   <el-option label="急诊" :value="1"></el-option>
@@ -151,6 +155,7 @@
                   v-model.trim="submitData.Patient.HospitalId"
                   :disabled="true"
                   class="font16blod"
+                  placeholder="住院号(必填)"
                 ></el-input>
               </div>
             </li>
@@ -161,6 +166,7 @@
                   v-model.trim="submitData.Patient.BedId"
                   :disabled="forbid"
                   class="font16blod"
+                  placeholder="床号(必填)"
                 ></el-input>
               </div>
             </li>
@@ -171,6 +177,7 @@
                   v-model.trim="submitData.Patient.PatientName"
                   :disabled="forbid"
                   class="font16blod"
+                  placeholder="病人姓名(必填)"
                 ></el-input>
               </div>
             </li>
@@ -181,6 +188,7 @@
                   v-model="submitData.OutpatientType"
                   :disabled="forbid"
                   class="font16blod green24x13"
+                  placeholder="门诊类型(必填)"
                 >
                   <el-option label="择期" :value="0"></el-option>
                   <el-option label="急诊" :value="1"></el-option>
@@ -690,6 +698,7 @@ export default {
         ProductId: "",
         ProductName: "",
         HasImplants: false,
+        IsNewOuterPackage:true,
         CarrierId: 0,
         CarrierName: "",
         SplitPackageCount: 1,

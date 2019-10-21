@@ -16,8 +16,18 @@
         </router-link>
       </ul>
       <div class="cssd_title_right">
-        <p>
-          <span v-show="hasNewTask">有新任务</span>
+        <p class="show_all_task">
+          <span>显示所有任务</span>
+          <el-switch
+            v-model="showAllTask"
+            active-color="#01BF6A"
+            inactive-color="#dbdde6"
+            :active-value="true"
+            :inactive-value="false"
+          ></el-switch>
+        </p>
+        <p class="new_task">
+          <span>{{hasNewTask?'有新任务':''}}</span>
           <i @click="refresh"></i>
         </p>
       </div>
@@ -63,6 +73,7 @@
                     :key="collapseIndex"
                     :name="collapseIndex+''"
                     :class="value.IsNotPrintBarCode?'collapseUnExpand':''"
+                    v-show="showAllTask?true:value.InventoryQuantity!=0"
                   >
                     <div slot="title" class="collapseTh">
                       <!-- 包名称 -->
@@ -169,6 +180,7 @@ import ManualEnter from "../common/ManualEnter";
 export default {
   data() {
     return {
+      showAllTask:false,
       hasNewTask:false,
       activeName: "-1",
       tabActiveName: "0",
@@ -458,8 +470,36 @@ export default {
     p {
       display: flex;
       align-items: center;
+      &.show_all_task{
+
+      }
+      &.new_task{
+        width: 115px;
+        span{
+          width: 72px;
+        }
+      }
       span {
         margin-right: 20px;
+      }
+      .el-switch{
+        &.is-checked{
+          .el-switch__core{
+            &::after{
+              left: 100%;
+              margin-left: -17px;
+            }
+          }
+        }
+        .el-switch__core{
+          width: 36px !important;
+          &::after{
+            top: -1px;
+            left: 0px;
+            width: 20px;
+            height: 20px;
+          }
+        }
       }
       i {
         width: 22px;

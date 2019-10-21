@@ -11,7 +11,7 @@
       </ul>
       <div class="cssd_title_right">
         <p>
-          <span>清洗不合格网篮</span>:
+          <span>待网篮</span>:
           <b>{{cleanFailedCarriers.length}}</b>
           <a @click="handleShowCleanFailedCarriers">查看</a>
         </p>
@@ -151,7 +151,7 @@ export default {
         })
         .catch(err => {});
     }
-    axios({url:`/api/Clean/CleanFailedCarrier`}).then(res=>{
+    axios({url:`/api/Clean/CleanableCarriers`}).then(res=>{
       if(res.data.Code==200){
         this.cleanFailedCarriers = res.data.Data;
       }else{
