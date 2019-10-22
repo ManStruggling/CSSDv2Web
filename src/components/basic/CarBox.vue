@@ -1,4 +1,5 @@
 <template>
+  <!-- 车辆编辑框 -->
   <div id="editBox">
     <div class="editContainer">
       <div class="editContent">
@@ -51,7 +52,7 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if(this.GLOBAL.VerificationHandle([{val:this.editBoxData.Name,type:'StringNotEmpty',msg:'车辆名称不能为空！'},{val:this.editBoxData.CarNumber,type:'StringNotEmpty',msg:'车牌号不能为空！'}])){
+      if(this.GLOBAL.VerificationHandle([{val:this.editBoxData.Name,type:'StringNotEmpty',msg:'车辆名称不能为空！'},{val:this.editBoxData.CarNumber,type:'StringNotEmpty',msg:'车牌号不能为空！'}])) {
         axios({ url: "/api/LogisticsCar", method: axiosMethod, data: this.editBoxData })
           .then(res => {
             let type;

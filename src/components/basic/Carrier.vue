@@ -1,5 +1,5 @@
 <template>
-  <!-- 网篮组件 -->
+  <!-- 网篮编辑框 -->
   <div class="basic_main">
     <div class="basic_main_head">
       <p>
@@ -41,6 +41,7 @@
         <el-table-column></el-table-column>
       </el-table>
     </div>
+    <!-- 条码打印 -->
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"
@@ -48,12 +49,12 @@
     >
       <PrintBarCodeList v-if="isShowBarCodeList" @printList-to-father="barCodeListToFather" :data="table_data"  :labels="[{prop:'BarCode',label:'网篮条码'},{prop:'Name',label:'网篮名称'}]" :printUrl="'/api/Print/Carrier'"></PrintBarCodeList>
     </transition>
+    <!-- 网篮编辑框 -->
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 编辑弹出框 -->
       <CarrierBox v-if="showEditBox" @to-father="child2father" :data="toChildData"></CarrierBox>
     </transition>
   </div>
@@ -121,7 +122,7 @@ export default {
       };
       reader.readAsBinaryString(selectedFile);
     },
-    //请求数据
+    //循环请求数据
     requestData(arr,index){
       axios({url:"/api/BasicInformation/Carrier",method:"POST",data:arr[index]}).then(res=>{
         if(res.data.Code==200){

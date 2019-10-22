@@ -217,18 +217,9 @@ export default {
       next("/login");
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
-    handleNodeClick(data) {
-      console.log(data);
-    },
-    handleChange(val) {
-      console.log(val);
-    },
-    handleSelect(key, keyPath) {
-      console.log(key);
-    }
+    handleSelect(key, keyPath) {}
   }
 };
 </script>

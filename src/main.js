@@ -1,11 +1,11 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
 
-import './assets/css/reset.css'
+import './assets/css/reset.css';
+import './assets/css/public.scss';
 import 'element-ui/lib/theme-chalk/index.css';
-// import './assets/lib/element-ui/index.css';
 import 'animate.css'
 import $ from 'jquery';
 window.$ = $;

@@ -777,7 +777,9 @@ export default {
         }
       }
       .el-tabs__content {
+        overflow-x: auto;
         .tab_content {
+          min-width: 1300px;
           .el-collapse-item__header {
             &.is-active {
               .collapseTh {
@@ -903,6 +905,7 @@ export default {
             }
           }
           .tab_content_bottom {
+            min-width: 1300px;
             .el-button {
               &.is-disabled {
                 background: #ccc;

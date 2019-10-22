@@ -43,6 +43,7 @@
         <el-table-column></el-table-column>
       </el-table>
     </div>
+    <!-- 打印条码 -->
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"
@@ -50,6 +51,7 @@
     >
       <PrintBarCodeList v-if="isShowBarCodeList" @printList-to-father="barCodeListToFather" :data="table_data" :labels="[{prop:'BarCode',label:'人员条码'},{prop:'Name',label:'人员名称'}]" :printUrl="'/api/Print/Staff'"></PrintBarCodeList>
     </transition>
+    <!-- 人员编辑框 -->
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"

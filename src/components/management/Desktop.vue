@@ -279,7 +279,6 @@ export default {
 <style lang="scss">
 #managementHome {
   padding: 30px 0 0 40px;
-  overflow-x: scroll;
   ul.desktop_box {
     display: flex;
     flex-wrap: wrap;

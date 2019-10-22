@@ -11,7 +11,7 @@
       </ul>
       <div class="cssd_title_right">
         <p>
-          <span>待网篮</span>:
+          <span>待清洗网篮</span>:
           <b>{{cleanFailedCarriers.length}}</b>
           <a @click="handleShowCleanFailedCarriers">查看</a>
         </p>
@@ -140,8 +140,7 @@ export default {
             let data = res.data.Data;
             this.submitData.DeviceModelName = data.DeviceModelName;
             this.submitData.DeviceModelId = data.DeviceModelId;
-            this.submitData.DeviceModelProgramName =
-              data.DeviceModelProgramName;
+            this.submitData.DeviceModelProgramName = data.DeviceModelProgramName;
             this.submitData.DeviceModelProgramId = data.DeviceModelProgramId;
             this.submitData.CleanTaskId = data.CleanTaskId;
             this.submitData.Carriers = data.CarrierForCleanVms;
@@ -159,8 +158,7 @@ export default {
       }
     }).catch(err=>{})
   },
-  mounted() {
-  },
+  mounted() {},
   beforeDestroy() {
     CSManager.handleDataThis = null;
   },

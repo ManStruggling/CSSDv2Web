@@ -71,7 +71,10 @@
                   </template>
                   <template v-else>{{"-"}}</template>
                 </p>
-                <p>{{val.SingleCarrierName}}</p>
+                <p>
+                  <template v-if="val.IsSingleCarrierProduct">{{val.SingleCarrierName}}</template>
+                  <template v-else>{{"-"}}</template>
+                </p>
               </li>
             </ol>
           </div>

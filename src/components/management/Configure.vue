@@ -70,6 +70,18 @@
             >
             </el-date-picker>
           </li> -->
+          <li>
+            <p>启用计数包</p>
+            <div class="switch_box">
+              <el-switch
+                v-model="setData.IsOpenNotPrintBarCode"
+                active-color="#01BF6A"
+                inactive-color="#dbdde6"
+                :active-value="true"
+                :inactive-value="false"
+              ></el-switch>
+            </div>
+          </li>
         </ul>
       </div>
       <div class="cssd_table_bottom">
@@ -90,7 +102,8 @@ export default {
         EarlyWarningDays: 1,
         WorkCountStartTime: "",
         WorkCountEndTime: "",
-        WorkIntervalTime: ""
+        WorkIntervalTime: "",
+        IsOpenNotPrintBarCode: false,
       },
     };
   },
@@ -188,6 +201,11 @@ export default {
             font-family: Microsoft YaHei;
             font-weight: bold;
             color: rgba(51, 51, 51, 1);
+          }
+          .switch_box{
+            width: 160px;
+            display: flex;
+            align-items: center;
           }
         }
       }

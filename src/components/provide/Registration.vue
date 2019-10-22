@@ -482,25 +482,6 @@ export default {
       span {
         margin-right: 20px;
       }
-      .el-switch{
-        &.is-checked{
-          .el-switch__core{
-            &::after{
-              left: 100%;
-              margin-left: -17px;
-            }
-          }
-        }
-        .el-switch__core{
-          width: 36px !important;
-          &::after{
-            top: -1px;
-            left: 0px;
-            width: 20px;
-            height: 20px;
-          }
-        }
-      }
       i {
         width: 22px;
         height: 20px;

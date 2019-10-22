@@ -22,6 +22,7 @@
             accept=".xls, .xlsx"
           />
         </el-button>
+        <el-button @click="handlePrint">打印条码</el-button>
         <el-button type="primary" class="basic_ipt_add" @click="addTableTr">新增科室</el-button>
       </p>
     </div>
@@ -29,6 +30,7 @@
       <el-table :data="table_data">
         <el-table-column label="科室名称" prop="Name" width="240"></el-table-column>
         <el-table-column label="拼音简码" prop="ShortCode" width="210"></el-table-column>
+        <el-table-column label="科室条码" prop="BarCode" width="210"></el-table-column>
         <el-table-column label="科室电话" prop="Telephone" width="210">
           <template slot-scope="props">{{props.row.Telephone==""?"-":props.row.Telephone}}</template>
         </el-table-column>
@@ -42,7 +44,15 @@
         <el-table-column></el-table-column>
       </el-table>
     </div>
-
+    <!-- 打印条码 -->
+    <transition
+      name="fade"
+      enter-active-class="animated fadeIn faster"
+      leave-active-class="animated fadeOut faster"
+    >
+      <PrintBarCodeList v-if="isShowBarCodeList" @printList-to-father="barCodeListToFather" :data="table_data" :labels="[{prop:'BarCode',label:'科室条码'},{prop:'Name',label:'科室名称'}]" :printUrl="'/api/Print/Staff'"></PrintBarCodeList>
+    </transition>
+    <!-- 科室编辑框 -->
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"
@@ -54,10 +64,12 @@
 </template>
 <script>
 import ClinicBox from "./ClinicBox";
+import PrintBarCodeList from "./PrintBarCodeList";
 import XLSX from "xlsx";
 export default {
   data() {
     return {
+      isShowBarCodeList:false,
       Type: 0, //科室类型
       basic_search: "", //查询条件
       table_data: [], //表的显示数据
@@ -66,7 +78,8 @@ export default {
     };
   },
   components: {
-    ClinicBox
+    ClinicBox,
+    PrintBarCodeList
   },
   created() {
     axios({ url: "/api/Clinic" })
@@ -123,6 +136,14 @@ export default {
       }).catch(err=>{}) 
     },
     searchThisTableData() {},
+    //打印
+    handlePrint(){
+      this.isShowBarCodeList = true;
+    },
+    //条码列表与父组件通信
+    barCodeListToFather(){
+      this.isShowBarCodeList = false;
+    },
     //新增tr
     addTableTr() {
       this.toChildData = {

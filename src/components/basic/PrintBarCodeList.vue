@@ -1,7 +1,7 @@
 <template>
   <div id="barCodeList">
     <div class="barCode_box">
-      <div class="container">
+      <div class="container table_unExpand">
         <el-table
           ref="multipleTable"
           :data="dataList"
@@ -9,6 +9,7 @@
           @selection-change="handleSelectionChange"
           height="508"
           :row-key="getRowKeys"
+          @row-click="handleRowClick"
         >
           <el-table-column type="selection" width="130" :reserve-selection="true"></el-table-column>
           <el-table-column 
@@ -43,6 +44,10 @@ export default {
   },
   mounted() {},
   methods: {
+    //点击当前行选择数据
+    handleRowClick(row){
+      this.$refs.multipleTable.toggleRowSelection(row);
+    },
     getRowKeys(row) {
       return row.Id;
     },
@@ -71,6 +76,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../assets/css/tableUnExpand";
 #barCodeList {
   position: fixed;
   left: 0;
@@ -96,47 +102,7 @@ export default {
     .container {
       height: 100%;
       overflow: hidden;
-      .el-table {
-        border-radius: 8px 8px 0 0;
-        .el-checkbox__inner {
-          width: 16px;
-          height: 16px;
-        }
-        .cell {
-          padding: 0;
-        }
-        th {
-          background: #f7f8fa;
-          font-size: 18px;
-          font-family: Microsoft YaHei;
-          color: rgba(135, 141, 159, 1);
-          height: 60px;
-          &:nth-child(1) {
-            .cell {
-              padding-left: 40px;
-            }
-          }
-        }
-        tbody {
-          td {
-            height: auto;
-          }
-          .cell {
-            font-size: 18px;
-            font-family: Microsoft YaHei;
-            font-weight: bold;
-            color: rgba(35, 46, 65, 1);
-            line-height: 64px;
-          }
-          tr {
-            td {
-                &:nth-child(1) {
-                    padding-left: 40px;
-                }
-            }
-          }
-        }
-      }
+      border-radius: 8px 8px 0 0;
     }
     .barCode_box_b {
       position: absolute;

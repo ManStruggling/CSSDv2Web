@@ -37,7 +37,7 @@
                 </div>
                 <div class="collapseTd">
                   <el-input-number
-                    v-if="value.IsOuterProduct"
+                    v-if="this.GLOBAL.UserInfo.HospitalVersion==='SONGJIANGNANYUAN'||value.IsOuterProduct"
                     v-model="value.CanNotBePackagedCount"
                     :controls="false"
                     :min="0"
@@ -152,18 +152,11 @@ export default {
     UnqualifiedInstruments(data) {
       this.isShowUnqualifiedInstruments = false;
       if (data) {
-        this.carrierList[data.carrierIndex].Packages[
-          data.packageIndex
-        ].Instruments[
-          data.instrumentIndex
-        ].FailedInstrumentForClean.CleanInstrumentRecord = Object.assign(
+        this.carrierList[data.carrierIndex].Packages[data.packageIndex].Instruments[data.instrumentIndex].FailedInstrumentForClean.CleanInstrumentRecord = Object.assign(
           {},
           data.data
         );
-        this.carrierList[data.carrierIndex].Packages[
-          data.packageIndex
-        ].Instruments[data.instrumentIndex].FailedInstrumentCount =
-          data.data.BloodStain + data.data.Stains + data.data.RustStain;
+        this.carrierList[data.carrierIndex].Packages[data.packageIndex].Instruments[data.instrumentIndex].FailedInstrumentCount = data.data.BloodStain + data.data.Stains + data.data.RustStain;
         let max_number = 0;
         this.carrierList[data.carrierIndex].Packages[
           data.packageIndex

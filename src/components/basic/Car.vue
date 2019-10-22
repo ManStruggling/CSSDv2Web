@@ -22,7 +22,7 @@
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
-              <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
+            <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
           </template>
         </el-table-column>
         <el-table-column></el-table-column>
@@ -34,7 +34,7 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 编辑弹出框 -->
+      <!-- 车辆编辑框 -->
       <CarBox v-if="showEditBox" @to-father="child2father" :data="toChildData"></CarBox>
     </transition>
   </div>
@@ -88,33 +88,31 @@ export default {
       this.showEditBox = true;
     },
     //搜索
-    searchThisTableData() {
-      
-    },
+    searchThisTableData() {},
     editThisTr(index){
-        this.toChildData = JSON.parse(JSON.stringify(this.table_data[index]));
-        this.showEditBox = true;
+      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index]));
+      this.showEditBox = true;
     },
     deleteThisTr(index){
         this.$confirm("您是否确定删除该项?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-            center: true
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          center: true
         })
         .then(() => {
           //删除接口
           //code
           axios
             .delete(`/api/LogisticsCar/${this.Type}/${this.table_data[index].Id}`, {
-                headers: {}
+              headers: {}
             })
             .then(res => {
-                if (res.data.Code == 200) {
-                    this.table_data = res.data.Data;
-                } else {
-                  this.showInformation({classify:"message",msg:res.data.Msg});
-                }
+              if (res.data.Code == 200) {
+                this.table_data = res.data.Data;
+              } else {
+                this.showInformation({classify:"message",msg:res.data.Msg});
+              }
             })
             .catch(err => {});
         })

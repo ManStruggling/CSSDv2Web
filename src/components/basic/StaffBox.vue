@@ -562,26 +562,7 @@ export default {
                   margin-right: 10px;
                   width: 72px;
                   text-align: right;
-              }
-              .el-switch{
-                width: 34px;
-                &.is-checked {
-                  .el-switch__core{
-                    &::after{
-                      margin-left: 15px;
-                    }
-                  }
                 }
-                .el-switch__core{
-                  &::after{
-                    top: -1px;
-                    left: -1px;
-                    box-shadow:0px 0px 4px 0px rgba(51,62,80,0.3);
-                    width: 20px;
-                    height: 20px;
-                  }
-                }
-              }
               }
             }
           }
