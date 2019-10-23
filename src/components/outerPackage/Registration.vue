@@ -1,4 +1,11 @@
 <template>
+  <!-- 外来器械
+        版本控制
+        回收完成&修改完成：
+          备用包验证：至少一个包
+          非备用包验证：住院号，床号，病人姓名，急诊类型，至少一个包
+        产品手动添加字段(key)：handleAddPackage -- IsNewOuterPackage (Boolean)  用于修改记录新增外来器械包，后台使用
+   -->
   <div class="cssd_box" id="outerPackageRegistration">
     <div class="cssd_title">
       <ul class="cssd_menu">
@@ -425,7 +432,7 @@ export default {
       forbid: true,
       outerPackageChangeMode: false, //记录修改
       submitData: {
-        IsBackupPackage: false,
+        IsBackupPackage: false,//备用包
         OutpatientType: "", //门诊类型
         Patient: {
           HospitalId: "", //住院号
@@ -470,10 +477,12 @@ export default {
     }
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this);
+    this.GLOBAL.useWebsocketOrNot(this);
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
   },
   methods: {
     goBack() {
@@ -622,6 +631,7 @@ export default {
         }
       }
     },
+    //提交请求
     submitRequest(url, method) {
       axios({ url: url, method: method, data: this.submitData })
         .then(res => {
@@ -629,17 +639,19 @@ export default {
           if (res.data.Code == 200) {
             type = "success";
             //socket发送信息
-            let sendData = {
-              CssdId: this.GLOBAL.UserInfo.ClinicId,
-              ReserveCheckState: false,
-              PackageState: true,
+            if(this.websocket){
+              let sendData = {
+                CssdId: this.GLOBAL.UserInfo.ClinicId,
+                ReserveCheckState: false,
+                PackageState: true,
+              }
+              if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
+                sendData.ProvideState = true;
+              }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
+                sendData.ProvideState = false;
+              }
+              this.websocket.send(JSON.stringify(sendData));
             }
-            if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
-              sendData.ProvideState = true;
-            }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
-              sendData.ProvideState = false;
-            }
-            this.websocket.send(JSON.stringify(sendData));
             if (this.outerPackageChangeMode) {
               this.$router.push("/outerPackage/record");
             } else {
@@ -660,7 +672,7 @@ export default {
     //修改this row
     editThisRow(index) {
       this.mode = this.outerPackageChangeMode;
-      this.dataToChild = this.submitData.Packages[index];
+      this.dataToChild = Object.assign({},this.submitData.Packages[index]);
       this.index = index;
       this.isShowAddPackage = true;
     },
@@ -685,7 +697,7 @@ export default {
           this.submitData.Packages.push(data.data);
         } else {
           //修改
-          this.submitData.Packages[data.index] = data.data;
+          this.submitData.Packages.splice(data.index,1,data.data);
         }
       }
     },

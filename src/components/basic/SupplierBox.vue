@@ -6,7 +6,12 @@
         <ul class="clear_float">
           <li>
             <p>供应商名称</p>
-            <el-input type="text" placeholder="供应商名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+            <el-input
+              type="text"
+              placeholder="供应商名称(必填)"
+              v-model.trim="editBoxData.Name"
+              maxlength="10"
+            ></el-input>
           </li>
           <li>
             <p>传真</p>

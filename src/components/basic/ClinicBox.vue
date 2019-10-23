@@ -25,13 +25,6 @@
               <el-option label="医院" :value="4"></el-option>
             </el-select>
           </li>
-          <!-- <li>
-            <p>发放生成方式</p>
-            <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13" :disabled="editBoxData.ClinicType==1?false:true">
-              <el-option label="回收生成发放" :value="0"></el-option>
-              <el-option label="预定生成发放" :value="1"></el-option>
-            </el-select>
-          </li> -->
         </ul>
         <el-table :data="editBoxData.SubClinics">
           <el-table-column label="子科室名称" width="240">
@@ -96,8 +89,7 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if (
-        this.GLOBAL.VerificationHandle([
+      if (this.GLOBAL.VerificationHandle([
           {
             val: [this.editBoxData.Name, this.editBoxData.ClinicType],
             type: "StringAllNotEmpty",
@@ -108,39 +100,36 @@ export default {
             type: "ArrayNotEmpty",
             msg: "您还没有添加子科室！请至少添加一个子科室！"
           }
-        ])
-      ) {
+      ])) {
         let val_arr = [];
         let msg_arr = [];
         this.editBoxData.SubClinics.forEach(element => {
           val_arr.push(element.Name);
           msg_arr.push("子科室名称不能为空！");
         });
-        if (
-          this.GLOBAL.VerificationHandle([
+        if (this.GLOBAL.VerificationHandle([
             { val: val_arr, type: "StringAllNotEmpty", msg: msg_arr }
-          ])
-        ) {
+        ])) {
           axios({
             url: "/api/Clinic",
             method: axiosMethod,
             data: this.editBoxData
           })
-            .then(res => {
-              let type;
-              if (res.data.Code == 200) {
-                //请求成功
-                type = "success";
-                this.$emit("to-father", res.data.Data);
-              } else {
-                //其他状态码
-                type = "error";
-              }
-              this.showInformation({classify:"message",msg:res.data.Msg,type: type});
-            })
-            .catch(error => {
-              //请求失败
-            });
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              //请求成功
+              type = "success";
+              this.$emit("to-father", res.data.Data);
+            } else {
+              //其他状态码
+              type = "error";
+            }
+            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+          })
+          .catch(error => {
+            //请求失败
+          });
         }
       }
     },

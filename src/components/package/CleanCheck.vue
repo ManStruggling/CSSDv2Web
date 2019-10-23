@@ -1,4 +1,8 @@
 <template>
+  <!-- 清洗审核
+        清洗中：每条任务绑定计时器，倒计时，组件卸载前清除定时器
+        
+   -->
   <div class="cleanReview">
     <transition
         name="slide"

@@ -1,4 +1,9 @@
 <template>
+  <!-- 清洗设备选择
+        倒计时：设备状态为1使用中并且剩余时间>0 为设备绑定一个定时器，页面销毁前清除定时器
+        设备状态：0 -- 待使用   1 -- 使用中   2 -- 异常
+        传参：路由传参设备Id、程序Id
+   -->
   <div class="cssd_box deviceSelect">
     <div class="cssd_title">
       <ul class="cssd_menu">

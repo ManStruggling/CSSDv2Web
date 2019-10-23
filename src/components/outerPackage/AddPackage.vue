@@ -9,7 +9,7 @@
               filterable
               v-model="outerPackageVm.SupplierId"
               @change="supplierChange"
-              :disabled="$props.mode"
+              :disabled="mode"
               class="green24x13"
               placeholder="送包单位(必填)"
             >
@@ -31,7 +31,7 @@
               filterable
               v-model="outerPackageVm.ProductId"
               @change="productChange"
-              :disabled="$props.mode"
+              :disabled="mode"
               class="green24x13"
               placeholder="包名称(必填)"
             >
@@ -62,7 +62,7 @@
           </li>
           <li>
             <p class="font16gray">清洗架</p>
-            <el-input v-model.trim="outerPackageVm.CarrierName" @blur="getCarrierData(outerPackageVm.CarrierName)" placeholder="清洗架(必填)" :disabled="$props.mode"></el-input>
+            <el-input v-model.trim="outerPackageVm.CarrierName" @blur="getCarrierData(outerPackageVm.CarrierName)" placeholder="清洗架(必填)" :disabled="mode"></el-input>
           </li>
           <li>
             <p class="font16gray">器械总数</p>
@@ -99,7 +99,7 @@
           </el-table>
         </div>
         <el-button
-          v-if="!$props.isBackupPackage"
+          v-if="!isBackupPackage"
           type="primary"
           @click="addInstrument"
           class="btn88x32"
@@ -139,15 +139,20 @@ export default {
   components: {
     InstrumentList
   },
-  props: ["data", "index", "mode", "isBackupPackage"],
+  props:{
+    data: Object,
+    index: Number,
+    mode: Boolean,
+    isBackupPackage: Boolean
+  },
   created() {
     CSManager.handleDataThis = this;
-    this.outerPackageVm = this.$props.data;
+    this.outerPackageVm = this.data;
     axios({ url: `/api/Recycle/OuterProduct/Suppliers` })
       .then(res => {
         if (res.data.Code == 200) {
           this.SupplierList.Suppliers = res.data.Data;
-          if (this.$props.index != -1) {
+          if (this.index != -1) {
             this.SupplierList.Suppliers.forEach(element => {
               if (element.SupplierId == this.outerPackageVm.SupplierId) {
                 this.outerPackageVm.SupplierName = element.SupplierName;
@@ -243,7 +248,7 @@ export default {
       ) {
         this.$emit("addPackage-father", {
           data: this.outerPackageVm,
-          index: this.$props.index
+          index: this.index
         });
       }
     },

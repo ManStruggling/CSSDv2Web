@@ -134,7 +134,7 @@ function Verification(obj) {
             return correct;
         case "NumberNotZero": //number不为0
             return obj.val === 0 ? error : correct;
-        case "NumberNotAllZero": //多个number全部不能为0
+        case "NumberAllCannotBeZero": //number全部不能为0
             for (let i = 0; i < obj.val.length; i++) {
                 if (obj.val[i] === 0) {
                     error.msg = obj.msg[i];
@@ -285,6 +285,15 @@ function initWebSorcket(that, origin) {
     };
 }
 
+//是否启用websocket
+function useWebsocketOrNot(that,origin){
+    if(sessionStorage.configure){
+
+    }else{
+        return false;
+    }
+}
+
 //取消事件冒泡
 function cancelBubble() {}
 
@@ -301,6 +310,7 @@ function getParams(key){
 Vue.prototype.showInformation = showInformation;
 
 export default {
+    useWebsocketOrNot,
     getParams,
     initWebSorcket,
     cancelBubble,

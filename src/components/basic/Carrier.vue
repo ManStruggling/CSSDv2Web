@@ -161,33 +161,33 @@ export default {
       
     },
     editThisTr(index){
-        this.toChildData = JSON.parse(JSON.stringify(this.table_data[index]));
-        this.showEditBox = true;
+      this.toChildData = Object.assign({},this.table_data[index]);
+      this.showEditBox = true;
     },
     deleteThisTr(index){
-        this.$confirm("您是否确定删除该项?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
-            center: true
-        })
-        .then(() => {
-          //删除接口
-          //code
-          axios
-            .delete(`/api/BasicInformation/Carrier/${this.Type}/${this.table_data[index].Id}`, {
-                headers: {}
-            })
-            .then(res => {
-                if (res.data.Code == 200) {
-                    this.table_data = res.data.Data;
-                } else {
-                  this.showInformation({classify:"message",msg:res.data.Msg});
-                }
-            })
-            .catch(err => {});
-        })
-        .catch(() => {});
+      this.$confirm("您是否确定删除该项?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true
+      })
+      .then(() => {
+        //删除接口
+        //code
+        axios
+          .delete(`/api/BasicInformation/Carrier/${this.Type}/${this.table_data[index].Id}`, {
+              headers: {}
+          })
+          .then(res => {
+              if (res.data.Code == 200) {
+                  this.table_data = res.data.Data;
+              } else {
+                this.showInformation({classify:"message",msg:res.data.Msg});
+              }
+          })
+          .catch(err => {});
+      })
+      .catch(() => {});
     },
     //子组件传递数据
     child2father(data) {

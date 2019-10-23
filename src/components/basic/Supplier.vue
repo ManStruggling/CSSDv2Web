@@ -20,35 +20,32 @@
           class="basic_ipt_search"
           v-model.trim="basic_search"
           @input="searchThisTableData"
-        ></el-input> -->
+        ></el-input>-->
       </p>
       <el-button type="primary" class="basic_ipt_add" @click="addTableTr">新增供应商</el-button>
     </div>
     <div class="basic_table table_unExpand">
-      <el-table
-        :data="table_data"
-      >
+      <el-table :data="table_data">
         <el-table-column label="供应商名称" prop="Name" width="240"></el-table-column>
         <el-table-column label="传真" prop="FaxNumber" width="210">
-          <template slot-scope="props">
-            {{props.row.FaxNumber==""?"-":props.row.FaxNumber}}
-          </template>
+          <template slot-scope="props">{{props.row.FaxNumber==""?"-":props.row.FaxNumber}}</template>
         </el-table-column>
         <el-table-column label="联系人" prop="ContactPerson" width="210">
-          <template slot-scope="props">
-            {{props.row.ContactPerson==""?"-":props.row.ContactPerson}}
-          </template>
+          <template slot-scope="props">{{props.row.ContactPerson==""?"-":props.row.ContactPerson}}</template>
         </el-table-column>
         <el-table-column label="联系人号码" prop="ContactNumber" width="210">
-          <template slot-scope="props">
-            {{props.row.ContactNumber==""?"-":props.row.ContactNumber}}
-          </template>
+          <template slot-scope="props">{{props.row.ContactNumber==""?"-":props.row.ContactNumber}}</template>
         </el-table-column>
-        <el-table-column v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')" label="SupplierId" prop="SupplierId" width="210"></el-table-column>
+        <el-table-column
+          v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')"
+          label="SupplierId"
+          prop="SupplierId"
+          width="210"
+        ></el-table-column>
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
-              <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
+            <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
           </template>
         </el-table-column>
         <el-table-column></el-table-column>
@@ -91,7 +88,7 @@ export default {
             if (res.data.Code == 200) {
               this.table_data = res.data.Data;
             } else {
-              this.showInformation({classify:"message",msg:res.data.Msg});
+              this.showInformation({ classify: "message", msg: res.data.Msg });
             }
           })
           .catch(error => {});
@@ -130,16 +127,22 @@ export default {
           //删除接口
           //code
           axios
-            .delete(`/api/Supplier/${this.Type}/${this.table_data[index].SupplierId}`)
+            .delete(
+              `/api/Supplier/${this.Type}/${this.table_data[index].SupplierId}`
+            )
             .then(res => {
               let type;
-              if(res.data.Code==200){
-                type='success';
+              if (res.data.Code == 200) {
+                type = "success";
                 this.table_data = res.data.Data;
-              }else{
-                type = 'error';
+              } else {
+                type = "error";
               }
-              this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+              this.showInformation({
+                classify: "message",
+                msg: res.data.Msg,
+                type: type
+              });
             })
             .catch(err => {});
         })
@@ -147,7 +150,7 @@ export default {
     },
     //编辑this tr
     editThisTr(index) {
-      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index])); //深拷贝
+      this.toChildData = Object.assign({}, this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
     //get child data

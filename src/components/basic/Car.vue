@@ -90,7 +90,7 @@ export default {
     //搜索
     searchThisTableData() {},
     editThisTr(index){
-      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index]));
+      this.toChildData = Object.assign({},this.table_data[index]);
       this.showEditBox = true;
     },
     deleteThisTr(index){

@@ -37,7 +37,7 @@
                 </div>
                 <div class="collapseTd">
                   <el-input-number
-                    v-if="this.GLOBAL.UserInfo.HospitalVersion==='SONGJIANGNANYUAN'||value.IsOuterProduct"
+                    v-if="GLOBAL.UserInfo.HospitalVersion==='SONGJIANGNANYUAN'||value.IsOuterProduct"
                     v-model="value.CanNotBePackagedCount"
                     :controls="false"
                     :min="0"

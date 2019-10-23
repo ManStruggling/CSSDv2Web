@@ -20,7 +20,13 @@
         <el-table-column prop="Specification" label="规格" width="80"></el-table-column>
         <el-table-column prop="Quantity" label="数量">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
+            <el-input-number
+              v-model="scope.row.Quantity"
+              :min="1"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"
+            ></el-input-number>
           </template>
         </el-table-column>
       </el-table>
@@ -43,11 +49,11 @@ export default {
   },
   methods: {
     //点击当前行选择数据
-    handleRowClick(row){
+    handleRowClick(row) {
       this.$refs.multipleTable.toggleRowSelection(row);
     },
-    handleCountNumberPackage(newValue,oldValue,index){
-      if(newValue==undefined){
+    handleCountNumberPackage(newValue, oldValue, index) {
+      if (newValue == undefined) {
         setTimeout(() => {
           this.materialList[index].Quantity = 1;
         }, 0);
@@ -64,6 +70,16 @@ export default {
     //搜索事件
     materialSearch() {
       //code
+      axios({
+        url: `/odata/productmaterials?$filter=contains(name,${"'" +
+          this.searchShortCode +
+          "'"}) or contains(shortcode,${"'" + this.searchShortCode + "'"})`
+      })
+        .then(res => {
+          this.resetQuantity(res.data.value);
+          this.materialList = res.data.value;
+        })
+        .catch(err => {});
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -71,12 +87,17 @@ export default {
     getRowKeys(row) {
       return row.Id;
     },
+    //默认原料数量
+    resetQuantity(arr) {
+      arr.forEach(item => {
+        item.Quantity = 1;
+      });
+    },
+    //获取原料数据
     getMaterialsData(url) {
       axios(url)
         .then(res => {
-          res.data.value.forEach(item => {
-            item.Quantity = 1;
-          });
+          this.resetQuantity(res.data.value);
           this.materialList = res.data.value;
         })
         .catch(err => {
@@ -103,8 +124,8 @@ export default {
     background: #fff;
     width: 420px;
     height: 441px;
-    box-shadow:0px 0px 10px 0px rgba(51,62,80,0.2);
-    border-radius:8px;
+    box-shadow: 0px 0px 10px 0px rgba(51, 62, 80, 0.2);
+    border-radius: 8px;
     position: absolute;
     left: 0;
     right: 0;
@@ -119,26 +140,26 @@ export default {
     .el-table {
       height: 300px;
       overflow-y: scroll;
-      th{
-        .cell{
-          font-size:14px;
-          font-family:Microsoft YaHei;
-          color:rgba(135,141,159,1);
+      th {
+        .cell {
+          font-size: 14px;
+          font-family: Microsoft YaHei;
+          color: rgba(135, 141, 159, 1);
         }
       }
-      td{
-        .cell{
-          font-size:18px;
-          font-family:Microsoft YaHei;
-          font-weight:bold;
-          color:rgba(35,46,65,1);
-          .el-input-number{
+      td {
+        .cell {
+          font-size: 18px;
+          font-family: Microsoft YaHei;
+          font-weight: bold;
+          color: rgba(35, 46, 65, 1);
+          .el-input-number {
             width: 60px;
-            input{
-               font-size:18px;
-              font-family:Microsoft YaHei;
-              font-weight:bold;
-              color:rgba(35,46,65,1);
+            input {
+              font-size: 18px;
+              font-family: Microsoft YaHei;
+              font-weight: bold;
+              color: rgba(35, 46, 65, 1);
               padding: 0;
             }
           }

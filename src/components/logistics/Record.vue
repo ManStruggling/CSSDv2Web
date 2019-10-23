@@ -2,9 +2,9 @@
   <div class="cssd_box">
     <div class="cssd_title">
       <ul class="cssd_menu">
-        <li @click="goBack">
+        <router-link to="/logistics/driverSchedule" tag="li">
           <p>返回</p>
-        </li>
+        </router-link>
       </ul>
       <div class="cssd_title_right">
         <p class="search_date">
@@ -113,12 +113,9 @@ export default {
       this.$router.push({path:'/clean/registration',query:{
         recordId:this.recordList[index].Id}})
     },
-    goBack(){
-      this.$router.go(-1);
-    },
     //查询
     searchRecordsData(){
-      axios({url:`/api/Logistics/DriverScheduleRecord/${this.search_date[1]}/${this.search_date[1]}`}).then(res=>{
+      axios({url:`/api/Logistics/DriverScheduleRecord/${this.search_date[0]}/${this.search_date[1]}`}).then(res=>{
         if(res.data.Code==200){
           this.recordList = res.data.Data;
         }else{

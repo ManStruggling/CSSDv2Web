@@ -43,13 +43,7 @@
           </el-menu>
         </div>
       </div>
-      <transition
-        name="slide"
-        :enter-active-class="`animated  faster ${transitionEnterName}`"
-        :leave-active-class="`animated  faster ${transitionLeaveName}`"
-      >
-        <router-view></router-view>
-      </transition>
+      <router-view></router-view>
     </div>
   </div>
 </template>

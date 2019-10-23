@@ -1,4 +1,12 @@
 <template>
+  <!-- 回收
+    还包：非计数包
+    collapse展开：非计数包，非丢失包
+    加急包：所有包都可加急
+    通用包：第一次扫描进入待分配通用包,进入待分配区选择回收科室才会录入通用包的信息
+    单网篮包：扫入网篮条码，后台通过网篮条码转换为包条码，用包条码获取包数据，返回前台(先请求后验证是否重复)
+    回收完成&修改完成：整理成提交接口的数据结构，并发送webSocket
+  -->
   <div class="cssd_box" id="recoveryRegistration">
     <div class="cssd_title">
       <ul class="cssd_menu">
@@ -74,11 +82,12 @@
                 :name="collapseIndex+''"
                 :class="value.IsNotPrintBarCode?'collapseUnExpand':''"
               >
+                <!-- ##根据是否是计数包来判断collapse能不能被展开 -->
                 <div slot="title" class="collapseTh">
                   <div class="collapseTd">
                     <p>{{value.ProductName}}</p>
                   </div>
-                  <!-- 包数量 -->
+                  <!-- 包数量  ##计数包和条码丢失包可以编辑 -->
                   <div class="collapseTd" style="width:100px;">
                     <p v-if="value.IsNotPrintBarCode||value.IsLostPackage">
                       <el-input-number
@@ -87,27 +96,28 @@
                         :max="999"
                         :controls="false"
                         size="mini"
-                        @change="((newValue,oldValue)=>{handleNumberPackage(newValue,oldValue, item.RecycleProducts,collapseIndex,index)})"
+                        @change="((newValue,oldValue)=>{handleNumberPackageChange(newValue,oldValue, item.RecycleProducts,collapseIndex,index)})"
                         @click.native.stop="GLOBAL.cancelBubble"
                       ></el-input-number>
                     </p>
-                    <p
-                      v-if="value.IsNotPrintBarCode==false&&value.IsLostPackage==false"
-                    >{{countPackageNumber(value)}}</p>
+                    <p v-else>{{countPackageNumber(value)}}</p>
                   </div>
                   <!-- 器械总数 -->
                   <div class="collapseTd" style="width:140px;">
                     <p
                       v-if="value.IsNotPrintBarCode==false&&value.IsLostPackage==false"
                     >{{countPackageInstrumentTotalNumber(value)}}</p>
+                    <p v-else>{{"-"}}</p>
                   </div>
-                  <!-- 剩余还包数 -->
+                  <!-- 剩余还包数 ##只有非计数包才可还包-->
                   <div class="collapseTd" style="width:140px;">
                     <p v-if="!value.IsNotPrintBarCode">{{value.NumberOfBorrowedProduct}}</p>
+                    <p v-else>{{"-"}}</p>
                   </div>
-                  <!-- 本次还包数 -->
+                  <!-- 本次还包数 ##只有非计数包才可还包-->
                   <div class="collapseTd" style="width:140px;">
-                    <p v-if="!value.IsNotPrintBarCode">
+                    <p v-if="value.IsNotPrintBarCode">{{"-"}}</p>
+                    <p v-else>
                       <el-input-number
                         v-model="value.NumberOfReturnProduct"
                         :min="0"
@@ -117,7 +127,7 @@
                       ></el-input-number>
                     </p>
                   </div>
-                  <!-- 加急包 -->
+                  <!-- 加急包 ##所有包都可加急-->
                   <div class="collapseTd" style="width:100px;">
                     <p>
                       <el-input-number
@@ -182,7 +192,7 @@
                                   :min="0"
                                   :max="selfs.ShouldBeRecycledQuantity"
                                   :controls="false"
-                                  @change="((newValue,oldValue)=>{changeInputNum(newValue,oldValue,props.row,myTableIndex)})"
+                                  @change="((newValue,oldValue)=>{actuallyRecycleQuantityChange(newValue,oldValue,props.row,myTableIndex)})"
                                 ></el-input-number>
                               </p>
                               <div>{{selfs.LostInstrumentQuantity}}</div>
@@ -302,10 +312,12 @@ export default {
     }
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this);
+    this.GLOBAL.useWebsocketOrNot(this);
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -385,7 +397,7 @@ export default {
       this.packageClass = "LostBarCode";
       this.isShowPackageList = true;
     },
-    changeInputNum(newValue, oldValue, row, index) {
+    actuallyRecycleQuantityChange(newValue, oldValue, row, index) {
       if (newValue === undefined) {
         setTimeout(() => {
           row.Instruments[index].ActuallyRecycleQuantity = oldValue;
@@ -404,7 +416,7 @@ export default {
       }
     },
     //计数包改变数量
-    handleNumberPackage(
+    handleNumberPackageChange(
       newValue,
       oldValue,
       RecycleProducts,
@@ -479,8 +491,11 @@ export default {
           }
         ])
       ) {
-        if(this.waitToAllocation.length>0){
-          this.showInformation({classify:"message",msg:"待分配通用包还未分配回收回收科室！"});
+        if (this.waitToAllocation.length > 0) {
+          this.showInformation({
+            classify: "message",
+            msg: "待分配通用包还未分配回收回收科室！"
+          });
           return;
         }
         axios({
@@ -493,19 +508,21 @@ export default {
             if (res.data.Code == 200) {
               type = "success";
               //socket发送信息
-              let sendData = {
-                CssdId: this.GLOBAL.UserInfo.ClinicId,
-                ReserveCheckState: false,
-                PackageState: true
-              };
-              if (this.GLOBAL.UserInfo.CssdProvideType === 0) {
-                //回收生成发放
-                sendData.ProvideState = true;
-              } else if (this.GLOBAL.UserInfo.CssdProvideType === 1) {
-                //预定生成发放
-                sendData.ProvideState = false;
+              if(this.websocket){
+                let sendData = {
+                  CssdId: this.GLOBAL.UserInfo.ClinicId,
+                  ReserveCheckState: false,
+                  PackageState: true
+                };
+                if (this.GLOBAL.UserInfo.CssdProvideType === 0) {
+                  //回收生成发放
+                  sendData.ProvideState = true;
+                } else if (this.GLOBAL.UserInfo.CssdProvideType === 1) {
+                  //预定生成发放
+                  sendData.ProvideState = false;
+                }
+                this.websocket.send(JSON.stringify(sendData));
               }
-              this.websocket.send(JSON.stringify(sendData));
               if (this.recoveryRecordModle) {
                 this.$router.push({
                   path: "/recovery/record",
@@ -514,7 +531,7 @@ export default {
                   }
                 });
               } else {
-                this.$router.go({path: `/recovery/registration`});
+                this.$router.go({ path: `/recovery/registration` });
               }
             } else {
               type = "error";
@@ -585,26 +602,27 @@ export default {
     },
     //添加数据处理RecyclePackageIds
     handleAddData(data) {
-      if (data.PackageBarCodeId && data.IsCommonProduct&&!data.SelectAgain) {
+      //有条码的通用包第一次添加会被添加到待分配通用包
+      if (data.PackageBarCodeId && data.IsCommonProduct && !data.SelectAgain) {
         this.waitToAllocation.push(data);
         return;
       }
       let ClinicList = this.recoveryData.Clinics;
-      let NoClinic = true; // 找科室   true 没有找到 false 找到了
-      let NoPackageClass = true; // 找包类型  true 没有找到 false 找到了
+      let NoClinic = true; // find clinic   true 没有找到 false 找到了
+      let NoPackageClass = true; // find 包类型  true 没有找到 false 找到了
       for (let i = 0; i < ClinicList.length; i++) {
-        if (ClinicList[i].ProvideSubClinicId == data.ProvideSubClinicId) {
-          //找到科室
+        if (ClinicList[i].ProvideSubClinicId === data.ProvideSubClinicId) {
+          //finded clinic
           this.activeName = i + "";
           NoClinic = false;
-          //找包类型
+          //find 包类型
           for (let j = 0; j < ClinicList[i].RecycleProducts.length; j++) {
             if (
               ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
               data.IsLostPackage === false &&
               data.PackageBarCodeId != 0
             ) {
-              //条码包找到包类型
+              //条码包 finded 包类型  ##扫描枪
               this.collapseActiveName = j + "";
               NoPackageClass = false;
               this.recoveryData.Clinics[i].RecycleProducts[
@@ -617,7 +635,7 @@ export default {
               data.IsNotPrintBarCode === true &&
               ClinicList[i].RecycleProducts[j].IsNotPrintBarCode === true
             ) {
-              //找到包类型
+              //计数包 finded 包类型
               NoPackageClass = false;
               this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
                 data.ProductQuantity;
@@ -628,7 +646,7 @@ export default {
               data.IsLostPackage === true &&
               ClinicList[i].RecycleProducts[j].IsLostPackage === true
             ) {
-              //找到包类型
+              //丢失包 finded 包类型
               NoPackageClass = false;
               this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
                 data.ProductQuantity;
@@ -641,7 +659,7 @@ export default {
               //计数包 or 丢失包
               noPackageClassObj = data;
             } else {
-              //条码包
+              //条码包 ##扫描枪
               noPackageClassObj = {
                 ProductName: data.ProductName,
                 IsLostPackage: false,
@@ -651,13 +669,9 @@ export default {
                 NumberOfBorrowedProduct: data.NumberOfBorrowedProduct, //借包数
                 NumberOfExpeditedProduct: data.NumberOfExpeditedProduct, //加急数
                 NumberOfReturnProduct: data.NumberOfReturnProduct, //还包数
+                IsSingleCarrierProduct: data.IsSingleCarrierProduct,
                 RecyclePackageIds: [data]
               };
-              if(data.IsSingleCarrierProduct){
-                noPackageClassObj.IsSingleCarrierProduct = true;
-              }else{
-                noPackageClassObj.IsSingleCarrierProduct = false;
-              }
             }
             this.recoveryData.Clinics[i].RecycleProducts.push(
               noPackageClassObj
@@ -674,7 +688,7 @@ export default {
           //计数包 or 丢失包
           obj = data;
         } else {
-          //条码包
+          //条码包 ##扫描枪
           obj = {
             ProductName: data.ProductName,
             IsLostPackage: false,
@@ -684,13 +698,9 @@ export default {
             NumberOfBorrowedProduct: data.NumberOfBorrowedProduct, //借包数
             NumberOfExpeditedProduct: data.NumberOfExpeditedProduct, //加急数
             NumberOfReturnProduct: data.NumberOfReturnProduct, //还包数 NumberOfReturnProduct
+            IsSingleCarrierProduct: data.IsSingleCarrierProduct,
             RecyclePackageIds: [data]
           };
-          if(data.IsSingleCarrierProduct){
-            obj.IsSingleCarrierProduct = true;
-          }else{
-            obj.IsSingleCarrierProduct = false;
-          }
         }
         this.recoveryData.Clinics.push({
           ProvideClinicName: data.ProvideClinicName,
@@ -704,49 +714,56 @@ export default {
     },
     handleBarCode(msg) {
       this.getBarCodeArray();
-      let onOff = true;
-      this.BarCodeList.forEach(item => {
-        //发现已录入
-        if (item.BarCode == msg.toUpperCase()) {
-          this.showInformation({
-            classify: "message",
-            msg: "该条码已录入！",
-            type: "warning"
-          });
-          onOff = false;
-          return;
-        }
-      });
-      if (onOff) {
-        axios({ url: `/api/Scanner/Recycle/${msg}` })
-          .then(res => {
-            if (res.data.Code == 200) {
-              if(res.data.Data.PackageBarCodeScannerVm){
-                for(let i=0;i<this.BarCodeList.length;i++){
-                  if (this.BarCodeList[i].BarCode == res.data.Data.PackageBarCodeScannerVm.BarCode) {
-                    this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
-                    return;
-                  }
+      // let onOff = true;
+      // this.BarCodeList.forEach(item => {
+      //   //发现已录入
+      //   if (item.BarCode == msg.toUpperCase()) {
+      //     this.showInformation({
+      //       classify: "message",
+      //       msg: "该条码已录入！",
+      //       type: "warning"
+      //     });
+      //     onOff = false;
+      //     return;
+      //   }
+      // });
+      // if (onOff) {
+      axios({ url: `/api/Scanner/Recycle/${msg}` })
+        .then(res => {
+          if (res.data.Code == 200) {
+            if (res.data.Data.PackageBarCodeScannerVm) {
+              for (let i = 0; i < this.BarCodeList.length; i++) {
+                if (
+                  this.BarCodeList[i].BarCode ==
+                  res.data.Data.PackageBarCodeScannerVm.BarCode
+                ) {
+                  this.showInformation({
+                    classify: "message",
+                    msg: "该条码已录入！",
+                    type: "warning"
+                  });
+                  return;
                 }
               }
-              this.packageData2father(res.data.Data,msg);
-            } else {
-              this.showInformation({ classify: "message", msg: res.data.Msg });
             }
-          })
-          .catch(err => {});
-      }
+            this.packageData2father(res.data.Data, msg);
+          } else {
+            this.showInformation({ classify: "message", msg: res.data.Msg });
+          }
+        })
+        .catch(err => {});
+      // }
     }
   },
   computed: {
-    //计算包数量
+    //计算条码包collapse内的包数量
     countPackageNumber() {
       return list => {
         list.ProductQuantity = list.RecyclePackageIds.length;
         return list.RecyclePackageIds.length;
       };
     },
-    //计算包内器械总数
+    //计算条码包collapse内实际回收器械总数
     countPackageInstrumentTotalNumber() {
       return list => {
         let packageInstrumentTotalNumber = 0;
@@ -757,7 +774,7 @@ export default {
         return packageInstrumentTotalNumber;
       };
     },
-    //计算科室包总数
+    //计算科室回收的包总数
     countTotalPackageNumber() {
       return (list, index) => {
         let num = 0;
@@ -774,7 +791,7 @@ export default {
         return num;
       };
     },
-    //计算科室总器械数
+    //计算科室实际回收的总器械数
     countTotalInstruments() {
       return (list, index) => {
         let num = 0;
@@ -790,7 +807,7 @@ export default {
         return num;
       };
     },
-    //计算页面总包数
+    //计算本次回收的总包数
     countPagePackageNumber() {
       return list => {
         let num = 0;
@@ -812,7 +829,7 @@ export default {
 @import "../../assets/css/tableExpand";
 #recoveryRegistration {
   .cssd_title_right {
-    p{
+    p {
       &.commonPackages {
         line-height: 40px;
         b {
@@ -824,18 +841,18 @@ export default {
           color: #00c16b;
         }
       }
-      &.senderPerson{
+      &.senderPerson {
         display: flex;
-        span{
+        span {
           line-height: 40px;
         }
-        .el-input{
+        .el-input {
           width: 200px;
-          input{
-            background: #182B37;
+          input {
+            background: #182b37;
             border-width: 2px;
             color: #fff;
-            font-size:18px;
+            font-size: 18px;
             font-weight: bold;
           }
         }

@@ -205,10 +205,12 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this);
+    this.GLOBAL.useWebsocketOrNot(this);
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
   },
   methods: {
     handleNumberChange(row){
@@ -238,12 +240,14 @@ export default {
           if (res.data.Code == 200) {
               type = "success";
               //socket发送信息
-              this.websocket.send(JSON.stringify({
-                CssdId: this.submitData.BookCssdId,
-                ReserveCheckState: true,
-                PackageState:false,
-                ProvideState:false
-              }));
+              if(this.websocket){
+                this.websocket.send(JSON.stringify({
+                  CssdId: this.submitData.BookCssdId,
+                  ReserveCheckState: true,
+                  PackageState:false,
+                  ProvideState:false
+                }));
+              }
               this.$router.replace(`/provide/reserveCheck`);
           } else {
               type = "error";

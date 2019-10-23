@@ -2,9 +2,9 @@
   <div class="cssd_box" id="scheduleList">
     <div class="cssd_title">
       <ul class="cssd_menu">
-        <li @click="goBack">
+        <router-link to="/" tag="li">
           <p>返回</p>
-        </li>
+        </router-link>
       </ul>
       <div class="cssd_title_right">
         <p>
@@ -94,9 +94,6 @@ export default {
           }
         });
       }
-    },
-    goBack() {
-      this.$router.go(-1);
     },
     //查询
     searchRecordsData() {

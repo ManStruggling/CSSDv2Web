@@ -409,10 +409,12 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this,"PackageState");
+    this.GLOBAL.useWebsocketOrNot(this,"PackageState");
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -535,18 +537,22 @@ export default {
         this.selectOrigin = "PackageTasksFromSupportMaterialProduct";
         this.selectRadio = 0;
         this.activeName = "-1";
-        this.websocket.send(JSON.stringify({
-          CssdId: this.GLOBAL.UserInfo.ClinicId,
-          ReserveCheckState: false,
-          PackageState: true,
-          ProvideState: false
-        }))
+        if(this.websocket){
+          this.websocket.send(JSON.stringify({
+            CssdId: this.GLOBAL.UserInfo.ClinicId,
+            ReserveCheckState: false,
+            PackageState: true,
+            ProvideState: false
+          }))
+        }
       }
     },
     //taskListBox传递过来的值
     taskListBox2father(data,origin,tabIndex) {
       if (data) {
-        this.websocket.send(JSON.stringify(data));
+        if(this.websocket){
+          this.websocket.send(JSON.stringify(data));
+        }
         window.location.href = `/package/taskList?origin=${origin}&tabIndex=${tabIndex}`;
       }
     },
@@ -664,12 +670,14 @@ export default {
             res.data.Data.forEach(element => {
               CSManager.PrintBarcode(JSON.stringify(element));
             });
-            this.websocket.send(JSON.stringify({
-              CssdId: this.GLOBAL.UserInfo.ClinicId,
-              ReserveCheckState: false,
-              PackageState: true,
-              ProvideState: false,
-            }))
+            if(this.websocket){
+              this.websocket.send(JSON.stringify({
+                CssdId: this.GLOBAL.UserInfo.ClinicId,
+                ReserveCheckState: false,
+                PackageState: true,
+                ProvideState: false,
+              }))
+            }
             window.location.href = `/package/taskList?origin=${this.selectOrigin}&clinicId=${this.tabActiveName}`;
           }else{
             type = "error";

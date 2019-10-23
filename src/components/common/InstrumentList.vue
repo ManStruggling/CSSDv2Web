@@ -72,6 +72,7 @@ export default {
           "'"}) or contains(shortcode,${"'" +
           this.searchShortCode +
           "'"})`}).then(res=>{
+            this.resetQuantity(res.data.value);
             this.instrumentList = res.data.value;
           }).catch(err=>{})
     },
@@ -81,12 +82,16 @@ export default {
     getRowKeys(row) {
       return row.Id;
     },
+    resetQuantity(arr){
+      arr.forEach(item => {
+        item.Quantity = 1;
+      });
+    },
+    //获取器械数据
     getInstrumentsData(url) {
       axios(url)
         .then(res => {
-          res.data.value.forEach(item => {
-            item.Quantity = 1;
-          });
+          this.resetQuantity(res.data.value);
           this.instrumentList = res.data.value;
         })
         .catch(err => {

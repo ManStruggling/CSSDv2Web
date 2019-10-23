@@ -12,8 +12,8 @@
       <div class="cssd_title_right">
         <p>
           <span>待清洗网篮</span>:
-          <b>{{cleanFailedCarriers.length}}</b>
-          <a @click="handleShowCleanFailedCarriers">查看</a>
+          <b>{{cleanableCarriers.length}}</b>
+          <a @click="handleShowCleanableCarriers">查看</a>
         </p>
         <p class="photoEdit">
           <span>照片</span>:
@@ -83,16 +83,23 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 拍照 -->
-      <PhotoView v-if="isShowPhoto" @viewPhoto-to-father="viewPhotoToFather" :data="submitData.Pictures"></PhotoView>
+      <PhotoView
+        v-if="isShowPhoto"
+        @viewPhoto-to-father="viewPhotoToFather"
+        :data="submitData.Pictures"
+      ></PhotoView>
     </transition>
     <transition
       name="fade"
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 不合格网篮 -->
-      <CarrierList v-if="isShowCleanFailedCarrier" @cleanFailed-to-father="viewCarrierList" :data="cleanFailedCarriers"></CarrierList>
+      <!-- 可清洗网篮 -->
+      <CleanableCarriers
+        v-if="isShowCleanableCarriers"
+        @cleanFailed-to-father="viewCleanableCarriers"
+        :data="cleanableCarriers"
+      ></CleanableCarriers>
     </transition>
   </div>
 </template>
@@ -101,16 +108,16 @@
 import PhotoView from "../common/PhotoView";
 import ManualEnter from "../common/ManualEnter";
 import CleanSelectBox from "./CleanSelectBox";
-import CarrierList from "./CarrierList";
+import CleanableCarriers from "./CleanableCarriers";
 export default {
   data() {
     return {
-      cleanFailedCarriers:[],//清洗失败的网篮
+      cleanableCarriers: [], //清洗失败的网篮
       activeName: "0",
-      isShowPhoto:false,//显示照片
+      isShowPhoto: false, //显示照片
       isShowManualEnter: false, //显示手工录入
       isShowCleanSelect: false, //显示清洗程序
-      isShowCleanFailedCarrier:false,//显示不合格网篮
+      isShowCleanableCarriers: false, //显示可清洗网篮
       cleanRecordModle: false, //清洗修改模式
       submitData: {
         DeviceModelName: this.$route.query.deviceName,
@@ -118,7 +125,7 @@ export default {
         DeviceModelProgramName: this.$route.query.programName,
         DeviceModelProgramId: this.$route.query.programId - 0,
         Carriers: [],
-        Pictures:[]
+        Pictures: []
       }
     };
   },
@@ -126,7 +133,7 @@ export default {
     ManualEnter,
     CleanSelectBox,
     PhotoView,
-    CarrierList
+    CleanableCarriers
   },
   created() {
     CSManager.handleDataThis = this;
@@ -140,7 +147,8 @@ export default {
             let data = res.data.Data;
             this.submitData.DeviceModelName = data.DeviceModelName;
             this.submitData.DeviceModelId = data.DeviceModelId;
-            this.submitData.DeviceModelProgramName = data.DeviceModelProgramName;
+            this.submitData.DeviceModelProgramName =
+              data.DeviceModelProgramName;
             this.submitData.DeviceModelProgramId = data.DeviceModelProgramId;
             this.submitData.CleanTaskId = data.CleanTaskId;
             this.submitData.Carriers = data.CarrierForCleanVms;
@@ -150,28 +158,32 @@ export default {
         })
         .catch(err => {});
     }
-    axios({url:`/api/Clean/CleanableCarriers`}).then(res=>{
-      if(res.data.Code==200){
-        this.cleanFailedCarriers = res.data.Data;
-      }else{
-        this.showInformation({ classify: "message", msg: res.data.Msg });
-      }
-    }).catch(err=>{})
+    axios({ url: `/api/Clean/CleanableCarriers` })
+      .then(res => {
+        if (res.data.Code == 200) {
+          this.cleanableCarriers = res.data.Data;
+        } else {
+          this.showInformation({ classify: "message", msg: res.data.Msg });
+        }
+      })
+      .catch(err => {});
   },
   mounted() {},
   beforeDestroy() {
     CSManager.handleDataThis = null;
   },
   methods: {
-    handleShowCleanFailedCarriers(){
-      this.isShowCleanFailedCarrier = true;
+    //挂载可清洗网篮
+    handleShowCleanableCarriers() {
+      this.isShowCleanableCarriers = true;
     },
-    viewCarrierList(data){
-      this.isShowCleanFailedCarrier = false;
-      if(data){
-        data.forEach(element=>{
+    //查看可被清洗的网篮
+    viewCleanableCarriers(data) {
+      this.isShowCleanableCarriers = false;
+      if (data) {
+        data.forEach(element => {
           this.handleBarCode(element);
-        })
+        });
       }
     },
     //处理显示图片
@@ -179,7 +191,7 @@ export default {
       this.isShowPhoto = true;
     },
     //照片数据通信
-    viewPhotoToFather(){
+    viewPhotoToFather() {
       this.isShowPhoto = false;
     },
     //返回
@@ -269,31 +281,46 @@ export default {
     },
     //删除网篮
     deleteThisCarrier(index) {
-      this.submitData.Carriers.splice(index, 1);
+      this.$confirm("您确定要删除该网篮?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.submitData.Carriers.splice(index, 1);
+        })
+        .catch(() => {});
     },
     //添加数据处理
-    handleBarCode(msg){
+    handleBarCode(msg) {
       let onOff = true;
       this.submitData.Carriers.forEach(item => {
         //发现已录入
         if (item.BarCode == msg.toUpperCase()) {
-          this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
+          this.showInformation({
+            classify: "message",
+            msg: "该条码已录入！",
+            type: "warning"
+          });
           onOff = false;
           return;
         }
       });
-      if(onOff){
-        axios({url:`/api/Scanner/Clean/${msg}`}).then(res=>{
-          if(res.data.Code==200){
-            this.packageData2father(res.data.Data);
-          }else{
-            this.showInformation({classify:"message",msg:res.data.Msg});
-          }
-        }).catch(err=>{})
+      if (onOff) {
+        axios({ url: `/api/Scanner/Clean/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.packageData2father(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
       }
     }
   },
   computed: {
+    //计算本次清洗总包数量
     countPackageNumber() {
       return list => {
         let num = 0;
@@ -306,8 +333,11 @@ export default {
         return num;
       };
     },
+    //计算照片数量
     computedPhotoNumber() {
-      return this.submitData.Pictures==null?0:this.submitData.Pictures.length;
+      return this.submitData.Pictures == null
+        ? 0
+        : this.submitData.Pictures.length;
     }
   }
 };

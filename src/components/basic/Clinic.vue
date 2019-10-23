@@ -165,36 +165,36 @@ export default {
         type: "warning",
         center: true
       })
-        .then(() => {
-          //删除接口
-          //code
-          axios
-            .delete(`/api/Clinic/${this.table_data[index].Id}`)
-            .then(res => {
-              let type;
-              if (res.data.Code == 200) {
-                type = "success";
-                this.table_data = res.data.Data;
-              } else {
-                type = "error";
-              }
-              this.showInformation({
-                classify: "message",
-                msg: res.data.Msg,
-                type: type
-              });
-            })
-            .catch(err => {});
-        })
-        .catch(() => {});
+      .then(() => {
+        //删除接口
+        //code
+        axios
+          .delete(`/api/Clinic/${this.table_data[index].Id}`)
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              type = "success";
+              this.table_data = res.data.Data;
+            } else {
+              type = "error";
+            }
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
+          })
+          .catch(err => {});
+      })
+      .catch(() => {});
     },
 
     //编辑this tr
     editThisTr(index) {
-      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index])); //深拷贝
+      this.toChildData = Object.assign({},this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
-
+    //科室编辑框与父组件通信
     child2father(data) {
       this.showEditBox = false;
       if (data) {

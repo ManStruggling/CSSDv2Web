@@ -141,7 +141,12 @@ export default {
     this.searchRecordsData();
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this);
+    this.GLOBAL.useWebsocketOrNot(this);
+  },
+  beforeDestroy() {
+    if(this.websocket){
+      this.websocket.close();
+    }
   },
   methods: {
     //二次请求
@@ -171,12 +176,14 @@ export default {
         if(res.data.Code==200){
           type="success";
           //socket发送信息
-          this.websocket.send(JSON.stringify({
-            CssdId: this.recordList[index].BookCssdId,
-            ReserveCheckState: true,
-            PackageState:false,
-            ProvideState:false
-          }));
+          if(this.websocket){
+            this.websocket.send(JSON.stringify({
+              CssdId: this.recordList[index].BookCssdId,
+              ReserveCheckState: true,
+              PackageState:false,
+              ProvideState:false
+            }));
+          }
           this.$router.go(0);
         }else{
           type="error";

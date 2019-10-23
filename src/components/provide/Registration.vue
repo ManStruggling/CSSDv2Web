@@ -232,10 +232,12 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this,"ProvideState");
+    this.GLOBAL.useWebsocketOrNot(this,"ProvideState");
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
     CSManager.handleDataThis = null;
   },
   methods: {
@@ -343,12 +345,14 @@ export default {
             let type;
             if (res.data.Code == 200) {
               type = "success";
-              this.websocket.send(JSON.stringify({
-                CssdId: this.GLOBAL.UserInfo.ClinicId,
-                ReserveCheckState: false,
-                PackageState: false,
-                ProvideState:true
-              }));
+              if(this.websocket){
+                this.websocket.send(JSON.stringify({
+                  CssdId: this.GLOBAL.UserInfo.ClinicId,
+                  ReserveCheckState: false,
+                  PackageState: false,
+                  ProvideState:true
+                }));
+              }
               res.data.Data.forEach(element => {
                 CSManager.PrintBarcode(JSON.stringify(element));
               });
@@ -450,8 +454,15 @@ export default {
     countRemainProvideQuantity() {
       return index => {
         let num = 0;
+        //this.provideTaskList[index].SubClinicTasks[0] 此处0代表主科室全部任务
         this.provideTaskList[index].SubClinicTasks[0].ProvideTaskDetails.forEach(element => {
-          num += element.RemainQuantity;
+          if(this.showAllTask){
+            num += element.RemainQuantity;
+          }else{
+            if(element.InventoryQuantity){
+              num += element.RemainQuantity;
+            }
+          }
         });
         return num;
       };

@@ -212,7 +212,7 @@ export default {
     },
     //编辑this tr
     editThisTr(index) {
-      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index])); //深拷贝
+      this.toChildData = Object.assign({},this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
     //器械列表组件传值

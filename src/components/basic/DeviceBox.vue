@@ -141,22 +141,22 @@ export default {
     this.selectedOptions[1] = this.editBoxData.Manufacturer;
     this.selectedOptions[2] = this.editBoxData.DeviceModelId;
     axios(`/api/Device/DeviceDetail`)
-      .then(res => {
-        if (res.data.Code == 200) {
-          //success
-          this.opetionCssdList = res.data.Data.CssdComponentVms;
-          this.optionList = res.data.Data.CascadeSelectorComponentVms;
-          this.DeviceModelProgramList =
-            res.data.Data.DictionaryDeviceModelProgram;
-          this.getDeviceProgramsData();
-        } else {
-          //faild
-          this.showInformation({classify:"message",msg:res.data.Msg});
-        }
-      })
-      .catch(err => {
-        //失败
-      });
+    .then(res => {
+      if (res.data.Code == 200) {
+        //success
+        this.opetionCssdList = res.data.Data.CssdComponentVms;
+        this.optionList = res.data.Data.CascadeSelectorComponentVms;
+        this.DeviceModelProgramList =
+          res.data.Data.DictionaryDeviceModelProgram;
+        this.getDeviceProgramsData();
+      } else {
+        //faild
+        this.showInformation({classify:"message",msg:res.data.Msg});
+      }
+    })
+    .catch(err => {
+      //失败
+    });
   },
 
   methods: {
@@ -183,8 +183,7 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if (
-        this.GLOBAL.VerificationHandle([
+      if (this.GLOBAL.VerificationHandle([
           {
             val: this.editBoxData.Name,
             type: "StringNotEmpty",
@@ -195,24 +194,23 @@ export default {
             type: "NumberNotZero",
             msg: "您还没哟选择设备型号！请选择设备型号！"
           }
-        ])
-      ) {
+      ])) {
         axios({
           url: "/api/Device",
           method: axiosMethod,
           data: this.editBoxData
         })
-          .then(res => {
-            let type;
-            if (res.data.Code == 200) {
-              type = "success";
-              this.$emit("to-father", res.data.Data);
-            } else {
-              type = "error";
-            }
-            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
-          })
-          .catch(error => {});
+        .then(res => {
+          let type;
+          if (res.data.Code == 200) {
+            type = "success";
+            this.$emit("to-father", res.data.Data);
+          } else {
+            type = "error";
+          }
+          this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+        })
+        .catch(error => {});
       }
     },
     //设备型号选择改变触发事件

@@ -250,6 +250,14 @@ const router = new Router({
                 component: () =>
                     import ('./components/sterilize/Ready')
             }, {
+                path: '/sterilize/substitutionPackage',
+                name: 'sterilizeSubstitutionPackage',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/sterilize/SubstitutionPackagePrint')
+            }, {
                 path: '/sterilize/readyRecord',
                 name: 'sterilizeReadyRecord',
                 meta: {
@@ -609,6 +617,18 @@ const router = new Router({
                         import ('./components/management/Configure')
                 }
             ]
+        },
+        {
+            path: '/publicModule',
+            name: 'publicModule',
+            component: ()=>
+                import ('./components/publicModule/Basic'),
+            children: [{
+                path: '/publicModule/reprint',
+                name: 'publicModuleReprint',
+                component: ()=>
+                    import('./components/publicModule/Reprint')
+            }]
         }
     ]
 });

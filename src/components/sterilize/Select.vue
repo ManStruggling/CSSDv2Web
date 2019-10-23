@@ -11,6 +11,9 @@
         <router-link to="/sterilize/check" tag="li">
           <p>灭菌审核</p>
         </router-link>
+        <router-link to="/sterilize/substitutionPackage" tag="li" v-if="GLOBAL.UserInfo.HospitalVersion==='SONGJIANGNANYUAN'">
+          <p>代消包打印</p>
+        </router-link>
         <router-link to="/sterilize/record" tag="li">
           <p>灭菌记录</p>
         </router-link>

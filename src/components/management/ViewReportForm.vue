@@ -23,12 +23,19 @@
         ></el-date-picker>
         <el-button type="primary" class="btn120x40" @click="creatReport">查询报表</el-button>
       </p>
-      <p>
+      <p class="madeBySelfBoxRightP">
+        <el-input v-model.trim="searchField" placeholder="输入查询的产品名称"></el-input>
         <el-button class="btn120x40empty" @click="exportData">导出报表</el-button>
-      <el-button @click="setpdf">打印</el-button>
+        <el-button @click="setpdf">打印</el-button>
       </p>
     </div>
-    <el-table :data="tableData" show-summary row-key="Id" border height="100%">
+    <el-table 
+      :data="tableData.filter(data => !searchField || data.ProductName.toLowerCase().includes(searchField.toLowerCase()))" 
+      show-summary 
+      row-key="Id" 
+      border 
+      height="100%"
+    >
       <el-table-column
         v-for="(item,index) in columnList"
         :key="index"
@@ -46,17 +53,18 @@
 
 <script>
 import Sortable from "sortablejs";
-import toExcel from '@/utils/json2excel'
+import toExcel from "@/utils/json2excel";
 export default {
   data() {
     return {
-      search_date: [],
+      searchField:"",//查询的字串
+      search_date: [],//查询的日期
       selectReportId: "",
-      reportList: [],
+      reportList: [],//报表列表
       columnList: [],
       dropCol: [],
-      tableData: [],
-      currentReportId:0,
+      tableData: [],//报表数据
+      currentReportId: 0  //当前报表的Id
     };
   },
   created() {
@@ -302,17 +310,19 @@ export default {
       }
       this.$router.go(0);
     },
-    exportData(){
+    exportData() {
       const th = [];
       const filterVal = [];
-      this.columnList.forEach(element=>{
+      this.columnList.forEach(element => {
         th.push(element.DisplayName);
         filterVal.push(element.SpliceName);
-      })
+      });
       const data = this.tableData.map(v => filterVal.map(k => v[k]));
-      let excelName = this.reportList.filter(item=>{return item.ReportId === this.currentReportId;})[0].ReportName;
-      const [fileName, fileType, sheetName] = [excelName, 'xlsx', 'Sheet1']
-      toExcel({th, data, fileName, fileType, sheetName})
+      let excelName = this.reportList.filter(item => {
+        return item.ReportId === this.currentReportId;
+      })[0].ReportName;
+      const [fileName, fileType, sheetName] = [excelName, "xlsx", "Sheet1"];
+      toExcel({ th, data, fileName, fileType, sheetName });
     }
   }
 };
@@ -361,6 +371,16 @@ export default {
         width: 120px;
       }
     }
+    .madeBySelfBoxRightP{
+      display: flex;
+      .el-input{
+        width: 200px;
+        margin-right: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
   }
   .el-table {
     border-color: #aeb2ba;
@@ -368,7 +388,7 @@ export default {
     &::after {
       background-color: #aeb2ba;
     }
-    .el-table__empty-block{
+    .el-table__empty-block {
       font-size: 18px;
     }
     thead {
@@ -389,7 +409,7 @@ export default {
               background-color: transparent;
             }
           }
-          td{
+          td {
             border-color: #aeb2ba;
             .cell {
               color: #232e41;
@@ -400,10 +420,10 @@ export default {
         }
       }
     }
-    .el-table__footer-wrapper{
-      tbody{
-        tr{
-          td{
+    .el-table__footer-wrapper {
+      tbody {
+        tr {
+          td {
             border-color: #aeb2ba;
             .cell {
               color: #878d9f;
@@ -433,7 +453,7 @@ export default {
   table,
   th,
   td {
-    border: 1px solid #AEB2BA;
+    border: 1px solid #aeb2ba;
     padding: 5px 0;
     text-align: center;
   }
@@ -446,17 +466,17 @@ export default {
     font-weight: normal;
     padding: 12px 5px;
   }
-  tbody{
-    td{
-      .cell{
+  tbody {
+    td {
+      .cell {
         font-size: 18px;
         font-weight: bold;
         font-family: Microsoft YaHei;
-        color: #232E41;
+        color: #232e41;
       }
     }
   }
-  tfoot tr td{
+  tfoot tr td {
     background-color: #f7f8fa;
     color: #878d9f;
     font-family: Microsoft YaHei;
@@ -464,12 +484,12 @@ export default {
   }
   .el-table td,
   .el-table th.is-leaf {
-    border-bottom: 1px solid #AEB2BA;
+    border-bottom: 1px solid #aeb2ba;
   }
   .el-table--border,
   .el-table--group {
-    border-left: 1px solid #AEB2BA;
-    border-bottom: 1px solid #AEB2BA;
+    border-left: 1px solid #aeb2ba;
+    border-bottom: 1px solid #aeb2ba;
   }
 }
 @page {

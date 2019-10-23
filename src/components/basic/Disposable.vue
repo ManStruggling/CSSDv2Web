@@ -66,13 +66,8 @@ export default {
   mounted() {},
   methods: {
     searchThisTableData() {
-      this.baseDataSearch(
-        `/odata/products?$filter=type eq ${encodeURI(
-          "'" + this.GLOBAL.ProductDictionary[this.Type] + "'"
-        )} and (contains(name,${"'" + this.basic_search + "'"}) or contains(shortcode,${"'" +
-          this.basic_search +
-          "'"}))`
-      );
+      this.baseDataSearch(`/odata/products?$filter=type eq ${encodeURI("'" + this.GLOBAL.ProductDictionary[this.Type] + "'")} 
+        and (contains(name,${"'" + this.basic_search + "'"}) or contains(shortcode,${"'" + this.basic_search + "'"}))`);
     },
     //新增tr
     addTableTr() {
@@ -95,28 +90,28 @@ export default {
         type: "warning",
         center: true
       })
-        .then(() => {
-          //删除接口
-          //code
-          axios
-            .delete(`/api/Product/${this.Type}/${this.table_data[index].Id}`)
-            .then(res => {
-              let type;
-              if(res.data.Code==200){
-                type='success';
-                this.table_data = res.data.Data;
-              }else{
-                type='error';
-              }
-              this.showInformation({classify:"message",msg:res.data.Msg,type: type});
-            })
-            .catch(err => {});
-        })
-        .catch(() => {});
+      .then(() => {
+        //删除接口
+        //code
+        axios
+          .delete(`/api/Product/${this.Type}/${this.table_data[index].Id}`)
+          .then(res => {
+            let type;
+            if(res.data.Code==200){
+              type='success';
+              this.table_data = res.data.Data;
+            }else{
+              type='error';
+            }
+            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+          })
+          .catch(err => {});
+      })
+      .catch(() => {});
     },
     //编辑this tr
     editThisTr(index) {
-      this.toChildData = JSON.parse(JSON.stringify(this.table_data[index])); //深拷贝
+      this.toChildData = Object.assign({},this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
     child2father(data) {

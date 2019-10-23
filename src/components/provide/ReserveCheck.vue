@@ -159,10 +159,12 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.GLOBAL.initWebSorcket(this,"ReserveCheckState");
+    this.GLOBAL.useWebsocketOrNot(this,"ReserveCheckState");
   },
   beforeDestroy() {
-    this.websocket.close();
+    if(this.websocket){
+      this.websocket.close();
+    }
   },
   methods: {
     //刷新
@@ -204,12 +206,14 @@ export default {
             if (res.data.Code == 200) {
               type = "success";
               //socket消息推送
-              this.websocket.send(JSON.stringify({
-                CssdId: this.GLOBAL.UserInfo.ClinicId,
-                ReserveCheckState: true,
-                PackageState:false,
-                ProvideState:false
-              }));
+              if(this.websocket){
+                this.websocket.send(JSON.stringify({
+                  CssdId: this.GLOBAL.UserInfo.ClinicId,
+                  ReserveCheckState: true,
+                  PackageState:false,
+                  ProvideState:false
+                }));
+              }
               this.$router.go(0);
             } else {
               type = "error";
@@ -244,20 +248,22 @@ export default {
             if (res.data.Code == 200) {
               type = "success";
               //socket推送消息
-              if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
-                this.websocket.send(JSON.stringify({
-                  CssdId: this.GLOBAL.UserInfo.ClinicId,
-                  ReserveCheckState: true,
-                  PackageState:false,
-                  ProvideState:false
-                }));
-              }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
-                this.websocket.send(JSON.stringify({
-                  CssdId: this.GLOBAL.UserInfo.ClinicId,
-                  ReserveCheckState: true,
-                  PackageState:false,
-                  ProvideState:true
-                }));
+              if(this.websocket){
+                if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
+                  this.websocket.send(JSON.stringify({
+                    CssdId: this.GLOBAL.UserInfo.ClinicId,
+                    ReserveCheckState: true,
+                    PackageState:false,
+                    ProvideState:false
+                  }));
+                }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
+                  this.websocket.send(JSON.stringify({
+                    CssdId: this.GLOBAL.UserInfo.ClinicId,
+                    ReserveCheckState: true,
+                    PackageState:false,
+                    ProvideState:true
+                  }));
+                }
               }
               res.data.Data.forEach(element => {
                 CSManager.PrintBarcode(JSON.stringify(element));
