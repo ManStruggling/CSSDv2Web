@@ -225,6 +225,7 @@ export default {
             }
           }
           this.provideTaskList = getData;
+          this.defaultSelectFirstSubClinicId('0');
         } else {
           this.showInformation({ classify: "message", msg: res.data.Msg });
         }
@@ -265,6 +266,13 @@ export default {
     //tab click 事件
     handleTabClick(vm) {
       this.activeName = "-1";
+      this.defaultSelectFirstSubClinicId(vm.index);
+    },
+    //defaultSelectSubClinicId
+    defaultSelectFirstSubClinicId(index){
+      if(this.provideTaskList[index].SubClinics.length===1){
+        this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[index].SubClinics[0].SubClinicId;
+      }
     },
     //计数包数量修改
     handleCountNumberPackage(newValue, oldValue, list, value) {
@@ -294,8 +302,9 @@ export default {
     },
     //处理手工录入
     handleShowManualEnter() {
-      this.getBarCodeArray();
-      this.isShowManualEnter = true;
+      if(this.getBarCodeArray()){
+        this.isShowManualEnter = true;
+      }
     },
     getBarCodeArray() {
       if(this.provideTaskList.length>0){
@@ -304,7 +313,7 @@ export default {
             classify: "message",
             msg: "请选择发放子科室",
           });
-          return;
+          return false;
         }
         let tempArr = [];
         let currentTaskList = this.provideTaskList[this.tabActiveName].SubClinicTasks[this.provideTaskList[this.tabActiveName].SelectedSubClinicId].ProvideTaskDetails;
@@ -316,6 +325,7 @@ export default {
           }
         }
         this.barCodeList = tempArr;
+        return true;
       }
     },
     //发放完成

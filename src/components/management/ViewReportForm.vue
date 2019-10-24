@@ -24,13 +24,13 @@
         <el-button type="primary" class="btn120x40" @click="creatReport">查询报表</el-button>
       </p>
       <p class="madeBySelfBoxRightP">
-        <el-input v-model.trim="searchField" placeholder="输入查询的产品名称"></el-input>
+        <el-input v-model.trim="searchField" placeholder="输入查询的产品名称" @blur="searchInputBlur"></el-input>
         <el-button class="btn120x40empty" @click="exportData">导出报表</el-button>
         <el-button @click="setpdf">打印</el-button>
       </p>
     </div>
     <el-table 
-      :data="tableData.filter(data => !searchField || data.ProductName.toLowerCase().includes(searchField.toLowerCase()))" 
+      :data="tableData" 
       show-summary 
       row-key="Id" 
       border 
@@ -57,6 +57,7 @@ import toExcel from "@/utils/json2excel";
 export default {
   data() {
     return {
+      totalData:[],//所有数据
       searchField:"",//查询的字串
       search_date: [],//查询的日期
       selectReportId: "",
@@ -177,6 +178,7 @@ export default {
               data[i].Id = i + 1;
             }
             this.tableData = data;
+            this.totalData = JSON.parse(JSON.stringify(this.tableData));
             //过滤功能数组
             for (let i = 0; i < this.columnList.length; i++) {
               let filterArr = [];
@@ -310,6 +312,7 @@ export default {
       }
       this.$router.go(0);
     },
+    //导出数据
     exportData() {
       const th = [];
       const filterVal = [];
@@ -323,6 +326,12 @@ export default {
       })[0].ReportName;
       const [fileName, fileType, sheetName] = [excelName, "xlsx", "Sheet1"];
       toExcel({ th, data, fileName, fileType, sheetName });
+    },
+    //input筛选数据
+    searchInputBlur(){
+      let temporaryArr = [];
+      temporaryArr = this.totalData.filter(data => !this.searchField || data.ProductName.toLowerCase().includes(this.searchField.toLowerCase()));
+      this.tableData = JSON.parse(JSON.stringify(temporaryArr));
     }
   }
 };

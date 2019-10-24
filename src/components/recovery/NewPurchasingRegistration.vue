@@ -301,8 +301,8 @@ export default {
         }
         //判断是否有录入重复的单包网篮Id
         if (
-          singleCarrierIds.length ===
-          Array.from(new Set(singleCarrierIds)).length
+          testOfSingleCarrierIds.length ===
+          Array.from(new Set(testOfSingleCarrierIds)).length
         ) {
           axios({ url: url, method: method, data: this.submitData })
             .then(res => {
