@@ -126,6 +126,7 @@ export default {
       height: 100%;
       overflow-y: scroll;
       .content_title{
+        border-radius: 8px 8px 0 0;
         position: absolute;
         left: 0;
         right: 0;
@@ -154,6 +155,7 @@ export default {
       }
     }
     .carrier_box_b {
+      border-radius: 0 0 8px 8px;
       position: absolute;
       left: 0;
       right: 0;
