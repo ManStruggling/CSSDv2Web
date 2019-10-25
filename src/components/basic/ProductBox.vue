@@ -1,5 +1,5 @@
 <template>
-  <!-- 编辑弹出框 -->
+  <!-- 产品弹出框 -->
   <div id="editBox">
     <div class="editContainer">
       <div class="editContent EditBoxContentOfProduct table_unExpand">
@@ -505,24 +505,14 @@ export default {
           msg: "发放科室不能为空！"
         }
       ];
-      //无菌包and高水平消毒
-      if (this.editBoxData.Type === 82 || this.editBoxData.Type === 80) {
+      //无菌包and高水平消毒and辅料包
+      if (this.editBoxData.Type === 82 || this.editBoxData.Type === 80||this.editBoxData.Type === 83) {
         arr.push({
           val: this.editBoxData.ProvideCssdId,
           type: "StringNotEmpty",
           msg: "发放供应室不能为空！"
         });
         this.editBoxData.SupplierId = 0;
-        if (this.editBoxData.IsNumberProduct) {
-          //个数包
-        } else {
-          // 非个数包;
-          arr.push({
-            val: this.editBoxData.InstrumentCounts,
-            type: "ArrayNotEmpty",
-            msg: "您还没有添加器械！请为该产品至少添加一个器械！"
-          });
-        }
       }
       // 外来器械包
       if (this.editBoxData.Type === 81) {
@@ -532,20 +522,6 @@ export default {
           msg: "外来器械包还没有关联供应商！"
         });
         delete this.editBoxData.ProvideCssdId;
-      }
-      //辅料包
-      if (this.editBoxData.Type === 83) {
-        arr.push({
-          val: this.editBoxData.MaterialCounts,
-          type: "ArrayNotEmpty",
-          msg: "您还没有添加包原料！辅料包至少添加一个包原料！"
-        });
-        arr.push({
-          val: this.editBoxData.ProvideCssdId,
-          type: "StringNotEmpty",
-          msg: "发放供应室不能为空！"
-        });
-        this.editBoxData.SupplierId = 0;
       }
       if (this.GLOBAL.VerificationHandle(arr)) {
         axios({
