@@ -1,7 +1,9 @@
 <template>
   <!-- 清洗审核
         清洗中：每条任务绑定计时器，倒计时，组件卸载前清除定时器
-        
+        taskIndex: 当前操作的审核索引，不合格包根据当前索引插入数据
+        taskId：当前操作的审核任务Id，根据当前Id请求所有网篮
+        failedCarrier：当前清洗失败的网篮
    -->
   <div class="cleanReview">
     <transition
@@ -294,7 +296,7 @@ export default {
         })
         .catch(err => {});
     },
-    //不合格包数据传递
+    //不合格包数据传递  根据当前索引，插入更新不合格数据
     cleanFailedToFather(data) {
       this.isShowCleanFailedPackages = false;
       this.isShowCleanView = true;
@@ -304,7 +306,7 @@ export default {
         ].FailedCarriers = data;
       }
     },
-    //处理部分合格包
+    //处理部分合格包 绑定当前审核的索引、任务Id、清洗失败的网篮
     handleFailedPackages(index) {
       this.taskIndex = index;
       this.taskId = this.cleanTask.CleanPendingReviewTasks[index].CleanTaskId;
@@ -314,6 +316,7 @@ export default {
       this.isShowCleanView = false;
       this.isShowCleanFailedPackages = true;
     },
+    //重置时间
     resetDeviceTime(index) {
       axios({url: `/api/Clean/ReturnDeviceTimeToZero/${this.cleanTask.CleanCleaningTasks[index].CleanDeviceId}`})
         .then(res => {
@@ -334,6 +337,7 @@ export default {
     }
   },
   computed: {
+    //时间格式化
     timeFormatDuring() {
       return timeSeconds => {
         var hours = parseInt((timeSeconds % (60 * 60 * 24)) / (60 * 60));

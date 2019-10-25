@@ -1,12 +1,13 @@
+let Version = '1024';
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ?
         '/' : '/',
     //打包过后的文件夹名
     outputDir: 'wwwroot',
     //设置打包后的静态资源的文件夹名
-    assetsDir: 'web',
+    assetsDir: 'web'+Version,
     //文件名是否添加hash值
-    filenameHashing: false,
+    filenameHashing: true,
 
     //在多页模式下构建时，Webpack配置将包含不同的插件
     // (将有多个HTML Webpack插件和预加载Webpack插件实例).
@@ -57,7 +58,9 @@ module.exports = {
     // corsUseCredentials: false,
     // webpack 配置，键值对象时会合并配置，为方法时会改写配置
     // https://cli.vuejs.org/guide/webpack.html#simple-configuration
-    configureWebpack: (config) => {},
+    configureWebpack: {
+        devtool: 'eval-source-map'
+    },
 
     // webpack 链接 API，用于生成和修改 webapck 配置
     // https://github.com/mozilla-neutrino/webpack-chain

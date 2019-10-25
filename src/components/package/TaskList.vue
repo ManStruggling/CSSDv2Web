@@ -1,4 +1,14 @@
 <template>
+  <!-- 配包
+        单网篮包：必须绑定单包网篮才能配包，可以批量配包
+        辅料包新任务：添加成功后停留在 新任务 来源
+        来源：配包完成 来源 停留在上次配包来源
+        手工录入：优先加急的单网篮包
+        个数包：
+          0个打一个包：全部打一个包
+          非0个打一个包：计算最小值
+        本次配包数：根据可配数限制数量
+   -->
   <div class="cssd_box tabs_half_bar" id="packageTaskList">
     <div class="cssd_title">
       <ul class="cssd_menu">

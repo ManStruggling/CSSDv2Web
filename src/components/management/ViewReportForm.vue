@@ -314,24 +314,54 @@ export default {
     },
     //导出数据
     exportData() {
-      const th = [];
-      const filterVal = [];
-      this.columnList.forEach(element => {
-        th.push(element.DisplayName);
-        filterVal.push(element.SpliceName);
-      });
-      const data = this.tableData.map(v => filterVal.map(k => v[k]));
-      let excelName = this.reportList.filter(item => {
-        return item.ReportId === this.currentReportId;
-      })[0].ReportName;
-      const [fileName, fileType, sheetName] = [excelName, "xlsx", "Sheet1"];
-      toExcel({ th, data, fileName, fileType, sheetName });
+      if(this.tableData.length>0){
+        const th = [];
+        const filterVal = [];
+        this.columnList.forEach(element => {
+          th.push(element.DisplayName);
+          filterVal.push(element.SpliceName);
+        });
+        const data = this.tableData.map(v => filterVal.map(k => v[k]));
+        let excelName = this.reportList.filter(item => {
+          return item.ReportId === this.currentReportId;
+        })[0].ReportName;
+        const [fileName, fileType, sheetName] = [excelName, "xlsx", "Sheet1"];
+        let temporaryObj = {};
+        for (const key in data[0]) {
+
+          if (typeof(data[0][key])=="number") {
+            let temporaryNum = 0;
+            for (let i = 0; i < data.length; i++) {
+              temporaryNum += data[i][key];
+            }
+            temporaryObj[key] = temporaryNum;
+          }else{
+            temporaryObj[key] = "";
+          }
+        }
+        temporaryObj[0] = "合计";
+        data.push(temporaryObj);
+        toExcel({ th, data, fileName, fileType, sheetName });
+      }else{
+        this.showInformation({classify:"message",msg:"请至少导出一条数据！"});
+      }
     },
     //input筛选数据
     searchInputBlur(){
-      let temporaryArr = [];
-      temporaryArr = this.totalData.filter(data => !this.searchField || data.ProductName.toLowerCase().includes(this.searchField.toLowerCase()));
-      this.tableData = JSON.parse(JSON.stringify(temporaryArr));
+      if(this.searchField){
+        let temporaryArr = [];
+        temporaryArr = this.totalData.filter(data => {
+          for(let key in data){
+            if(/ProductName$/.test(key)&&data[key].toLowerCase().includes(this.searchField.toLowerCase())){
+              return true;
+            }
+          }
+          return false;
+        });
+        this.tableData = JSON.parse(JSON.stringify(temporaryArr));
+      }else{
+        this.tableData = JSON.parse(JSON.stringify(this.totalData));
+      }
     }
   }
 };
