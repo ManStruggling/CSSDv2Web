@@ -326,21 +326,20 @@ export default {
           return item.ReportId === this.currentReportId;
         })[0].ReportName;
         const [fileName, fileType, sheetName] = [excelName, "xlsx", "Sheet1"];
-        let temporaryObj = {};
-        for (const key in data[0]) {
-
-          if (typeof(data[0][key])=="number") {
-            let temporaryNum = 0;
-            for (let i = 0; i < data.length; i++) {
-              temporaryNum += data[i][key];
+        let temporary_Arr = [];
+        for (let i=0; i<data[0].length;i++) {
+          let temporaryNum = 0;
+          if (typeof(data[0][i])=="number") {
+            for (let j = 0; j < data.length; j++) {
+              temporaryNum += data[j][i];
             }
-            temporaryObj[key] = temporaryNum;
+            temporary_Arr.push(temporaryNum);
           }else{
-            temporaryObj[key] = "";
+            temporary_Arr.push("");
           }
         }
-        temporaryObj[0] = "合计";
-        data.push(temporaryObj);
+        temporary_Arr[0] = "合计";
+        data.push(temporary_Arr);
         toExcel({ th, data, fileName, fileType, sheetName });
       }else{
         this.showInformation({classify:"message",msg:"请至少导出一条数据！"});

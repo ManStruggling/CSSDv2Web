@@ -1,5 +1,5 @@
 <template>
-  <!-- 主体 -->
+  <!-- 设备 -->
   <div class="basic_main">
     <div class="basic_main_head">
       <p>
@@ -59,7 +59,7 @@ export default {
     $route: {
       //路由监听
       handler: function(to, from, next) {
-        this.Type = to.params.Type - 0; //获取当前路由参数的Type值
+        this.Type = to.params.Type - 0; //获取当前路由参数的Type值,转number类型
         axios(`/api/Device/ByType/${this.Type}`)
           .then(res => {
             if (res.data.Code == 200) {
@@ -74,6 +74,7 @@ export default {
     }
   },
   methods: {
+    //查询表的数据
     searchThisTableData() {
       this.baseDataSearch(
         `/odata/devices?$filter=type eq ${encodeURI(
@@ -139,7 +140,7 @@ export default {
       this.toChildData = Object.assign({},this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
-
+    //父组件与子组件通信函数
     child2father(data) {
       this.showEditBox = false;
       if (data) {

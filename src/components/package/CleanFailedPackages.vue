@@ -19,10 +19,12 @@
               :name="collapseIndex+''"
               :class="value.IsOuterProduct?'collapseUnExpand':''"
             >
+            <!-- 包名称 -->
               <div slot="title" class="collapseTh">
                 <div class="collapseTd">
                   <p>{{value.ProductName}}</p>
                 </div>
+                <!-- 包数量 -->
                 <div class="collapseTd">
                   <p>
                     {{value.OriginalQuantity}}
@@ -32,12 +34,15 @@
                     >加急 : {{value.ExpeditedPackageQuantity}}</span>
                   </p>
                 </div>
+                <!-- 回收科室 -->
                 <div class="collapseTd">
                   <p>{{value.SubClinicName}}</p>
                 </div>
+                <!-- 不合格包数量 -->
                 <div class="collapseTd">
+                  <!-- 外来器械包直接填写数量 -->
                   <el-input-number
-                    v-if="GLOBAL.UserInfo.HospitalVersion==='SONGJIANGNANYUAN'||value.IsOuterProduct"
+                    v-if="value.IsOuterProduct"
                     v-model="value.CanNotBePackagedCount"
                     :controls="false"
                     :min="0"
