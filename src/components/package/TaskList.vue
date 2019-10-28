@@ -8,7 +8,7 @@
           0个打一个包：全部打一个包
           非0个打一个包：计算最小值
         本次配包数：根据可配数限制数量
-   -->
+  -->
   <div class="cssd_box tabs_half_bar" id="packageTaskList">
     <div class="cssd_title">
       <ul class="cssd_menu">
@@ -131,16 +131,6 @@
                       </div>
                       <!-- 计划数 -->
                       <div class="collapseTd" style="width:100px;">
-                        <!-- <el-input-number
-                          v-if="selectOrigin=='PackageTasksFromSupportMaterialProduct'?true:false"
-                          v-model="value.ScheduleQuantity"
-                          :min="1"
-                          :max="999"
-                          :controls="false"
-                          size="mini"
-                          @click.native.stop="GLOBAL.cancelBubble"
-                          @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,index,collapseIndex,'ScheduleQuantity')})"
-                        ></el-input-number>-->
                         <div>{{value.ScheduleQuantity}}</div>
                       </div>
                       <!-- 剩余数 -->
@@ -250,7 +240,7 @@
       <!-- 配包任务审核人弹窗 -->
       <TaskListBox
         v-if="isShowTaskListBox"
-        :data="templateSelection"
+        :data="currentlySelectedTask"
         @to-father="taskListBox2father"
         :origin="selectOrigin"
         :tabIndex="tabActiveName"
@@ -306,24 +296,25 @@ import ManualEnter from "../common/ManualEnter";
 export default {
   data() {
     return {
-      isShowManualEnter:false,
+      isShowManualEnter: false, //控制手工录入
       hasNewTask: false, //是否有新任务
-      pictures: [],
-      activeName: "-1",
-      tabActiveName:"0",
-      isShowPhoto: false, //看照片
+      isShowPhoto: false, //查看照片
       isShowPackageList: false, //辅料包列表
       isShowTaskListBox: false, //配包框
-      selectRadio: 0,
-      selectOrigin: "TasksOfCanBePackage",
+      activeName: "-1", //控制任务激活
+      tabActiveName: "0", //控制科室选中
+      selectOrigin: "TasksOfCanBePackage", //控制选择来源   默认 清洗可配来源
       tableData: {
         PackageTasksFromSterilizeFailed: null,
         PackageTasksFromCleanUndone: null,
         PackageTasksFromSupportMaterialProduct: null,
         TasksOfCanBePackage: null
       },
-      templateSelection: {},
+      currentlySelectedTask: {}, //选择的任务
+      scannedCarriers: [],
+      pictures: [], //显示产品照片
       patienMessage: {
+        //外来器械包，显示病人信息
         PatientHospitalId: "",
         PatientName: "",
         PatientBedId: ""
@@ -400,12 +391,12 @@ export default {
   },
   created() {
     CSManager.handleDataThis = this;
-    let origin = this.GLOBAL.getParams('origin');
-    let tabIndex = this.GLOBAL.getParams('tabIndex');
+    let origin = this.GLOBAL.getParams("origin");
+    let tabIndex = this.GLOBAL.getParams("tabIndex");
     if (origin) {
       this.selectOrigin = origin;
     }
-    if(tabIndex){
+    if (tabIndex) {
       this.tabActiveName = tabIndex;
     }
     axios({ url: "/api/Package/PackageTasks" })
@@ -419,10 +410,10 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.GLOBAL.useWebsocketOrNot(this,"PackageState");
+    this.GLOBAL.useWebsocketOrNot(this, "PackageState");
   },
   beforeDestroy() {
-    if(this.websocket){
+    if (this.websocket) {
       this.websocket.close();
     }
     CSManager.handleDataThis = null;
@@ -432,47 +423,85 @@ export default {
     handleManualEnter() {
       this.isShowManualEnter = true;
     },
-    scanner2father(data){
+    //手工录入与父组件的通信
+    scanner2father(data) {
       this.isShowManualEnter = false;
-      if(data){
-        if(this.tableData.TasksOfCanBePackage){
-          let bool = this.searchSinglePackage(data,"TasksOfCanBePackage");
-          if(bool){
-            return;
-          }
-          this.searchSinglePackage(data,"PackageTasksFromSterilizeFailed");
+      if (data) {
+        //判断是否重复录入
+        if (this.scannedCarriers.includes(data.SingleCarrierId)) {
+          this.showInformation({
+            classify: "message",
+            msg: "该条码已录入！",
+            type: "warning"
+          });
+          return;
+        }
+        //TasksOfCanBePackage来源 or PackageTasksFromSterilizeFailed来源
+        if (
+          this.searchSinglePackage(data, "TasksOfCanBePackage") ||
+          this.searchSinglePackage(data, "PackageTasksFromSterilizeFailed")
+        ) {
+          this.scannedCarriers.push(data.SingleCarrierId);
+          return;
         }
       }
     },
-    searchSinglePackage(data,origin){
-      if(this.tableData[origin]){
+    //查询单网篮包
+    searchSinglePackage(data, origin) {
+      if (this.tableData[origin]) {
         //优先匹配加急包
-        for(let i=0;i<this.tableData[origin].length;i++){
-          for(let j=0;j<this.tableData[origin][i].PackageTasks.length;j++){
-            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity&&this.tableData[origin][i].PackageTasks[j].ExpeditedPackageQuantity&&!this.tableData[origin][i].PackageTasks[j].SingleCarrierId){
-              this.tableData[origin][i].PackageTasks[j].SingleCarrierId=data.SingleCarrierId;
-              this.tableData[origin][i].PackageTasks[j].SingleCarrierName=data.SingleCarrierName;
-              this.tabActiveName=i+"";
-              this.activeName=j+"";
-              this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
-              this.templateSelection = this.tableData[origin][i].PackageTasks[j];
-              this.selectOrigin=origin;
+        for (let i = 0; i < this.tableData[origin].length; i++) {
+          for (
+            let j = 0;
+            j < this.tableData[origin][i].PackageTasks.length;
+            j++
+          ) {
+            if (
+              data.ProductId ===
+                this.tableData[origin][i].PackageTasks[j].ProductId &&
+              this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity &&
+              this.tableData[origin][i].PackageTasks[j]
+                .ExpeditedPackageQuantity &&
+              !this.tableData[origin][i].PackageTasks[j].SingleCarrierId
+            ) {
+              this.tableData[origin][i].PackageTasks[j].SingleCarrierId =
+                data.SingleCarrierId;
+              this.tableData[origin][i].PackageTasks[j].SingleCarrierName =
+                data.SingleCarrierName;
+              this.tabActiveName = i + "";
+              this.activeName = j + "";
+              this.currentlySelectedTask = this.tableData[origin][
+                i
+              ].PackageTasks[j];
+              this.selectOrigin = origin;
               this.$forceUpdate();
               return true;
             }
           }
         }
         //匹配非加急包
-        for(let i=0;i<this.tableData[origin].length;i++){
-          for(let j=0;j<this.tableData[origin][i].PackageTasks.length;j++){
-            if(data.ProductId===this.tableData[origin][i].PackageTasks[j].ProductId&&this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity&&!this.tableData[origin][i].PackageTasks[j].SingleCarrierId){
-              this.tableData[origin][i].PackageTasks[j].SingleCarrierId=data.SingleCarrierId;
-              this.tableData[origin][i].PackageTasks[j].SingleCarrierName=data.SingleCarrierName;
-              this.tabActiveName=i+"";
-              this.activeName=j+"";
-              this.selectRadio=this.tableData[origin][i].PackageTasks[j].PackageTaskId;
-              this.templateSelection = this.tableData[origin][i].PackageTasks[j];
-              this.selectOrigin=origin;
+        for (let i = 0; i < this.tableData[origin].length; i++) {
+          for (
+            let j = 0;
+            j < this.tableData[origin][i].PackageTasks.length;
+            j++
+          ) {
+            if (
+              data.ProductId ===
+                this.tableData[origin][i].PackageTasks[j].ProductId &&
+              this.tableData[origin][i].PackageTasks[j].CanBePackagedQuantity &&
+              !this.tableData[origin][i].PackageTasks[j].SingleCarrierId
+            ) {
+              this.tableData[origin][i].PackageTasks[j].SingleCarrierId =
+                data.SingleCarrierId;
+              this.tableData[origin][i].PackageTasks[j].SingleCarrierName =
+                data.SingleCarrierName;
+              this.tabActiveName = i + "";
+              this.activeName = j + "";
+              this.currentlySelectedTask = this.tableData[origin][
+                i
+              ].PackageTasks[j];
+              this.selectOrigin = origin;
               this.$forceUpdate();
               return true;
             }
@@ -502,7 +531,7 @@ export default {
     },
     //改变来源
     originChange() {
-      this.selectRadio = 0;
+      this.currentlySelectedTask = {};
       this.activeName = "-1";
     },
     //显示外来器械包的病人信息
@@ -545,22 +574,24 @@ export default {
       if (data) {
         this.tableData = data;
         this.selectOrigin = "PackageTasksFromSupportMaterialProduct";
-        this.selectRadio = 0;
+        this.currentlySelectedTask = {};
         this.activeName = "-1";
-        if(this.websocket){
-          this.websocket.send(JSON.stringify({
-            CssdId: this.GLOBAL.UserInfo.ClinicId,
-            ReserveCheckState: false,
-            PackageState: true,
-            ProvideState: false
-          }))
+        if (this.websocket) {
+          this.websocket.send(
+            JSON.stringify({
+              CssdId: this.GLOBAL.UserInfo.ClinicId,
+              ReserveCheckState: false,
+              PackageState: true,
+              ProvideState: false
+            })
+          );
         }
       }
     },
     //taskListBox传递过来的值
-    taskListBox2father(data,origin,tabIndex) {
+    taskListBox2father(data, origin, tabIndex) {
       if (data) {
-        if(this.websocket){
+        if (this.websocket) {
           this.websocket.send(JSON.stringify(data));
         }
         window.location.href = `/package/taskList?origin=${origin}&tabIndex=${tabIndex}`;
@@ -568,28 +599,28 @@ export default {
     },
     //配包完成
     packageComplete() {
-      //templateSelection
       if (
         this.GLOBAL.VerificationHandle([
           {
-            val: this.selectRadio,
-            type: "NumberNotZero",
+            val: this.currentlySelectedTask.PackageTaskId,
+            type: "NumberIsPositive",
             msg: "您还没有选择配包任务,请选择配包任务！"
-          },
-          {
-            val: this.templateSelection.ThisTimePackageQuantity,
-            type: "NumberNotZero",
-            msg: "配包数不能为0！"
           }
         ])
       ) {
-        if(this.templateSelection.IsSingleCarrierProduct){
-          if(this.templateSelection.IsSingleCarrierProduct&&!this.templateSelection.SingleCarrierId){
-            this.showInformation({classify:"message",msg:"单网篮包必须绑定网篮！"});
+        if (this.currentlySelectedTask.IsSingleCarrierProduct) {
+          if (
+            this.currentlySelectedTask.IsSingleCarrierProduct &&
+            !this.currentlySelectedTask.SingleCarrierId
+          ) {
+            this.showInformation({
+              classify: "message",
+              msg: "单网篮包必须绑定网篮！"
+            });
             return;
           }
           //单网篮包一次只能配一个
-          this.templateSelection.ThisTimePackageQuantity = 1;
+          this.currentlySelectedTask.ThisTimePackageQuantity = 1;
         }
         this.isShowTaskListBox = true;
       }
@@ -597,42 +628,27 @@ export default {
     //tab切换数据
     tabsChange(val) {
       this.activeName = "-1";
-      this.selectRadio = 0;
-      this.templateSelection = {};
+      this.currentlySelectedTask = {};
     },
-    // //勾选替换数据
-    // getTemplateRow(index, value) {
-    //   //获取选中数据
-    //   this.templateSelection = value;
-    // },
     //选择的任务改变
     collapseChange(activeName, index) {
       if (activeName != "") {
-        this.selectRadio = this.tableData[this.selectOrigin][
-          index
-        ].PackageTasks[activeName].PackageTaskId;
-        this.templateSelection = this.tableData[this.selectOrigin][
+        this.currentlySelectedTask = this.tableData[this.selectOrigin][
           index
         ].PackageTasks[activeName];
         if (
-          !this.tableData[this.selectOrigin][index].PackageTasks[activeName]
-            .IsNotBarCodeProduct &&
-          !this.tableData[this.selectOrigin][index].PackageTasks[activeName]
-            .PackageInstrumentList
+          !this.currentlySelectedTask.IsNotBarCodeProduct &&
+          !this.currentlySelectedTask.PackageInstrumentList
         ) {
-          let url = `/api/Package/InstrumentAndMaterialBy/${this.tableData[this.selectOrigin][index].PackageTasks[activeName].ProductId}`;
-          if (
-            this.tableData[this.selectOrigin][index].PackageTasks[activeName]
-              .IsOuterProduct
-          ) {
-            url = `/api/Package/InstrumentInOuterProduct/${this.tableData[this.selectOrigin][index].PackageTasks[activeName].PackageTaskId}`;
+          let url = `/api/Package/InstrumentAndMaterialBy/${this.currentlySelectedTask.ProductId}`;
+          if (this.currentlySelectedTask.IsOuterProduct) {
+            url = `/api/Package/InstrumentInOuterProduct/${this.currentlySelectedTask.PackageTaskId}`;
           }
           axios(url)
             .then(res => {
               if (res.data.Code == 200) {
-                this.tableData[this.selectOrigin][index].PackageTasks[
-                  activeName
-                ].PackageInstrumentList = res.data.Data;
+                this.currentlySelectedTask.PackageInstrumentList =
+                  res.data.Data;
               } else {
                 this.showInformation({
                   classify: "message",
@@ -643,53 +659,74 @@ export default {
             .catch(err => {});
         }
       } else {
-        this.selectRadio = 0;
+        //取消选择
+        this.currentlySelectedTask = {};
       }
     },
     //处理条码
-    handleBarCode(msg){
-      if(/^RY/.test(msg.toUpperCase())){
+    handleBarCode(msg) {
+      if (/^RY/.test(msg.toUpperCase())) {
         //提交
-        let submitData={
-          Pictures:[],
-          ReviewerBarCode:msg,
-          Packages:[]
+        let submitData = {
+          Pictures: [],
+          ReviewerBarCode: msg,
+          Packages: []
         };
-        for(let key in this.tableData){
-          if(key==="TasksOfCanBePackage"||key==="PackageTasksFromSterilizeFailed"){
-            if(this.tableData[key]){
-              for(let i=0;i<this.tableData[key].length;i++){
-                for(let j=0;j<this.tableData[key][i].PackageTasks.length;j++){
-                  if(this.tableData[key][i].PackageTasks[j].SingleCarrierId){
-                    this.tableData[key][i].PackageTasks[j].ThisTimePackageQuantity = 1;
-                    submitData.Packages.push(this.tableData[key][i].PackageTasks[j]);
+        for (let key in this.tableData) {
+          if (
+            key === "TasksOfCanBePackage" ||
+            key === "PackageTasksFromSterilizeFailed"
+          ) {
+            if (this.tableData[key]) {
+              for (let i = 0; i < this.tableData[key].length; i++) {
+                for (
+                  let j = 0;
+                  j < this.tableData[key][i].PackageTasks.length;
+                  j++
+                ) {
+                  if (this.tableData[key][i].PackageTasks[j].SingleCarrierId) {
+                    this.tableData[key][i].PackageTasks[
+                      j
+                    ].ThisTimePackageQuantity = 1;
+                    submitData.Packages.push(
+                      this.tableData[key][i].PackageTasks[j]
+                    );
                   }
                 }
               }
             }
           }
         }
-        if(submitData.Packages==""){
-          this.showInformation({classify:"message",msg:"单网篮包没有绑定单包网篮！"})
+        if (submitData.Packages == "") {
+          this.showInformation({
+            classify: "message",
+            msg: "单网篮包没有绑定单包网篮！"
+          });
           return;
         }
-        axios({url:`/api/Package/PackageTaskReceiveAndReturnPrintModel`,method:"POST",data:submitData}).then(res=>{
+        axios({
+          url: `/api/Package/PackageTaskReceiveAndReturnPrintModel`,
+          method: "POST",
+          data: submitData
+        }).then(res => {
           let type;
-          if(res.data.Code==200){
+          if (res.data.Code == 200) {
             type = "success";
             res.data.Data.forEach(element => {
               CSManager.PrintBarcode(JSON.stringify(element));
             });
-            if(this.websocket){
-              this.websocket.send(JSON.stringify({
-                CssdId: this.GLOBAL.UserInfo.ClinicId,
-                ReserveCheckState: false,
-                PackageState: true,
-                ProvideState: false,
-              }))
+            if (this.websocket) {
+              this.websocket.send(
+                JSON.stringify({
+                  CssdId: this.GLOBAL.UserInfo.ClinicId,
+                  ReserveCheckState: false,
+                  PackageState: true,
+                  ProvideState: false
+                })
+              );
             }
             window.location.href = `/package/taskList?origin=${this.selectOrigin}&clinicId=${this.tabActiveName}`;
-          }else{
+          } else {
             type = "error";
           }
           this.showInformation({
@@ -698,14 +735,16 @@ export default {
             type: type
           });
         });
-      }else{
-        axios({url:`/api/Scanner/Package/SingleProductCarrier/${msg}`}).then(res=>{
-          if(res.data.Code==200){
-            this.scanner2father(res.data.Data);
-          }else{
-            this.showInformation({classify:"message",msg:res.data.Msg});
-          }
-        }).catch(err=>{})
+      } else {
+        axios({ url: `/api/Scanner/Package/SingleProductCarrier/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.scanner2father(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
       }
     }
   }

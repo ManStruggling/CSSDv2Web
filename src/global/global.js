@@ -134,6 +134,8 @@ function Verification(obj) {
             return correct;
         case "NumberNotZero": //number不为0
             return obj.val === 0 ? error : correct;
+        case "NumberIsPositive": //number为正整数
+            return obj.val > 0 ? correct : error;
         case "NumberAllCannotBeZero": //number全部不能为0
             for (let i = 0; i < obj.val.length; i++) {
                 if (obj.val[i] === 0) {
