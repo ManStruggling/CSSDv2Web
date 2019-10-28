@@ -184,18 +184,22 @@ let endTime;
 let BarCode = "";
 let onOff = true;
 
+//监听程序键盘事件
 function ListenKeyDownEvent() {
     $(document).keydown(function(event) {
         if (CSManager.onOff) {
+            //键盘口扫描枪，数据初始化
             CSManager.startTime = new Date().getTime();
             CSManager.BarCode = "";
             CSManager.onOff = false;
         }
         if (event.keyCode == 16) {
             return;
-        } else if (event.keyCode == 9) {
+        } else if (event.keyCode == 13) {
+            //以enter回车键为后缀字符
             CSManager.endTime = new Date().getTime();
             if (CSManager.endTime - CSManager.startTime < 500 && CSManager.BarCode) {
+                //阻止默认事件
                 event.preventDefault();
                 ReceiveMessage("Package", CSManager.BarCode);
             }
