@@ -175,7 +175,7 @@ export default {
     // 提交完成
     submitComplete() {
       if(this.GLOBAL.VerificationHandle([
-        {val:this.submitData.LogisticsType,type:"StringNotEmpty",msg:"任务类型不能为空！"},{val:this.submitData.PlanStartTime,type:"StringNotEmpty",msg:"开始时间不能为空！"},{val:this.submitData.PlanEndTime,type:"StringNotEmpty",msg:"结束时间不能为空！"},{val:this.submitData.LogisticsCarId,type:"StringNotEmpty",msg:"车辆不能为空！"},{val:this.submitData.DriverId,type:"StringNotEmpty",msg:"司机不能为空！"},{val:this.submitData.HelperId,type:"StringNotEmpty",msg:"副手不能为空！"}
+        {val:this.submitData.LogisticsType,type:"StringNotEmpty",msg:"任务类型不能为空！"},{val:this.submitData.PlanStartTime,type:"StringNotEmpty",msg:"开始时间不能为空！"},{val:this.submitData.PlanEndTime,type:"StringNotEmpty",msg:"结束时间不能为空！"},{val:this.submitData.LogisticsCarId,type:"StringNotEmpty",msg:"车辆不能为空！"},{val:this.submitData.DriverId,type:"StringNotEmpty",msg:"司机不能为空！"}
       ])){
         axios({
           url: `/api/Logistics/DriverScheduleSubmit`,
