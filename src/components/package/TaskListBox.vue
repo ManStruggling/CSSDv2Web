@@ -58,6 +58,7 @@ export default {
   data() {
     return {
       forbid: false,
+      alreadyRequested: false,
       isShowPhoto: false,
       submitData: {
         Pictures: [],
@@ -116,34 +117,37 @@ export default {
         ])
       ) {
         this.forbid = true;
-        axios({
-          url: "/api/Package/PackageTaskReceiveAndReturnPrintModel",
-          method: "POST",
-          data: this.submitData
-        })
-          .then(res => {
-            let type;
-            if (res.data.Code == 200) {
-              type = "success";
-              res.data.Data.forEach(element => {
-                CSManager.PrintBarcode(JSON.stringify(element));
-              });
-              this.$emit("to-father", {
-                  CssdId: this.GLOBAL.UserInfo.ClinicId,
-                  ReserveCheckState: false,
-                  PackageState: true,
-                  ProvideState: false,
-                },this.$props.origin,this.$props.tabIndex);
-            } else {
-              type = "error";
-            }
-            this.showInformation({
-              classify: "message",
-              msg: res.data.Msg,
-              type: type
-            });
+        if(this.alreadyRequested == false) {
+          this.alreadyRequested = true;
+          axios({
+            url: "/api/Package/PackageTaskReceiveAndReturnPrintModel",
+            method: "POST",
+            data: this.submitData
           })
-          .catch(err => {});
+            .then(res => {
+              let type;
+              if (res.data.Code == 200) {
+                type = "success";
+                res.data.Data.forEach(element => {
+                  CSManager.PrintBarcode(JSON.stringify(element));
+                });
+                this.$emit("to-father", {
+                    CssdId: this.GLOBAL.UserInfo.ClinicId,
+                    ReserveCheckState: false,
+                    PackageState: true,
+                    ProvideState: false,
+                  },this.$props.origin,this.$props.tabIndex);
+              } else {
+                type = "error";
+              }
+              this.showInformation({
+                classify: "message",
+                msg: res.data.Msg,
+                type: type
+              });
+            })
+            .catch(err => {});
+        }
       }
     },
     handleBarCode(msg) {

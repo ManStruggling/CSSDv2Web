@@ -17,7 +17,8 @@ export default {
   props: ["BarCodeList", "ApiUrl","task_index","firstRequest"],
   data() {
     return {
-      input_str: ""
+      input_str: "",
+      alreadyRequested: false
     };
   },
   created() {
@@ -70,23 +71,26 @@ export default {
           });
           //没有录入
           if(this.input_str){
-            axios(`${this.$props.ApiUrl}/${this.input_str}`)
-              .then(res => {
-                if (res.data.Code == 200) {
-                  if(this.$props.task_index>=0){
-                    this.$emit("to-father", {data:res.data.Data,index:this.$props.task_index});
+            if(this.alreadyRequested == false) {
+              this.alreadyRequested = true;
+              axios(`${this.$props.ApiUrl}/${this.input_str}`)
+                .then(res => {
+                  if (res.data.Code == 200) {
+                    if(this.$props.task_index>=0){
+                      this.$emit("to-father", {data:res.data.Data,index:this.$props.task_index});
+                    }else{
+                      this.$emit("to-father", res.data.Data,this.input_str);
+                    }
+                  } else if(res.data.Code == 300){
+                    this.input_str = "";
+                    this.showInformation({classify:"message",msg:res.data.Msg,type: "warning"});
                   }else{
-                    this.$emit("to-father", res.data.Data,this.input_str);
+                    this.input_str = "";
+                    this.showInformation({classify:"message",msg:res.data.Msg,type: "error"});
                   }
-                } else if(res.data.Code == 300){
-                  this.input_str = "";
-                  this.showInformation({classify:"message",msg:res.data.Msg,type: "warning"});
-                }else{
-                  this.input_str = "";
-                  this.showInformation({classify:"message",msg:res.data.Msg,type: "error"});
-                }
-              })
-              .catch(err => {});
+                })
+                .catch(err => {});
+            }
           }
         }
       }

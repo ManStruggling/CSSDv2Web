@@ -63,7 +63,7 @@
               <div class="tab_content table_expand">
                 <div class="content_title">
                   <p style="width:210px;">包名称</p>
-                  <p>回收时间</p>
+                  <p>创建时间</p>
                   <p style="width:140px;">外包装</p>
                   <p style="width:60px;">计划数</p>
                   <p style="width:110px;">剩余数</p>
