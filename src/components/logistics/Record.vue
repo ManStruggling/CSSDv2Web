@@ -1,5 +1,5 @@
 <template>
-  <div class="cssd_box">
+  <div class="cssd_box" id="routeScheduleRecord">
     <div class="cssd_title">
       <ul class="cssd_menu">
         <router-link to="/logistics/driverSchedule" tag="li">
@@ -28,13 +28,14 @@
     <div class="cssd_table_center cssd_record_ui table_unExpand">
       <el-collapse accordion @change="collapseChange">
         <div class="content_title">
-          <p>任务类型</p>
+          <p style="width:100px;">任务类型</p>
           <p>制定日期</p>
-          <p>行程日期</p>
-          <p>制定人</p>
-          <p>车辆</p>
-          <p>司机</p>
-          <p>操作</p>
+          <p>开始日期</p>
+          <p>结束日期</p>
+          <p style="width:120px;">制定人</p>
+          <p style="width:120px;">车辆</p>
+          <p style="width:120px;">司机</p>
+          <p style="width:60px;">操作</p>
         </div>
         <el-collapse-item
           v-for="(item,collapseIndex) in recordList"
@@ -42,35 +43,35 @@
           :name="collapseIndex+''"
         >
           <div slot="title" class="collapseTh">
-            <div class="collapseTd">
+            <div class="collapseTd" style="width:100px;">
               <p>{{item.TaskType}}</p>
             </div>
             <div class="collapseTd">
               <p>{{item.CreatedTime}}</p>
             </div>
             <div class="collapseTd">
-              <p>{{item.PlanTime}}</p>
+              <p>{{item.PlanStartTime}}</p>
             </div>
             <div class="collapseTd">
+              <p>{{item.PlanEndTime}}</p>
+            </div>
+            <div class="collapseTd" style="width:120px;">
               <p>{{item.Operator}}</p>
             </div>
-            <div class="collapseTd">
+            <div class="collapseTd" style="width:120px;">
               <p>{{item.Car}}</p>
             </div>
-            <div class="collapseTd">
+            <div class="collapseTd" style="width:120px;">
               <p>{{item.Driver}}</p>
             </div>
-            <div class="collapseTd">
+            <div class="collapseTd" style="width:100px;">
               <p><el-button size="mini" @click.stop="changeRecord(collapseIndex)">修改</el-button></p>
             </div>
           </div>
-          <el-table
-            :data="item.Locations"
-          >
-            <el-table-column label="抵达科室" prop="ClinicName" width="240"></el-table-column>
-            <el-table-column label="抵达时间" prop="ArrivalTime" width="210"></el-table-column>
-            <el-table-column></el-table-column>
-          </el-table>
+          <el-tabs>
+            <el-tab-pane label="行程1" name="0">1</el-tab-pane>
+            <el-tab-pane label="行程2" name="1">2</el-tab-pane>
+          </el-tabs>
         </el-collapse-item>
       </el-collapse>
       <div class="recordNoData" v-show="recordList==''">暂无数据</div>
@@ -98,7 +99,7 @@ export default {
     collapseChange(index) {
       if (index != "" && this.recordList[index].Locations == "") {
         axios({
-          url: `/api/Logistics/DriverScheduleRecordDetail/${this.recordList[index].DriverScheduleId}`
+          url: `/api/Logistics/LookOverDriverScheduleDetail/${this.recordList[index].DriverScheduleId}`
         }).then(res => {
           if (res.data.Code == 200) {
             this.recordList[index].Locations = res.data.Data;
@@ -131,4 +132,35 @@ export default {
 @import'../../assets/css/tableNav';
 @import'../../assets/css/cssdRecord';
 @import'../../assets/css/tableUnExpand';
+#routeScheduleRecord{
+  .el-tabs {
+    margin: 20px 0 0 40px;
+    .el-tabs__header {
+      margin: 0 0 30px;
+      .el-tabs__nav-wrap {
+        height: 34px;
+        &::after {
+          height: 0;
+        }
+        .el-tabs__active-bar {
+          height: 0;
+        }
+        .el-tabs__item {
+          height: 32px;
+          font-size: 18px;
+          font-family: Microsoft YaHei;
+          font-weight: bold;
+          color: rgba(35, 46, 65, 1);
+          transition: 0.3s;
+          &.is-active {
+            font-size: 24px;
+            color: rgba(35, 46, 65, 1);
+          }
+        }
+      }
+    }
+    .el-tabs__content {
+    }
+  }
+}
 </style>
