@@ -18,6 +18,19 @@
       <div class="table_box">
         <ul>
           <li>
+            <p class="font16gray">供应室</p>
+            <div class="el_input_box">
+              <el-select v-model="submitData.ScheduleCssdId" class="green24x13" placeholder="供应室(必填)">
+                <el-option
+                  v-for="(item,index) in data.Cssds"
+                  :key="index"
+                  :label="item.CssdName"
+                  :value="item.ScheduleCssdId"
+                ></el-option>
+              </el-select>
+            </div>
+          </li>
+          <li>
             <p class="font16gray">任务类型</p>
             <div class="el_input_box">
               <el-select v-model="submitData.LogisticsType" class="green24x13" placeholder="任务类型(必填)">
@@ -112,6 +125,7 @@ export default {
   data() {
     return {
       submitData: {
+        ScheduleCssdId: "",
         LogisticsType: "",
         PlanStartTime:"",
         PlanEndTime:"",
@@ -175,8 +189,11 @@ export default {
     // 提交完成
     submitComplete() {
       if(this.GLOBAL.VerificationHandle([
-        {val:this.submitData.LogisticsType,type:"StringNotEmpty",msg:"任务类型不能为空！"},{val:this.submitData.PlanStartTime,type:"StringNotEmpty",msg:"开始时间不能为空！"},{val:this.submitData.PlanEndTime,type:"StringNotEmpty",msg:"结束时间不能为空！"},{val:this.submitData.LogisticsCarId,type:"StringNotEmpty",msg:"车辆不能为空！"},{val:this.submitData.DriverId,type:"StringNotEmpty",msg:"司机不能为空！"}
+        {val:this.submitData.ScheduleCssdId,type:"StringNotEmpty",msg:"供应室不能为空！"},{val:this.submitData.LogisticsType,type:"StringNotEmpty",msg:"任务类型不能为空！"},{val:this.submitData.PlanStartTime,type:"StringNotEmpty",msg:"开始时间不能为空！"},{val:this.submitData.PlanEndTime,type:"StringNotEmpty",msg:"结束时间不能为空！"},{val:this.submitData.LogisticsCarId,type:"StringNotEmpty",msg:"车辆不能为空！"},{val:this.submitData.DriverId,type:"StringNotEmpty",msg:"司机不能为空！"}
       ])){
+        if(this.submitData.HelperId===""){
+          this.submitData.HelperId = 0;
+        }
         axios({
           url: `/api/Logistics/DriverScheduleSubmit`,
           method: "Post",
@@ -226,7 +243,7 @@ export default {
         width: 234px;
         display: flex;
         justify-content: space-between;
-        margin: 20px 20px 20px 0;
+        margin: 20px 60px 20px 0;
         p {
           width: 64px;
           line-height: 40px;
