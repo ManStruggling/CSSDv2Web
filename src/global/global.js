@@ -309,9 +309,21 @@ function getParams(key){
     return obj[key];
 }
 
+//时间格式化
+function timeFormatDuring(timeSeconds){
+    var hours = parseInt((timeSeconds % (60 * 60 * 24)) / (60 * 60));
+    var minutes = parseInt((timeSeconds % (60 * 60)) / 60);
+    var seconds = timeSeconds % 60;
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    return hours + ":" + minutes + ":" + seconds;
+}
+
 Vue.prototype.showInformation = showInformation;
 
 export default {
+    timeFormatDuring,
     useWebsocketOrNot,
     getParams,
     initWebSorcket,

@@ -19,7 +19,7 @@
             </dt>
             <dd v-if="item.CleanDeviceType===0&&item.Status!=2?true:false">
               <div class="deviceTimebox clear_float">
-                <b>{{timeFormatDuring(item.CurrentTime)}}</b>
+                <b>{{GLOBAL.timeFormatDuring(item.CurrentTime)}}</b>
                 <el-button @click="resetDeviceTime(index)" class="resetTImeBtn" :disabled="item.Status==0?true:false"></el-button>
               </div>
             </dd>
@@ -126,19 +126,6 @@ export default {
           });
         })
         .catch(err => {});
-    }
-  },
-  computed: {
-    timeFormatDuring() {
-      return timeSeconds => {
-        var hours = parseInt((timeSeconds % (60 * 60 * 24)) / (60 * 60));
-        var minutes = parseInt((timeSeconds % (60 * 60)) / 60);
-        var seconds = timeSeconds % 60;
-        hours = hours < 10 ? "0" + hours : hours;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        return hours + ":" + minutes + ":" + seconds;
-      };
     }
   }
 };

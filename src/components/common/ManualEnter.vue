@@ -33,32 +33,37 @@ export default {
       if(this.GLOBAL.VerificationHandle([{val:this.input_str,type:"StringNotEmpty",msg:"扫描条码不能为空！"}])){
         //先请求再匹配是否重复
         if(this.$props.firstRequest){
-          axios(`${this.$props.ApiUrl}/${this.input_str}`)
-            .then(res => {
-              if (res.data.Code == 200) {
-                if(this.$props.task_index>=0){
-                  this.$emit("to-father", {data:res.data.Data,index:this.$props.task_index});
-                }else{
-                  if(res.data.Data.PackageBarCodeScannerVm){
-                    for(let i=0;i<this.$props.BarCodeList.length;i++){
-                      if (this.$props.BarCodeList[i].BarCode == res.data.Data.PackageBarCodeScannerVm.BarCode) {
-                        this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
-                        this.input_str = "";
-                        return;
+          if(this.alreadyRequested==false){
+            this.alreadyRequested = true;
+            axios(`${this.$props.ApiUrl}/${this.input_str}`)
+              .then(res => {
+                if (res.data.Code == 200) {
+                  if(this.$props.task_index>=0){
+                    this.$emit("to-father", {data:res.data.Data,index:this.$props.task_index});
+                  }else{
+                    if(res.data.Data.PackageBarCodeScannerVm){
+                      for(let i=0;i<this.$props.BarCodeList.length;i++){
+                        if (this.$props.BarCodeList[i].BarCode == res.data.Data.PackageBarCodeScannerVm.BarCode) {
+                          this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
+                          this.input_str = "";
+                          return;
+                        }
                       }
                     }
+                    this.$emit("to-father", res.data.Data,this.input_str);
                   }
-                  this.$emit("to-father", res.data.Data,this.input_str);
+                } else if(res.data.Code == 300){
+                  this.alreadyRequested = false;
+                  this.input_str = "";
+                  this.showInformation({classify:"message",msg:res.data.Msg,type: "warning"});
+                }else{
+                  this.alreadyRequested = false;
+                  this.input_str = "";
+                  this.showInformation({classify:"message",msg:res.data.Msg,type: "error"});
                 }
-              } else if(res.data.Code == 300){
-                this.input_str = "";
-                this.showInformation({classify:"message",msg:res.data.Msg,type: "warning"});
-              }else{
-                this.input_str = "";
-                this.showInformation({classify:"message",msg:res.data.Msg,type: "error"});
-              }
-            })
-            .catch(err => {});
+              })
+              .catch(err => {});
+          }
         }else{
           //先匹配重复再决定是否请求
           this.$props.BarCodeList.forEach(item => {
@@ -82,9 +87,11 @@ export default {
                       this.$emit("to-father", res.data.Data,this.input_str);
                     }
                   } else if(res.data.Code == 300){
+                    this.alreadyRequested = false;
                     this.input_str = "";
                     this.showInformation({classify:"message",msg:res.data.Msg,type: "warning"});
                   }else{
+                    this.alreadyRequested = false;
                     this.input_str = "";
                     this.showInformation({classify:"message",msg:res.data.Msg,type: "error"});
                   }

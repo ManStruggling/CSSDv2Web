@@ -134,9 +134,8 @@ export default {
 @import'../../assets/css/tableUnExpand';
 #routeScheduleRecord{
   .el-tabs {
-    margin: 20px 0 0 40px;
     .el-tabs__header {
-      margin: 0 0 30px;
+      padding: 20px 0 5px 40px;
       .el-tabs__nav-wrap {
         height: 34px;
         &::after {

@@ -127,7 +127,7 @@
                     >
                       <div class="tab_content">
                         <div class="timerBox">
-                          <p>{{timeFormatDuring(item.RemainingTime)}}</p>
+                          <p>{{GLOBAL.timeFormatDuring(item.RemainingTime)}}</p>
                           <span @click="resetDeviceTime(index)"></span>
                         </div>
                         <ul class="clear_float">
@@ -337,18 +337,6 @@ export default {
     }
   },
   computed: {
-    //时间格式化
-    timeFormatDuring() {
-      return timeSeconds => {
-        var hours = parseInt((timeSeconds % (60 * 60 * 24)) / (60 * 60));
-        var minutes = parseInt((timeSeconds % (60 * 60)) / 60);
-        var seconds = timeSeconds % 60;
-        hours = hours < 10 ? "0" + hours : hours;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-        return hours + ":" + minutes + ":" + seconds;
-      };
-    },
     countFailedPackageNumber(){
       return index=>{
         let list = this.cleanTask.CleanPendingReviewTasks[index].FailedCarriers;
