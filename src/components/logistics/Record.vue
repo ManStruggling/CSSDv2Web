@@ -1,5 +1,5 @@
 <template>
-  <div class="cssd_box" id="routeScheduleRecord">
+  <div class="cssd_box">
     <div class="cssd_title">
       <ul class="cssd_menu">
         <router-link to="/logistics/driverSchedule" tag="li">
@@ -26,15 +26,11 @@
       </div>
     </div>
     <div class="cssd_table_center cssd_record_ui table_unExpand">
-      <el-collapse accordion @change="collapseChange">
+      <el-collapse accordion>
         <div class="content_title">
           <p style="width:100px;">任务类型</p>
           <p>制定日期</p>
-          <p>开始日期</p>
-          <p>结束日期</p>
           <p style="width:120px;">制定人</p>
-          <p style="width:120px;">车辆</p>
-          <p style="width:120px;">司机</p>
           <p style="width:60px;">操作</p>
         </div>
         <el-collapse-item
@@ -49,29 +45,35 @@
             <div class="collapseTd">
               <p>{{item.CreatedTime}}</p>
             </div>
-            <div class="collapseTd">
-              <p>{{item.PlanStartTime}}</p>
-            </div>
-            <div class="collapseTd">
-              <p>{{item.PlanEndTime}}</p>
-            </div>
             <div class="collapseTd" style="width:120px;">
               <p>{{item.Operator}}</p>
             </div>
-            <div class="collapseTd" style="width:120px;">
-              <p>{{item.Car}}</p>
-            </div>
-            <div class="collapseTd" style="width:120px;">
-              <p>{{item.Driver}}</p>
-            </div>
-            <div class="collapseTd" style="width:100px;">
+            <div class="collapseTd" style="width:60px;">
               <p><el-button size="mini" @click.stop="changeRecord(collapseIndex)">修改</el-button></p>
             </div>
           </div>
-          <el-tabs>
-            <el-tab-pane label="行程1" name="0">1</el-tab-pane>
-            <el-tab-pane label="行程2" name="1">2</el-tab-pane>
-          </el-tabs>
+          <ul class="record_detail clear_float">
+            <li>
+              <p>开始日期</p>
+              <span>{{item.PlanStartTime}}</span>
+            </li>
+            <li>
+              <p>结束日期</p>
+              <span>{{item.PlanEndTime}}</span>
+            </li>
+            <li>
+              <p>车辆</p>
+              <span>{{item.Car}}</span>
+            </li>
+            <li>
+              <p>司机</p>
+              <span>{{item.Driver}}</span>
+            </li>
+            <li>
+              <p>副手</p>
+              <span>{{item.Helper}}</span>
+            </li>
+          </ul>
         </el-collapse-item>
       </el-collapse>
       <div class="recordNoData" v-show="recordList==''">暂无数据</div>
@@ -95,20 +97,6 @@ export default {
   },
   mounted() {},
   methods: {
-    //二次请求
-    collapseChange(index) {
-      if (index != "" && this.recordList[index].Locations == "") {
-        axios({
-          url: `/api/Logistics/LookOverDriverScheduleDetail/${this.recordList[index].DriverScheduleId}`
-        }).then(res => {
-          if (res.data.Code == 200) {
-            this.recordList[index].Locations = res.data.Data;
-          } else {
-            this.showInformation({classify:"message",msg:res.data.Msg});
-          }
-        });
-      }
-    },
     //修改记录
     changeRecord(index){
       this.$router.push({path:'/clean/registration',query:{
@@ -132,34 +120,4 @@ export default {
 @import'../../assets/css/tableNav';
 @import'../../assets/css/cssdRecord';
 @import'../../assets/css/tableUnExpand';
-#routeScheduleRecord{
-  .el-tabs {
-    .el-tabs__header {
-      padding: 20px 0 5px 40px;
-      .el-tabs__nav-wrap {
-        height: 34px;
-        &::after {
-          height: 0;
-        }
-        .el-tabs__active-bar {
-          height: 0;
-        }
-        .el-tabs__item {
-          height: 32px;
-          font-size: 18px;
-          font-family: Microsoft YaHei;
-          font-weight: bold;
-          color: rgba(35, 46, 65, 1);
-          transition: 0.3s;
-          &.is-active {
-            font-size: 24px;
-            color: rgba(35, 46, 65, 1);
-          }
-        }
-      }
-    }
-    .el-tabs__content {
-    }
-  }
-}
 </style>
