@@ -159,6 +159,8 @@ export default {
         }
       }
     }
+    .el-tabs__content {
+    }
   }
 }
 </style>
