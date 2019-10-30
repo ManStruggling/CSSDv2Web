@@ -34,7 +34,7 @@ export default {
     };
   },
   created() {
-    axios({ url: `/api/Logistics/SubClinicUsedPackage` })
+    axios({ url: `/api/Logistics/ClinicUsedPackage` })
       .then(res => {
         if (res.data.Code == 200) {
           this.packages = res.data.Data.Packages;
