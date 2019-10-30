@@ -98,7 +98,7 @@
         </dd>
       </dl>
       <dl
-        v-if="GLOBAL.UserInfo.ClinicType===2"
+        v-if="GLOBAL.UserInfo.ClinicType===2||GLOBAL.UserInfo.ClinicType===3"
         v-show="GLOBAL.UserInfo.JobAndCompetence.includes('272')||GLOBAL.UserInfo.JobAndCompetence.includes('271')||GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('200')||GLOBAL.UserInfo.JobAndCompetence.includes('202')"
       >
         <dt>临床医疗科室</dt>
@@ -157,7 +157,7 @@
             </router-link>
             <router-link 
               to="/apply/putInInventory"
-              v-if="GLOBAL.UserInfo.ClinicType===2"
+              v-if="GLOBAL.UserInfo.ClinicType===2||GLOBAL.UserInfo.ClinicType===3"
               v-show="GLOBAL.UserInfo.JobAndCompetence.includes('262')||GLOBAL.UserInfo.JobAndCompetence.includes('261')||GLOBAL.UserInfo.JobAndCompetence.includes('200')||GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('202')"
             >
               <li>
