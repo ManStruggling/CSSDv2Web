@@ -35,7 +35,6 @@
           <p style="width:120px;">制定人</p>
           <p style="width:120px;">车辆</p>
           <p style="width:120px;">司机</p>
-          <p style="width:60px;">操作</p>
         </div>
         <el-collapse-item
           v-for="(item,collapseIndex) in recordList"
@@ -63,9 +62,6 @@
             </div>
             <div class="collapseTd" style="width:120px;">
               <p>{{item.Driver}}</p>
-            </div>
-            <div class="collapseTd" style="width:100px;">
-              <p><el-button size="mini" @click.stop="changeRecord(collapseIndex)">修改</el-button></p>
             </div>
           </div>
           <el-tabs activeName="0" v-show="item.Locations==''?false:true">
@@ -119,11 +115,6 @@ export default {
           }
         });
       }
-    },
-    //修改记录
-    changeRecord(index){
-      this.$router.push({path:'/clean/registration',query:{
-        recordId:this.recordList[index].Id}})
     },
     //查询
     searchRecordsData(){
