@@ -625,31 +625,31 @@ export default {
               //条码包 finded 包类型  ##扫描枪
               this.collapseActiveName = j + "";
               NoPackageClass = false;
-              this.recoveryData.Clinics[i].RecycleProducts[
-                j
-              ].RecyclePackageIds.push(data);
+              this.recoveryData.Clinics[i].RecycleProducts[j].RecyclePackageIds.push(data);
+              return;
             }
             //计数包
             if (
               ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
-              data.IsNotPrintBarCode === true &&
-              ClinicList[i].RecycleProducts[j].IsNotPrintBarCode === true
+              data.IsNotPrintBarCode && ClinicList[i].RecycleProducts[j].IsNotPrintBarCode
             ) {
               //计数包 finded 包类型
               NoPackageClass = false;
               this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
                 data.ProductQuantity;
+              return;
             }
             //丢失包
             if (
               ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
-              data.IsLostPackage === true &&
-              ClinicList[i].RecycleProducts[j].IsLostPackage === true
+              data.IsLostPackage &&
+              ClinicList[i].RecycleProducts[j].IsLostPackage
             ) {
               //丢失包 finded 包类型
               NoPackageClass = false;
               this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
                 data.ProductQuantity;
+              return;
             }
           }
           //没有找到包类型
@@ -678,6 +678,7 @@ export default {
             );
             this.collapseActiveName =
               this.recoveryData.Clinics[i].RecycleProducts.length - 1 + "";
+            return;
           }
         }
       }

@@ -2,7 +2,7 @@
   <div class="cssd_box" id="sterilizeReady">
     <div class="cssd_title">
       <ul class="cssd_menu">
-        <li @click="sterilizeReadyGoBack">
+        <li @click="goBack">
           <p>返回</p>
         </li>
         <li @click="handleShowManualEnter">
@@ -143,7 +143,7 @@ export default {
       }
     },
     //返回
-    sterilizeReadyGoBack() {
+    goBack() {
       if (this.sterilizeReadyChangeMode) {
         this.$router.push("/sterilize/readyRecord");
       } else {
@@ -170,6 +170,7 @@ export default {
               onOff = false;
               this.submitData.PackageBarCodes[j].ProductQuantity +=
                 data[i].ProductQuantity;
+              break;
             }
           }
           if (onOff) {
@@ -256,7 +257,6 @@ export default {
           if (this.submitData.CarrierId == 0) {
             this.submitData.CarrierId = data.CarrierBarCodeScannerVm.Id;
             this.submitData.CarrierName = data.CarrierBarCodeScannerVm.Name;
-            console.log('run')
           } else {
             this.$confirm("您已录入网篮,是否需要替换该网篮?", "提示", {
               confirmButtonText: "确定",
@@ -269,29 +269,34 @@ export default {
               })
               .catch(() => {});
           }
-          return;
         }
       }
     },
     //添加数据处理
-    handleBarCode(msg){
+    handleBarCode(msg) {
       let onOff = true;
       this.submitData.PackageBarCodes.forEach(item => {
         //发现已录入
         if (item.BarCode == msg.toUpperCase()) {
-          this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
+          this.showInformation({
+            classify: "message",
+            msg: "该条码已录入！",
+            type: "warning"
+          });
           onOff = false;
           return;
         }
       });
-      if(onOff){
-        axios({url:`/api/Scanner/SterilizeReady/${msg}`}).then(res=>{
-          if(res.data.Code==200){
-            this.packageData2father(res.data.Data);
-          }else{
-            this.showInformation({classify:"message",msg:res.data.Msg});
-          }
-        }).catch(err=>{})
+      if (onOff) {
+        axios({ url: `/api/Scanner/SterilizeReady/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.packageData2father(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
       }
     }
   },

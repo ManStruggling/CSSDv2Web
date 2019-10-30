@@ -430,6 +430,7 @@ export default {
             for (let k = 0; k < data.ProductQuantity; k++) {
               this.newPurchasingData[i].Packages.push(Object.assign({}, data));
             }
+            return;
           } else {
             // 一般包
             for (

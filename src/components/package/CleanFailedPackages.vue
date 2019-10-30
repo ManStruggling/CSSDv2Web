@@ -1,4 +1,7 @@
 <template>
+  <!-- 审核清洗不合格包
+        根据合格器械数算出不合格数最小值(外来器械直接填写不合格包数量)
+  -->
   <div class="cssd_totalBar tabs_totalBar" id="cleanFailedPackageList">
     <el-tabs type="border-card" :tab-position="'left'">
       <el-tab-pane v-for="(item,index) in carrierList" :key="index" :name="index+''">
@@ -19,7 +22,7 @@
               :name="collapseIndex+''"
               :class="value.IsOuterProduct?'collapseUnExpand':''"
             >
-            <!-- 包名称 -->
+              <!-- 包名称 -->
               <div slot="title" class="collapseTh">
                 <div class="collapseTd">
                   <p>{{value.ProductName}}</p>
@@ -104,10 +107,10 @@ export default {
       isShowUnqualifiedInstruments: false, //不合格器械质量卡
       carrierList: [],
       cleanQuality: {}, //清洗质量
-      carrier_index: 0,
-      package_index: 0,
-      instrument_index: 0,
-      max_num: 0
+      carrier_index: 0, //网篮索引
+      package_index: 0, //包索引
+      instrument_index: 0, //器械索引
+      max_num: 0 //最大数量
     };
   },
   props: ["failedCarriers", "taskId"],
@@ -132,6 +135,7 @@ export default {
     }
   },
   methods: {
+    //保存
     saveData() {
       this.$emit("cleanFailed-to-father", this.carrierList);
     },
@@ -139,7 +143,7 @@ export default {
     cancel() {
       this.$emit("cleanFailed-to-father");
     },
-    //编辑
+    //编辑,传递索引和最大限制数
     editCleanQuality(index, collapseIndex, $index) {
       this.cleanQuality = this.carrierList[index].Packages[
         collapseIndex
@@ -157,28 +161,40 @@ export default {
     UnqualifiedInstruments(data) {
       this.isShowUnqualifiedInstruments = false;
       if (data) {
-        this.carrierList[data.carrierIndex].Packages[data.packageIndex].Instruments[data.instrumentIndex].FailedInstrumentForClean.CleanInstrumentRecord = Object.assign(
+        this.carrierList[data.carrierIndex].Packages[
+          data.packageIndex
+        ].Instruments[
+          data.instrumentIndex
+        ].FailedInstrumentForClean.CleanInstrumentRecord = Object.assign(
           {},
           data.data
         );
-        this.carrierList[data.carrierIndex].Packages[data.packageIndex].Instruments[data.instrumentIndex].FailedInstrumentCount = data.data.BloodStain + data.data.Stains + data.data.RustStain;
-        let max_number = 0;
+        //根据清洗质量计算不合格器械数量
         this.carrierList[data.carrierIndex].Packages[
           data.packageIndex
-        ].Instruments.forEach(element => {
-          if (
-            Math.ceil(element.FailedInstrumentCount / element.InstrumentCount) >
-            max_number
-          ) {
-            max_number = Math.ceil(
-              element.FailedInstrumentCount / element.InstrumentCount
-            );
-          }
-        });
-        this.carrierList[data.carrierIndex].Packages[
-          data.packageIndex
-        ].CanNotBePackagedCount = max_number;
+        ].Instruments[data.instrumentIndex].FailedInstrumentCount =
+          data.data.BloodStain + data.data.Stains + data.data.RustStain;
+        this.getTheMaximumNumberOfFailedPackages(data);
       }
+    },
+    //获取不合格器械最大值
+    getTheMaximumNumberOfFailedPackages(data){
+      let max_number = 0; 
+      this.carrierList[data.carrierIndex].Packages[
+        data.packageIndex
+      ].Instruments.forEach(element => {
+        if (
+          Math.ceil(element.FailedInstrumentCount / element.InstrumentCount) >
+          max_number
+        ) {
+          max_number = Math.ceil(
+            element.FailedInstrumentCount / element.InstrumentCount
+          );
+        }
+      });
+      this.carrierList[data.carrierIndex].Packages[
+        data.packageIndex
+      ].CanNotBePackagedCount = max_number;
     },
     handelNumberChange(newValue, oldValue, value) {
       if (newValue == undefined) {

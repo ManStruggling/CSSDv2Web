@@ -125,7 +125,7 @@
                       <el-table-column label="不合格原因" width="210">
                         <template slot-scope="props">
                           <el-select v-model="props.row.FailedCauseId" class="green24x13">
-                            <el-option 
+                            <el-option
                               v-for="(val,idx) in failedCauses"
                               :key="idx"
                               :label="val.FailedCause"
@@ -290,17 +290,16 @@ export default {
   data() {
     return {
       photoData: [],
-      task_index: -1,
-      input_str: "",
+      task_index: -1, //待审核任务的索引
+      input_str: "", //快速定位绑定值
       isShowPhoto: false,
-      isShowFailedCountPackages: false,
-      isShowBiologyCheck: false,
-      isShowManualEnter: false,
-      isShowFastLocation: false,
+      isShowFailedCountPackages: false, //计数包控制器
+      isShowBiologyCheck: false, //生物检测控制器
+      isShowManualEnter: false, //手工录入控制器
+      isShowFastLocation: false, //快速定位控制器
       pendingReviewActiveName: "0",
       sterilizingActiveName: "0",
-      sterilizeTaskIndex: "0",
-      failedCauses:[],
+      failedCauses: [], //失败原因
       sterilizeTask: {
         Sterilizing: [],
         PendingReview: []
@@ -323,7 +322,7 @@ export default {
           //开启计时器do countdown  RemainingTime
           if (this.sterilizeTask.Sterilizing) {
             this.sterilizeTask.Sterilizing.forEach((val, index) => {
-              if(val.RemainingTime>0){
+              if (val.RemainingTime > 0) {
                 val["Countdown" + index] = setInterval(() => {
                   val.RemainingTime--;
                   if (val.RemainingTime <= 0) {
@@ -436,7 +435,10 @@ export default {
               .find("dd.reviewDd")
               .stop()
               .slideUp("fast");
-            $(".cssd_talbe_left_menu").animate({scrollTop:60+index*40 }, 1000);
+            $(".cssd_talbe_left_menu").animate(
+              { scrollTop: 60 + index * 40 },
+              1000
+            );
             return;
           }
         });
@@ -458,7 +460,10 @@ export default {
               .find("dd.reviewDd")
               .stop()
               .slideUp("fast");
-            $(".cssd_talbe_left_menu").animate({scrollTop:120+index*40 }, 1000);
+            $(".cssd_talbe_left_menu").animate(
+              { scrollTop: 120 + index * 40 },
+              1000
+            );
             return;
           }
         });
@@ -493,21 +498,41 @@ export default {
     failedCountPackagesData2father(data) {
       this.isShowFailedCountPackages = false;
       if (data) {
-        for(let i=0;i<data.data.length;i++){
-          let onOff = true;//find data --true not find --false finded
-          for(let j=0;j<this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages.length;j++){
-            if(this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages[j].ProductId===data.data[i].ProductId){
+        for (let i = 0; i < data.data.length; i++) {
+          let onOff = true; //find data --true not find --false finded
+          for (
+            let j = 0;
+            j <
+            this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages
+              .length;
+            j++
+          ) {
+            if (
+              this.sterilizeTask.PendingReview[data.index]
+                .SterilizeFailedPackages[j].ProductId === data.data[i].ProductId
+            ) {
               onOff = false;
-              this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages[j].ProductQuantity += data.data[i].ProductQuantity;
-              if(this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages[j].ProductQuantity>data.data[i].MaxProductQuantity){
-                this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages[j].ProductQuantity = data.data[i].MaxProductQuantity
+              this.sterilizeTask.PendingReview[
+                data.index
+              ].SterilizeFailedPackages[j].ProductQuantity +=
+                data.data[i].ProductQuantity;
+              if (
+                this.sterilizeTask.PendingReview[data.index]
+                  .SterilizeFailedPackages[j].ProductQuantity >
+                data.data[i].MaxProductQuantity
+              ) {
+                this.sterilizeTask.PendingReview[
+                  data.index
+                ].SterilizeFailedPackages[j].ProductQuantity =
+                  data.data[i].MaxProductQuantity;
               }
               break;
             }
           }
-          if(onOff){
-            // data.data[i].FailedCauseId=this.failedCauses[0].FailedCauseId;
-            this.sterilizeTask.PendingReview[data.index].SterilizeFailedPackages.push(data.data[i]);
+          if (onOff) {
+            this.sterilizeTask.PendingReview[
+              data.index
+            ].SterilizeFailedPackages.push(data.data[i]);
           }
         }
       }
@@ -519,11 +544,7 @@ export default {
     //灭菌审核提交
     submitCheckResult(index) {
       //化学检测不合格
-      if (
-        this.sterilizeTask.PendingReview[index].ReviewType ==
-          "ChemicalReviewStatus" &&
-        this.sterilizeTask.PendingReview[index].ChemicalReviewStatus == 3
-      ) {
+      if (this.sterilizeTask.PendingReview[index].ChemicalReviewStatus == 3) {
         this.$confirm("确认化学检测不合格,并重新生成配包任务吗?", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -552,68 +573,95 @@ export default {
               .catch(err => {});
           })
           .catch(() => {});
-        return;
-      }
-      //整理成后端需要的结构
-      this.sterilizeTask.PendingReview[index].ReviewResultVm = {
-        ReviewType: this.sterilizeTask.PendingReview[index].ReviewType,
-        ReviewResult: this.sterilizeTask.PendingReview[index][
-          this.sterilizeTask.PendingReview[index].ReviewType
-        ]
-      };
-      for(let i=0;i<this.sterilizeTask.PendingReview[index].SterilizeFailedPackages.length;i++){
-        if(!this.sterilizeTask.PendingReview[index].SterilizeFailedPackages[i].FailedCauseId){
-          this.showInformation({classify:"message",msg:"请选择不合格原因！"});
-          return;
-        }
-      }
-      axios({
-        url: "/api/Sterilize/SterilizeReviewComplete",
-        method: "POST",
-        data: this.sterilizeTask.PendingReview[index]
-      })
-        .then(res => {
-          let type;
-          if (res.data.Code == 200) {
-            type = "success";
-            this.$router.go(0);
-          } else {
-            type = "error";
+      } else {
+        //整理成后端需要的结构
+        this.sterilizeTask.PendingReview[index].ReviewResultVm = {
+          ReviewType: this.sterilizeTask.PendingReview[index].ReviewType,
+          ReviewResult: this.sterilizeTask.PendingReview[index][
+            this.sterilizeTask.PendingReview[index].ReviewType
+          ]
+        };
+        //验证不合格原因
+        for (
+          let i = 0;
+          i <
+          this.sterilizeTask.PendingReview[index].SterilizeFailedPackages
+            .length;
+          i++
+        ) {
+          if (
+            !this.sterilizeTask.PendingReview[index].SterilizeFailedPackages[i]
+              .FailedCauseId
+          ) {
+            this.showInformation({
+              classify: "message",
+              msg: "请选择不合格原因！"
+            });
+            return;
           }
-          this.showInformation({
-            classify: "message",
-            msg: res.data.Msg,
-            type: type
-          });
+        }
+        axios({
+          url: "/api/Sterilize/SterilizeReviewComplete",
+          method: "POST",
+          data: this.sterilizeTask.PendingReview[index]
         })
-        .catch(err => {});
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              type = "success";
+              this.$router.go(0);
+            } else {
+              type = "error";
+            }
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
+          })
+          .catch(err => {});
+      }
     },
-    handleBarCode(msg){
-      if(/^MJR/.test(msg)){
+    handleBarCode(msg) {
+      if (/^MJR/.test(msg)) {
         //faster location
         this.input_str = msg;
         this.SaveOption();
-      }else{
-        console.log('run')
-        if(this.sterilizeTask.PendingReview[this.pendingReviewActiveName]){
+      } else {
+        if (this.sterilizeTask.PendingReview[this.pendingReviewActiveName]) {
           let onOff = true;
-          this.sterilizeTask.PendingReview[this.pendingReviewActiveName].SterilizeFailedPackages.forEach(item => {
+          this.sterilizeTask.PendingReview[
+            this.pendingReviewActiveName
+          ].SterilizeFailedPackages.forEach(item => {
             //发现已录入
             if (item.BarCode == msg.toUpperCase()) {
-              this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
+              this.showInformation({
+                classify: "message",
+                msg: "该条码已录入！",
+                type: "warning"
+              });
               onOff = false;
               return;
             }
           });
-          if(onOff){
-            axios({url:`/api/Scanner/SterilizerReviewFailed/${this.sterilizeTask.PendingReview[this.pendingReviewActiveName].SterilizeTaskId}/${msg}`}).then(res=>{
-              if(res.data.Code==200){
-                this.isShowManualEnter = false;
-                this.sterilizeTask.PendingReview[this.pendingReviewActiveName].SterilizeFailedPackages.push(res.data.Data.Package);
-              }else{
-                this.showInformation({classify:"message",msg:res.data.Msg});
-              }
-            }).catch(err=>{})
+          if (onOff) {
+            axios({
+              url: `/api/Scanner/SterilizerReviewFailed/${this.sterilizeTask.PendingReview[this.pendingReviewActiveName].SterilizeTaskId}/${msg}`
+            })
+              .then(res => {
+                if (res.data.Code == 200) {
+                  this.isShowManualEnter = false;
+                  this.sterilizeTask.PendingReview[
+                    this.pendingReviewActiveName
+                  ].SterilizeFailedPackages.push(res.data.Data.Package);
+                } else {
+                  this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                  });
+                }
+              })
+              .catch(err => {});
           }
         }
       }
@@ -622,7 +670,9 @@ export default {
   computed: {
     computedPhotoNumber() {
       return index => {
-        return this.sterilizeTask.PendingReview[index].Pictures==null?0:this.sterilizeTask.PendingReview[index].Pictures.length;
+        return this.sterilizeTask.PendingReview[index].Pictures == null
+          ? 0
+          : this.sterilizeTask.PendingReview[index].Pictures.length;
       };
     }
   }

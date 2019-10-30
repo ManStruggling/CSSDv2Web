@@ -1,4 +1,5 @@
 <template>
+  <!-- 灭菌 -->
   <div class="cssd_box" id="sterilizeRegistration">
     <div class="cssd_title">
       <ul class="cssd_menu">
@@ -124,7 +125,11 @@
       leave-active-class="animated fadeOut faster"
     >
       <!-- 重选灭菌程序 -->
-      <SterilizeSelectBox v-if="isShowSterilizeSelect" @to-father="deviceProgram2father" :deviceId="submitData.DeviceId"></SterilizeSelectBox>
+      <SterilizeSelectBox
+        v-if="isShowSterilizeSelect"
+        @to-father="deviceProgram2father"
+        :deviceId="submitData.DeviceId"
+      ></SterilizeSelectBox>
     </transition>
     <transition
       name="fade"
@@ -144,10 +149,7 @@
       leave-active-class="animated fadeOut faster"
     >
       <!-- 代消包 -->
-      <Substitution
-        v-if="isShowSubstitution"
-        @substitution-to-father="substitutionToFather"
-      ></Substitution>
+      <Substitution v-if="isShowSubstitution" @substitution-to-father="substitutionToFather"></Substitution>
     </transition>
   </div>
 </template>
@@ -165,18 +167,18 @@ export default {
       isShowManualEnter: false, //显示手工录入
       isShowCountNumberPackageList: false, //计数包登记
       isShowSterilizeSelect: false, //显示灭菌程序
-      isShowSubstitution:false,//显示代消包
+      isShowSubstitution: false, //显示代消包
       sterilizeRecordModle: false, //灭菌修改模式
       BiologicalTestForbit: false, //生物检测禁用
       submitData: {
-        HelpSterilizeQuantity:0,
-        IsHasSubstitution:false,//是否有代消包
+        HelpSterilizeQuantity: 0,
+        IsHasSubstitution: false, //是否有代消包
         IsBiologicalTest: false, //是否生物监测
         DeviceModelName: this.$route.query.deviceName,
         DeviceId: this.$route.query.deviceId - 0,
         DeviceModelProgramName: this.$route.query.programName,
         DeviceProgramId: this.$route.query.programId - 0,
-        IsDbTestProgram:this.$route.query.isDbTestProgram,
+        IsDbTestProgram: this.$route.query.isDbTestProgram,
         Carriers: [],
         NotInCarrierPackages: []
       }
@@ -200,59 +202,62 @@ export default {
         .then(res => {
           if (res.data.Code == 200) {
             this.submitData = res.data.Data;
-            if(this.submitData.HelpSterilizeQuantity){
+            if (this.submitData.HelpSterilizeQuantity) {
               this.submitData.IsHasSubstitution = true;
               this.submitData.NotInCarrierPackages.push({
-                BarCode:"代消包",
-                IsSubstitution:true,
-                IsNotPrintBarCode:true,
-                MaximumQuantity:9999,
-                ProductName:"代消包",
-                ProductQuantity:this.submitData.HelpSterilizeQuantity,
-                ProvideSubClinicName:"代消包"
-              })
-            }else{
+                BarCode: "代消包",
+                IsSubstitution: true,
+                IsNotPrintBarCode: true,
+                MaximumQuantity: 9999,
+                ProductName: "代消包",
+                ProductQuantity: this.submitData.HelpSterilizeQuantity,
+                ProvideSubClinicName: "代消包"
+              });
+            } else {
               this.submitData.IsHasSubstitution = false;
             }
           } else {
-            this.showInformation({classify:"message",msg:res.data.Msg});
+            this.showInformation({ classify: "message", msg: res.data.Msg });
           }
         })
         .catch(err => {});
     }
   },
-  mounted() {
-  },
+  mounted() {},
   beforeDestroy() {
     CSManager.handleDataThis = null;
   },
   methods: {
     //代消包处理
-    substitution(){
+    substitution() {
       this.isShowSubstitution = true;
     },
     //代消包数据传递
-    substitutionToFather(data){
+    substitutionToFather(data) {
       this.isShowSubstitution = false;
-      if(data){
-        if(this.submitData.IsHasSubstitution){
-          for(let i=0;i<this.submitData.NotInCarrierPackages.length;i++){
-            if(this.submitData.NotInCarrierPackages[i].IsSubstitution){
+      if (data) {
+        if (this.submitData.IsHasSubstitution) {
+          for (
+            let i = 0;
+            i < this.submitData.NotInCarrierPackages.length;
+            i++
+          ) {
+            if (this.submitData.NotInCarrierPackages[i].IsSubstitution) {
               this.submitData.NotInCarrierPackages[i].ProductQuantity += data;
               return;
             }
           }
-        }else{
+        } else {
           this.submitData.IsHasSubstitution = true;
           this.submitData.NotInCarrierPackages.push({
-            BarCode:"代消包",
-            IsSubstitution:true,
-            IsNotPrintBarCode:true,
-            MaximumQuantity:9999,
-            ProductName:"代消包",
-            ProductQuantity:data,
-            ProvideSubClinicName:"代消包"
-          })
+            BarCode: "代消包",
+            IsSubstitution: true,
+            IsNotPrintBarCode: true,
+            MaximumQuantity: 9999,
+            ProductName: "代消包",
+            ProductQuantity: data,
+            ProvideSubClinicName: "代消包"
+          });
         }
       }
     },
@@ -284,10 +289,19 @@ export default {
         this.activeName = "-1";
         let onOff = true;
         for (let i = 0; i < data.length; i++) {
-          for (let j = 0;j < this.submitData.NotInCarrierPackages.length;j++) {
-            if (data[i].ProductId == this.submitData.NotInCarrierPackages[j].ProductId) {
+          for (
+            let j = 0;
+            j < this.submitData.NotInCarrierPackages.length;
+            j++
+          ) {
+            if (
+              data[i].ProductId ==
+              this.submitData.NotInCarrierPackages[j].ProductId
+            ) {
               onOff = false;
-              this.submitData.NotInCarrierPackages[j].ProductQuantity += data[i].ProductQuantity;
+              this.submitData.NotInCarrierPackages[j].ProductQuantity +=
+                data[i].ProductQuantity;
+              break;
             }
           }
           if (onOff) {
@@ -299,17 +313,18 @@ export default {
     //删除无网篮包
     deleteNotCarrierPackages() {
       this.submitData.NotInCarrierPackages = [];
+      this.submitData.IsHasSubstitution = false;
     },
     //删除网篮
     deleteThisCarrier(index) {
       this.submitData.Carriers.splice(index, 1);
     },
-    //ui样式 ta切换
+    //ui样式 tab切换
     notCarrierTabClick(vm) {
       this.activeName = "-1";
       this.activeNameNotCarriersPackage = vm.index;
     },
-    //ui样式 tb切换
+    //ui样式 tab切换
     carrierTabClick(vm) {
       this.activeNameNotCarriersPackage = "-1";
       this.activeName = vm.index;
@@ -322,7 +337,9 @@ export default {
         type: "warning"
       })
         .then(() => {
-          if(this.submitData.NotInCarrierPackages[index].IsSubstitution===true){
+          if (
+            this.submitData.NotInCarrierPackages[index].IsSubstitution === true
+          ) {
             this.submitData.IsHasSubstitution = false;
           }
           this.submitData.NotInCarrierPackages.splice(index, 1);
@@ -346,23 +363,40 @@ export default {
         method = "PUT";
       }
       //非BD测试程序
-      if(!this.submitData.IsDbTestProgram){
-        if (this.GLOBAL.VerificationHandle([{val: this.submitData.TotalNumber,type: "NumberNotZero",msg: "您没有添加包或网篮！请至少添加一个包！"}])) {
+      if (!this.submitData.IsDbTestProgram) {
+        if (
+          this.GLOBAL.VerificationHandle([
+            {
+              val: this.submitData.TotalNumber,
+              type: "NumberNotZero",
+              msg: "您没有添加包或网篮！请至少添加一个包！"
+            }
+          ])
+        ) {
           //转换数据格式
-          for(let i=0;i<this.submitData.NotInCarrierPackages.length;i++){
-            if(this.submitData.NotInCarrierPackages[i].IsSubstitution){
-              this.submitData.HelpSterilizeQuantity = this.submitData.NotInCarrierPackages[i].ProductQuantity;
-              this.submitData.NotInCarrierPackages.splice(i,1);
+          for (
+            let i = 0;
+            i < this.submitData.NotInCarrierPackages.length;
+            i++
+          ) {
+            if (this.submitData.NotInCarrierPackages[i].IsSubstitution) {
+              this.submitData.HelpSterilizeQuantity = this.submitData.NotInCarrierPackages[
+                i
+              ].ProductQuantity;
+              this.submitData.NotInCarrierPackages.splice(i, 1);
               break;
             }
           }
-        }else{
+        } else {
           return;
         }
-      }else{
+      } else {
         //BD测试程序
-        if(this.submitData.TotalNumber){
-          this.showInformation({classify:"message",msg:"BD测试程序不能录入包！请删除！"});
+        if (this.submitData.TotalNumber) {
+          this.showInformation({
+            classify: "message",
+            msg: "BD测试程序不能录入包！请删除！"
+          });
           return;
         }
       }
@@ -375,14 +409,18 @@ export default {
               CSManager.PrintBarcode(JSON.stringify(element));
             });
             if (this.sterilizeRecordModle) {
-              this.$router.push({path:"/sterilize/record"});
-            }else{
+              this.$router.push({ path: "/sterilize/record" });
+            } else {
               this.$router.push({ path: "/sterilize/select" });
             }
           } else {
             type = "error";
           }
-          this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+          this.showInformation({
+            classify: "message",
+            msg: res.data.Msg,
+            type: type
+          });
         })
         .catch(err => {});
     },
@@ -437,24 +475,32 @@ export default {
     },
     //处理JSManager传过来的BarCode
     handleBarCode(msg) {
-      let BarCodeList = this.submitData.Carriers.concat(this.submitData.NotInCarrierPackages);
+      let BarCodeList = this.submitData.Carriers.concat(
+        this.submitData.NotInCarrierPackages
+      );
       let onOff = true;
       BarCodeList.forEach(item => {
         //发现已录入
         if (item.BarCode == msg.toUpperCase()) {
-          this.showInformation({classify:"message",msg:"该条码已录入！",type: "warning"});
+          this.showInformation({
+            classify: "message",
+            msg: "该条码已录入！",
+            type: "warning"
+          });
           onOff = false;
           return;
         }
       });
-      if(onOff){
-        axios({url:`/api/Scanner/Sterilize/${msg}`}).then(res=>{
-          if(res.data.Code==200){
-            this.packageData2father(res.data.Data);
-          }else{
-            this.showInformation({classify:"message",msg:res.data.Msg});
-          }
-        }).catch(err=>{})
+      if (onOff) {
+        axios({ url: `/api/Scanner/Sterilize/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.packageData2father(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
       }
     },
     //添加数据处理
@@ -622,11 +668,11 @@ export default {
                         font-size: 18px;
                         font-family: Microsoft YaHei;
                         color: rgba(249, 62, 62, 1);
-                        &:hover{
+                        &:hover {
                           background: none;
                         }
                       }
-                      >div{
+                      > div {
                         font-size: 18px;
                         font-family: Microsoft YaHei;
                         font-weight: bold;
@@ -644,7 +690,7 @@ export default {
     .cssd_table_right {
       flex: 1;
     }
-    .cssd_table_bottom{
+    .cssd_table_bottom {
       z-index: 5;
       background: #fff;
     }

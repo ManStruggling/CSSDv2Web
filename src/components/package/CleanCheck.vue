@@ -258,16 +258,6 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    //el-input-number change事件
-    handleNumberChange(newValue, oldValue, origin, index) {
-      if (newValue == undefined) {
-        setTimeout(() => {
-          this.cleanTask.CleanPendingReviewTasks[index].CleaningQualityRecord[
-            origin
-          ] = 0;
-        }, 0);
-      }
-    },
     //清洗审核提交
     submitCheckResult(index) {
       if (this.cleanTask.CleanPendingReviewTasks[index].CleanReviewResult == 4) {
