@@ -6,7 +6,12 @@
         <ul class="clear_float">
           <li>
             <p>包名称</p>
-            <el-input type="text" placeholder="包名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+            <el-input
+              type="text"
+              placeholder="包名称(必填)"
+              v-model.trim="editBoxData.Name"
+              maxlength="10"
+            ></el-input>
           </li>
           <li>
             <p>拼音简码</p>
@@ -14,7 +19,11 @@
           </li>
           <li>
             <p>外包装</p>
-            <el-select v-model="editBoxData.ExternalPackage" placeholder="请选择(必选)" class="green24x13">
+            <el-select
+              v-model="editBoxData.ExternalPackage"
+              placeholder="请选择(必选)"
+              class="green24x13"
+            >
               <el-option
                 v-for="item in optionExternalPackageList"
                 :key="item.value"
@@ -23,14 +32,18 @@
               ></el-option>
             </el-select>
           </li>
-          <li>
+          <li v-if="editBoxData.Type!=85">
             <p>器械清单模板</p>
-            <el-select v-model="editBoxData.InstrumentListTemplate" placeholder="器械清单模板" class="green24x13">
+            <el-select
+              v-model="editBoxData.InstrumentListTemplate"
+              placeholder="器械清单模板"
+              class="green24x13"
+            >
               <el-option label="A4" :value="0"></el-option>
               <el-option label="A5" :value="1"></el-option>
             </el-select>
           </li>
-          <li>
+          <li v-if="editBoxData.Type!=85">
             <p>成本价格</p>
             <el-input-number
               placeholder="成本价格"
@@ -41,7 +54,7 @@
               @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'CostPrice')})"
             ></el-input-number>
           </li>
-          <li>
+          <li v-if="editBoxData.Type!=85">
             <p>清算价格</p>
             <el-input-number
               placeholder="清算价格"
@@ -52,7 +65,7 @@
               @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ClearingPrice')})"
             ></el-input-number>
           </li>
-          <li v-if="editBoxData.Type==81?false:true">
+          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
             <p>几张打印一张总条码</p>
             <el-input-number
               v-model="editBoxData.HowManyProductsPrintATotalBarCode"
@@ -61,7 +74,7 @@
               :controls="false"
             ></el-input-number>
           </li>
-          <li v-if="editBoxData.Type==81?false:true">
+          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
             <p>是否打印器械明细</p>
             <el-select v-model="editBoxData.IsPrintInstrumentDetail" class="green24x13">
               <el-option :label="'是'" :value="true"></el-option>
@@ -92,19 +105,23 @@
           <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
             <p>发放生成方式</p>
             <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13">
-              <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0"></el-option>
+              <el-option
+                v-if="editBoxData.Type==80||editBoxData.Type==82"
+                label="回收生成发放"
+                :value="0"
+              ></el-option>
               <el-option label="预定生成发放" :value="1"></el-option>
               <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
             </el-select>
           </li>
-          <li v-if="editBoxData.Type==81||editBoxData.Type==83?false:true">
+          <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>通用包</p>
             <el-select v-model="editBoxData.IsCommonProduct" class="green24x13">
               <el-option label="是" :value="true"></el-option>
               <el-option label="否" :value="false"></el-option>
             </el-select>
           </li>
-          <li v-if="editBoxData.Type==81||editBoxData.Type==83?false:true">
+          <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>计数包</p>
             <el-select
               v-model="editBoxData.IsNotPrintBarCode"
@@ -116,7 +133,7 @@
               <el-option label="否" :value="false"></el-option>
             </el-select>
           </li>
-          <li v-if="editBoxData.Type==81||editBoxData.Type==83?false:true">
+          <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>打印标签</p>
             <el-select
               v-model="editBoxData.IsPrintLabel"
@@ -127,7 +144,7 @@
               <el-option label="否" :value="false"></el-option>
             </el-select>
           </li>
-          <li v-if="editBoxData.Type==81||editBoxData.Type==83?false:true">
+          <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>个数包</p>
             <el-select
               v-model="editBoxData.IsNumberProduct"
@@ -139,7 +156,7 @@
               <el-option label="否" :value="false"></el-option>
             </el-select>
           </li>
-          <li v-if="editBoxData.Type==81||editBoxData.Type==83?false:true">
+          <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>几个打一个包</p>
             <el-input-number
               v-model="editBoxData.NumberProductQuantity"
@@ -151,7 +168,12 @@
           </li>
           <li v-if="editBoxData.Type==81">
             <p>关联供应商</p>
-            <el-select filterable v-model="editBoxData.SupplierId" class="green24x13" placeholder="请选择(必选)">
+            <el-select
+              filterable
+              v-model="editBoxData.SupplierId"
+              class="green24x13"
+              placeholder="请选择(必选)"
+            >
               <el-option
                 v-for="(item,index) in suppliers"
                 :key="index"
@@ -162,7 +184,11 @@
           </li>
           <li v-if="editBoxData.Type==80">
             <p>单网篮包</p>
-            <el-select v-model="editBoxData.IsSingleCarrierProduct" class="green24x13" @change="singleCarrierProductChange">
+            <el-select
+              v-model="editBoxData.IsSingleCarrierProduct"
+              class="green24x13"
+              @change="singleCarrierProductChange"
+            >
               <el-option label="否" :value="false"></el-option>
               <el-option label="是" :value="true"></el-option>
             </el-select>
@@ -178,7 +204,7 @@
             ></el-input>
           </li>
         </ul>
-        <div class="photoOption">
+        <div class="photoOption" v-if="editBoxData.Type!=85">
           <span>已拍照片</span>
           <p>
             <s>{{computedPhotoNumber}}</s>
@@ -201,6 +227,7 @@
         <el-tabs
           v-model="tabActiveName"
           v-show="editBoxData.Type==81||editBoxData.IsNumberProduct?false:true"
+          v-if="editBoxData.Type!=85"
         >
           <el-tab-pane label="器械" name="first" v-if="editBoxData.Type==83?false:true">
             <div class="packageDetail">
@@ -296,7 +323,7 @@ export default {
     return {
       forbid: true, //个数包选择禁用
       numberForbid: true, //几个打一包禁用
-      singleCarrierProductForbid:false,
+      singleCarrierProductForbid: false,
       editBoxData: {
         ProductPictures: []
       },
@@ -333,14 +360,14 @@ export default {
         // 是否是个数包
         this.numberForbid = false;
       }
-      if(this.editBoxData.IsSingleCarrierProduct){
+      if (this.editBoxData.IsSingleCarrierProduct) {
         //是单网篮包
         this.singleCarrierProductForbid = true;
       }
     }
     if (this.editBoxData.Type == 83) {
       this.tabActiveName = "second";
-      if(this.editBoxData.Id==0){
+      if (this.editBoxData.Id == 0) {
         this.editBoxData.ProvideGenerateType = 2;
       }
     }
@@ -409,7 +436,9 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.rowDrop();
+    if (this.editBoxData.Type != 85) {
+      this.rowDrop();
+    }
   },
   methods: {
     viewPhotoToFather() {
@@ -451,19 +480,19 @@ export default {
         this.forbid = false;
       } else {
         this.forbid = true;
-        this.editBoxData.IsPrintLabel=false;
+        this.editBoxData.IsPrintLabel = false;
       }
     },
     //单网篮包change事件
-    singleCarrierProductChange(val){
-      if(val){
-        this.editBoxData.IsNotPrintBarCode=false;
-        this.editBoxData.IsPrintLabel=false;
-        this.editBoxData.IsNumberProduct=false;
-        this.editBoxData.NumberProductQuantity=0;
-        this.singleCarrierProductForbid=true;
-      }else{
-        this.singleCarrierProductForbid=false;
+    singleCarrierProductChange(val) {
+      if (val) {
+        this.editBoxData.IsNotPrintBarCode = false;
+        this.editBoxData.IsPrintLabel = false;
+        this.editBoxData.IsNumberProduct = false;
+        this.editBoxData.NumberProductQuantity = 0;
+        this.singleCarrierProductForbid = true;
+      } else {
+        this.singleCarrierProductForbid = false;
       }
     },
     getRowKeys(row) {
@@ -506,7 +535,12 @@ export default {
         }
       ];
       //无菌包and高水平消毒and辅料包
-      if (this.editBoxData.Type === 82 || this.editBoxData.Type === 80||this.editBoxData.Type === 83) {
+      if (
+        this.editBoxData.Type === 82 ||
+        this.editBoxData.Type === 80 ||
+        this.editBoxData.Type === 83 ||
+        this.editBoxData.Type === 85
+      ) {
         arr.push({
           val: this.editBoxData.ProvideCssdId,
           type: "StringNotEmpty",
@@ -669,8 +703,8 @@ export default {
       border-bottom: 1px solid #f2f4f7;
       display: flex;
       flex-wrap: wrap;
-      li{
-        input{
+      li {
+        input {
           height: 40px !important;
         }
       }

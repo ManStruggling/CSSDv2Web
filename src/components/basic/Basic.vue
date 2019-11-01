@@ -106,9 +106,14 @@ export default {
               href: "/basic/product/83"
             },
             {
-              label:"一次性物品",
-              index:"1",
-              href:"/basic/disposable"
+              label: "一次性物品",
+              index: "84",
+              href: "/basic/disposable"
+            },
+            {
+              label: "代消包",
+              index: "85",
+              href: "/basic/product/85"
             }
           ]
         },
@@ -165,9 +170,9 @@ export default {
               href: "/basic/carrier/1"
             },
             {
-              label:"单包网篮",
-              index:"3",
-              href:"/basic/carrier/3"
+              label: "单包网篮",
+              index: "3",
+              href: "/basic/carrier/3"
             }
           ]
         },
@@ -194,7 +199,8 @@ export default {
   beforeRouteEnter(to, from, next) {
     if (sessionStorage.userInfo) {
       if (
-        UserInfo.JobAndCompetence.includes("000")||UserInfo.JobAndCompetence.includes("100")
+        UserInfo.JobAndCompetence.includes("000") ||
+        UserInfo.JobAndCompetence.includes("100")
       ) {
         next();
       } else {
@@ -294,15 +300,15 @@ export default {
               font-weight: bold;
               color: rgba(255, 255, 255, 1);
               &:hover {
-                background-color:transparent;
+                background-color: transparent;
               }
               .el-submenu__icon-arrow {
                 display: none;
               }
             }
-            .el-menu-item{
+            .el-menu-item {
               height: 40px;
-              a{
+              a {
                 line-height: 40px;
               }
             }
@@ -366,12 +372,12 @@ export default {
         font-weight: bold;
       }
     }
-    p{
-      &:last-child{
+    p {
+      &:last-child {
         display: flex;
-        a{
+        a {
           color: #00c16b;
-          line-height:40px;
+          line-height: 40px;
           margin-right: 10px;
         }
       }
@@ -386,13 +392,13 @@ export default {
       font-family: Microsoft YaHei;
       color: rgba(255, 255, 255, 1);
     }
-    .importData{
-      span{
+    .importData {
+      span {
         position: relative;
         height: 100%;
         display: block;
         cursor: pointer;
-        &::after{
+        &::after {
           position: absolute;
           content: "批量导入";
           left: 0;
@@ -401,7 +407,7 @@ export default {
           line-height: 38px;
           cursor: pointer;
         }
-        #fileUploader{
+        #fileUploader {
           opacity: 0;
           width: 100%;
           height: 100%;
@@ -416,7 +422,7 @@ export default {
         }
       }
     }
-    .el-button--default{
+    .el-button--default {
       width: 120px;
       height: 40px;
       background: #fff;
@@ -502,7 +508,7 @@ export default {
     top: 0;
     bottom: 0;
     margin: auto;
-    background:rgba(51,51,51,0.6);
+    background: rgba(51, 51, 51, 0.6);
     z-index: 2;
     .editContainer {
       position: absolute;
@@ -524,7 +530,7 @@ export default {
         box-sizing: border-box;
         .el-textarea {
           position: relative;
-          width:456px;
+          width: 456px;
           height: 40px;
           textarea {
             height: 40px;
@@ -532,13 +538,13 @@ export default {
             resize: none;
             padding: 5px 15px 5px;
           }
-          .el-input__count{
+          .el-input__count {
             line-height: 36px;
             bottom: 2px;
             font-size: 16px;
             font-family: Microsoft YaHei;
             font-weight: normal;
-            color: #C4C9D1;
+            color: #c4c9d1;
           }
         }
         > ul {
@@ -549,7 +555,7 @@ export default {
             display: flex;
             margin: 20px 30px 0 0;
             justify-content: space-between;
-            &.textareaBox{
+            &.textareaBox {
               width: 562px;
             }
             p {
@@ -579,8 +585,8 @@ export default {
                 font-weight: normal;
               }
             }
-            .el-input-number{
-              input{
+            .el-input-number {
+              input {
                 padding: 0 9px;
               }
             }
@@ -615,7 +621,8 @@ export default {
                   top: 15px;
                   width: 24px;
                   height: 13px;
-                  background: url("../../assets/images/arrow_green24x13.png") no-repeat;
+                  background: url("../../assets/images/arrow_green24x13.png")
+                    no-repeat;
                   background-size: 24px 13px;
                 }
                 .el-input__suffix {

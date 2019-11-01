@@ -10,31 +10,9 @@
     </div>
     <div class="cssd_table_center cssd_totalBar">
       <div class="table_box table_unExpand">
-        <!-- <el-table :data="submitData.PackageBarCodes">
+        <el-table :data="data">
           <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
-          <el-table-column label="包条码" prop="BarCode" width="210"></el-table-column>
-          <el-table-column label="科室" prop="ProvideSubClinicName" width="210"></el-table-column>
-          <el-table-column label="包数量" width="210">
-            <template slot-scope="props">
-              <el-input-number
-                v-if="props.row.IsNotPrintBarCode"
-                v-model="props.row.ProductQuantity"
-                :min="1"
-                :max="props.row.MaximumQuantity"
-                size="mini"
-                :controls="false"
-                @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"
-              ></el-input-number>
-              <div v-if="!props.row.IsNotPrintBarCode">{{props.row.ProductQuantity}}</div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="210">
-            <template slot-scope="props">
-              <el-button @click="deletePackage(props.$index,props.row)" size="mini">删除</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column></el-table-column>
-        </el-table>-->
+        </el-table>
       </div>
       <div class="cssd_table_bottom">
         <p>
@@ -54,10 +32,13 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      data: []
+    };
   },
   methods: {
-    printBarCode() {}
+    printBarCode() {
+    }
   }
 };
 </script>
