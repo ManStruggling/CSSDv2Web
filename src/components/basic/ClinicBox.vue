@@ -18,7 +18,7 @@
           </li>
           <li>
             <p>科室类型</p>
-            <el-select v-model="editBoxData.ClinicType" class="green24x13" :disabled="forbit" placeholder="请选择(必填)">
+            <el-select v-model="editBoxData.ClinicType" class="green24x13" :disabled="clinicTypeForbit" placeholder="请选择(必填)">
               <el-option label="供应室" :value="1"></el-option>
               <el-option label="科室" :value="2"></el-option>
               <el-option label="手术室" :value="3"></el-option>
@@ -63,14 +63,15 @@ export default {
   props: ["data"],
   data() {
     return {
-      forbit:false,
+      clinicTypeForbit:false,
       editBoxData: {}
     };
   },
   created() {
     this.editBoxData = this.$props.data;
     if(this.editBoxData.Id!=0){
-      this.forbit = true;
+      //update不允许更改科室类型
+      this.clinicTypeForbit = true;
     }
   },
   methods: {

@@ -1,33 +1,55 @@
 <template>
   <div id="unqualifiedInstrument">
     <div class="container">
-      <h5 class="left">总数:{{cleanQuality.Surface+cleanQuality.Joint+cleanQuality.Tooth+cleanQuality.Ware}}</h5>
+      <h5
+        class="left"
+      >总数:{{cleanQuality.Surface+cleanQuality.Joint+cleanQuality.Tooth+cleanQuality.Ware}}</h5>
       <h6 class="right">总数:{{cleanQuality.Stains+cleanQuality.BloodStain+cleanQuality.RustStain}}</h6>
       <el-table :data="[{}]" :border="false" max-height="162">
         <el-table-column prop>
           <div slot="header">
-            <div class="mainTitle">
-              器械及器皿
-            </div>
+            <div class="mainTitle">器械及器皿</div>
           </div>
           <el-table-column prop label="表面" width="100">
-            <el-input-number v-model="cleanQuality.Surface" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Surface')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.Surface"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Surface')})"
+            ></el-input-number>
           </el-table-column>
           <el-table-column prop label="关节" width="100">
-            <el-input-number v-model="cleanQuality.Joint" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Joint')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.Joint"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Joint')})"
+            ></el-input-number>
           </el-table-column>
           <el-table-column prop label="齿牙" width="100">
-            <el-input-number v-model="cleanQuality.Tooth" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Tooth')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.Tooth"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Tooth')})"
+            ></el-input-number>
           </el-table-column>
           <el-table-column prop label="器皿" width="100">
-            <el-input-number v-model="cleanQuality.Ware" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Ware')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.Ware"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Ware')})"
+            ></el-input-number>
           </el-table-column>
         </el-table-column>
         <el-table-column>
           <div slot="header">
-            <div class="mainTitle">
-              清洗质量
-            </div>
+            <div class="mainTitle">清洗质量</div>
           </div>
           <el-table-column prop label="血渍" width="100">
             <el-input-number
@@ -35,14 +57,26 @@
               :controls="false"
               :min="0"
               :max="999"
-               @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'BloodStain')})"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'BloodStain')})"
             ></el-input-number>
           </el-table-column>
           <el-table-column prop label="污渍" width="100">
-            <el-input-number v-model="cleanQuality.Stains" :controls="false" :min="0" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Stains')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.Stains"
+              :controls="false"
+              :min="0"
+              :max="999"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'Stains')})"
+            ></el-input-number>
           </el-table-column>
           <el-table-column prop label="锈迹" width="100">
-            <el-input-number v-model="cleanQuality.RustStain" :controls="false" :min="0" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'RustStain')})"></el-input-number>
+            <el-input-number
+              v-model="cleanQuality.RustStain"
+              :controls="false"
+              :min="0"
+              :max="999"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'RustStain')})"
+            ></el-input-number>
           </el-table-column>
         </el-table-column>
       </el-table>
@@ -78,49 +112,71 @@ export default {
     cancel() {
       this.$emit("UnqualifiedInstruments-to-father");
     },
-    //确认
+    //确认 this.GLOBAL.UserInfo.HospitalVersion=="SONGJIANGNANYUAN"
     comfirm() {
+      // if (
+      //   this.cleanQuality.Surface +
+      //     this.cleanQuality.Joint +
+      //     this.cleanQuality.Tooth +
+      //     this.cleanQuality.Ware >
+      //     this.$props.maxNum ||
+      //   this.cleanQuality.BloodStain +
+      //     this.cleanQuality.Stains +
+      //     this.cleanQuality.RustStain >
+      //     this.$props.maxNum ||
+      //   this.cleanQuality.Surface +
+      //     this.cleanQuality.Joint +
+      //     this.cleanQuality.Tooth +
+      //     this.cleanQuality.Ware !=
+      //     this.cleanQuality.BloodStain +
+      //       this.cleanQuality.Stains +
+      //       this.cleanQuality.RustStain
+      // ) {
+      //   this.showInformation({
+      //     classify: "message",
+      //     msg:
+      //       "<div style='text-align:center;'>填写数字有误！请重新填写！</br>“器械及器皿数”=“清洗质量数”≤“器械总数”</div>",
+      //     dangerouslyUseHTMLString: true
+      //   });
+      //   return;
+      // }
       if (
-        this.cleanQuality.Surface +
+        this.GLOBAL.UserInfo.HospitalVersion == "SONGJIANGNANYUAN" ||
+        (this.cleanQuality.Surface +
           this.cleanQuality.Joint +
           this.cleanQuality.Tooth +
-          this.cleanQuality.Ware >
-          this.$props.maxNum ||
-        this.cleanQuality.BloodStain +
-          this.cleanQuality.Stains +
-          this.cleanQuality.RustStain >
-          this.$props.maxNum ||
-        this.cleanQuality.Surface +
-          this.cleanQuality.Joint +
-          this.cleanQuality.Tooth +
-          this.cleanQuality.Ware !=
+          this.cleanQuality.Ware ===
           this.cleanQuality.BloodStain +
             this.cleanQuality.Stains +
-            this.cleanQuality.RustStain
+            this.cleanQuality.RustStain &&
+          this.cleanQuality.BloodStain +
+            this.cleanQuality.Stains +
+            this.cleanQuality.RustStain <=
+            this.$props.maxNum)
       ) {
+        this.$emit("UnqualifiedInstruments-to-father", {
+          data: this.cleanQuality,
+          carrierIndex: this.$props.carrierIndex,
+          packageIndex: this.$props.packageIndex,
+          instrumentIndex: this.$props.instrumentIndex
+        });
+      } else {
         this.showInformation({
           classify: "message",
           msg:
             "<div style='text-align:center;'>填写数字有误！请重新填写！</br>“器械及器皿数”=“清洗质量数”≤“器械总数”</div>",
           dangerouslyUseHTMLString: true
         });
-        return;
       }
-      this.$emit("UnqualifiedInstruments-to-father", {
-        data: this.cleanQuality,
-        carrierIndex: this.$props.carrierIndex,
-        packageIndex: this.$props.packageIndex,
-        instrumentIndex: this.$props.instrumentIndex
-      });
     },
-    handleNumberChange(newValue,oldValue,origin){
-      if(newValue==undefined){
+    handleNumberChange(newValue, oldValue, origin) {
+      if (newValue == undefined) {
         setTimeout(() => {
-          this.cleanQuality[origin]=0;
+          this.cleanQuality[origin] = 0;
         }, 0);
       }
     }
-  },
+  }
 };
 </script>
 
@@ -150,23 +206,23 @@ export default {
     bottom: 0;
     top: 0;
     margin: auto;
-    h5,h6{
-      font-size:14px;
-      font-family:Microsoft YaHei;
-      color:rgba(135,141,159,1);
+    h5,
+    h6 {
+      font-size: 14px;
+      font-family: Microsoft YaHei;
+      color: rgba(135, 141, 159, 1);
       line-height: 24px;
       position: absolute;
       top: 44px;
       z-index: 1;
     }
-    h5{
+    h5 {
       left: 140px;
     }
-    h6{
+    h6 {
       right: 195px;
     }
-    h6{
-
+    h6 {
     }
     .el-table {
       thead {

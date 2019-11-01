@@ -86,14 +86,14 @@
                 <span>预定审核</span>
               </li>
             </router-link>
-            <!-- <router-link 
+            <router-link 
               to="/publicModule/reprint"
             >
               <li>
                 <p class="cssd_index_reprint"></p>
                 <span>重新打印包条码</span>
               </li>
-            </router-link> -->
+            </router-link>
           </ul>
         </dd>
       </dl>
@@ -126,14 +126,14 @@
                 <span>预定</span>
               </li>
             </router-link>
-            <!-- <router-link 
+            <router-link 
               to="/publicModule/reprint"
             >
               <li>
                 <p class="cssd_index_reprint"></p>
                 <span>重新打印包条码</span>
               </li>
-            </router-link> -->
+            </router-link>
           </ul>
         </dd>
       </dl>

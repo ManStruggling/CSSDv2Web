@@ -43,9 +43,9 @@
                 </div>
                 <!-- 不合格包数量 -->
                 <div class="collapseTd">
-                  <!-- 外来器械包直接填写数量 -->
+                  <!-- 外来器械包or松江南院直接填写数量 -->
                   <el-input-number
-                    v-if="value.IsOuterProduct"
+                    v-if="GLOBAL.UserInfo.HospitalVersion=='SONGJIANGNANYUAN' || value.IsOuterProduct"
                     v-model="value.CanNotBePackagedCount"
                     :controls="false"
                     :min="0"
@@ -169,17 +169,23 @@ export default {
           {},
           data.data
         );
-        //根据清洗质量计算不合格器械数量
-        this.carrierList[data.carrierIndex].Packages[
-          data.packageIndex
-        ].Instruments[data.instrumentIndex].FailedInstrumentCount =
-          data.data.BloodStain + data.data.Stains + data.data.RustStain;
-        this.getTheMaximumNumberOfFailedPackages(data);
+        if(this.GLOBAL.UserInfo.HospitalVersion == "SONGJIANGNANYUAN"){
+          this.carrierList[data.carrierIndex].Packages[
+            data.packageIndex
+          ].Instruments[data.instrumentIndex].FailedInstrumentCount = 0;
+        }else{
+          //根据清洗质量计算不合格器械数量
+          this.carrierList[data.carrierIndex].Packages[
+            data.packageIndex
+          ].Instruments[data.instrumentIndex].FailedInstrumentCount =
+            data.data.BloodStain + data.data.Stains + data.data.RustStain;
+          this.getTheMaximumNumberOfFailedPackages(data);
+        }
       }
     },
     //获取不合格器械最大值
-    getTheMaximumNumberOfFailedPackages(data){
-      let max_number = 0; 
+    getTheMaximumNumberOfFailedPackages(data) {
+      let max_number = 0;
       this.carrierList[data.carrierIndex].Packages[
         data.packageIndex
       ].Instruments.forEach(element => {

@@ -97,7 +97,6 @@ export default {
   watch: {
     "packageMsg.SplitCount":{
       handler: function(newValue) {
-        console.log(newValue)
         if(newValue.length>0){
           setTimeout(() => {
             $("#reprint .el-select .el-input__inner").attr({placeholder:newValue.join()})

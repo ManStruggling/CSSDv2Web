@@ -626,6 +626,9 @@ const router = new Router({
             children: [{
                 path: '/publicModule/reprint',
                 name: 'publicModuleReprint',
+                meta: {
+                    index: 1
+                },
                 component: ()=>
                     import('./components/publicModule/Reprint')
             }]

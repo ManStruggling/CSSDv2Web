@@ -5,9 +5,6 @@
         <router-link to="/package/taskList" tag="li">
           <p>返回</p>
         </router-link>
-        <li @click="handleReprint">
-          <p>重打包条码</p>
-        </li>
         <li @click="handleReprintList">
           <p>重打器械清单</p>
         </li>
@@ -112,13 +109,6 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <Reprint v-if="isShowReprint" @reprint-to-father="reprintToFather"></Reprint>
-    </transition>
-    <transition
-      name="fade"
-      enter-active-class="animated fadeIn faster"
-      leave-active-class="animated fadeOut faster"
-    >
       <ReprintList v-if="isShowReprintList" @reprintList-to-father="reprintListToFather"></ReprintList>
     </transition>
   </div>
@@ -132,7 +122,6 @@ export default {
   data() {
     return {
       isShowReprintList:false,
-      isShowReprint:false,
       isShowPhoto:false,
       search_date: [],
       endDateLimit: {},
@@ -152,14 +141,6 @@ export default {
   },
   mounted() {},
   methods: {
-    //重新打印与父组件通信
-    reprintToFather(){
-      this.isShowReprint = false;
-    },
-    //处理重新打印
-    handleReprint(){
-      this.isShowReprint = true;
-    },
     //重新打印器械清单与父组件通信
     reprintListToFather(){
       this.isShowReprintList = false;
