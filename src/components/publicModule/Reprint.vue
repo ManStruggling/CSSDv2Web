@@ -239,7 +239,9 @@ export default {
           }
         ])
       ) {
-        axios({ url: `/api/Package/RePrintBarCode/${this.searchBarCode}` })
+        axios({
+          url: `/api/Package/RePrintBarCode/${this.searchBarCode}`
+        })
           .then(res => {
             if (res.data.Code == 200) {
               res.data.Data.BarCode = this.searchBarCode;
@@ -247,7 +249,10 @@ export default {
               res.data.Data.SplitCount = [];
               this.packageMessage = res.data.Data;
             } else {
-              this.showInformation({ classify: "message", msg: res.data.Msg });
+              this.showInformation({
+                classify: "message",
+                msg: res.data.Msg
+              });
             }
           })
           .catch(err => {});
@@ -281,6 +286,7 @@ export default {
 <style lang="scss">
 @import "../../assets/css/tableNav";
 @import "../../assets/css/tableTotalBottomBar";
+
 #reprint {
   .cssd_title {
     .cssd_title_right {
@@ -379,6 +385,7 @@ export default {
         }
         dd {
           width: 220;
+
           div {
             width: 142px;
             margin-left: 10px;
@@ -395,7 +402,7 @@ export default {
         p {
           color: #878d9f;
         }
-        .el-input-number{
+        .el-input-number {
           width: auto;
           .el-input {
             width: 134px;
