@@ -167,7 +167,7 @@ export default {
           }
         ])
       ) {
-        if (this.packageMsg.IsOuterProduct) {
+        if (this.packageMessage.IsOuterProduct) {
           //外来器械包---分包
           if (
             this.GLOBAL.VerificationHandle([
