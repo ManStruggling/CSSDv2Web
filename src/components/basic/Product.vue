@@ -24,7 +24,11 @@
         />
       </p>
       <p>
-        <a href="\ImportBaseData\产品汇入.xlsx" download="产品汇入" v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')">下载模板</a>
+        <a
+          href="\ImportBaseData\产品汇入.xlsx"
+          download="产品汇入"
+          v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')"
+        >下载模板</a>
         <el-button class="importData" v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')">
           <input
             type="file"
@@ -38,15 +42,13 @@
       </p>
     </div>
     <div class="basic_table table_unExpand">
-      <el-table
-        :data="table_data"
-      >
+      <el-table :data="table_data">
         <el-table-column label="包名称" prop="Name" width="240"></el-table-column>
         <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
-              <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
+            <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
           </template>
         </el-table-column>
         <el-table-column></el-table-column>
@@ -87,7 +89,7 @@ export default {
             if (res.data.Code == 200) {
               this.table_data = res.data.Data;
             } else {
-              this.showInformation({classify:"message",msg:res.data.Msg});
+              this.showInformation({ classify: "message", msg: res.data.Msg });
             }
           })
           .catch(error => {});
@@ -102,53 +104,65 @@ export default {
       let objData = {};
       var selectedFile = evt.target.files[0];
       var reader = new FileReader();
-      reader.onload = event=> {
+      reader.onload = event => {
         var data = event.target.result;
         var workbook = XLSX.read(data, {
           type: "binary"
         });
         workbook.SheetNames.forEach(function(sheetName) {
-          objData[sheetName]=XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]).splice(1);
+          objData[sheetName] = XLSX.utils
+            .sheet_to_row_object_array(workbook.Sheets[sheetName])
+            .splice(1);
         });
-        for(let i=0;i<objData.Sheet1.length;i++){
-          objData.Sheet1[i].InstrumentCounts=objData.InstrumentCounts.filter(val=>{return val.ProductId===objData.Sheet1[i].Id});
-          objData.Sheet1[i].MaterialCounts=objData.MaterialCounts.filter(val=>{return val.ProductId===objData.Sheet1[i].Id});
+        for (let i = 0; i < objData.Sheet1.length; i++) {
+          objData.Sheet1[i].InstrumentCounts = objData.InstrumentCounts.filter(
+            val => {
+              return val.ProductId === objData.Sheet1[i].Id;
+            }
+          );
+          objData.Sheet1[i].MaterialCounts = objData.MaterialCounts.filter(
+            val => {
+              return val.ProductId === objData.Sheet1[i].Id;
+            }
+          );
         }
-        this.requestData(objData.Sheet1,0);
+        this.requestData(objData.Sheet1, 0);
       };
 
       reader.onerror = function(event) {
         this.showInformation({
           classify: "message",
-          msg: `文件不能被读取！Code ${event.target.error.code}`,
+          msg: `文件不能被读取！Code ${event.target.error.code}`
         });
       };
 
       reader.readAsBinaryString(selectedFile);
     },
     //请求数据
-    requestData(arr,index){
-      axios({url:"/api/Product",method:"POST",data:arr[index]}).then(res=>{
-        if(res.data.Code==200){
-          if(this.Type===arr[index].Type){
-            this.table_data=res.data.Data;
+    requestData(arr, index) {
+      axios({ url: "/api/Product", method: "POST", data: arr[index] })
+        .then(res => {
+          if (res.data.Code == 200) {
+            if (this.Type === arr[index].Type) {
+              this.table_data = res.data.Data;
+            }
+            if (index < arr.length - 1) {
+              this.requestData(arr, index + 1);
+            }
+          } else {
+            this.showInformation({ classify: "message", msg: res.data.Msg });
           }
-          if(index<arr.length-1){
-            this.requestData(arr,index+1);
-          }
-        }else{
-          this.showInformation({classify:"message",msg:res.data.Msg});
-        }
-      }).catch(err=>{}) 
+        })
+        .catch(err => {});
     },
     //搜索数据
     searchThisTableData() {
       this.baseDataSearch(
         `/odata/products?$filter=type eq ${encodeURI(
           "'" + this.GLOBAL.ProductDictionary[this.Type] + "'"
-        )} and (contains(name,${"'" + this.basic_search + "'"}) or contains(shortcode,${"'" +
+        )} and (contains(name,${"'" +
           this.basic_search +
-          "'"}))`
+          "'"}) or contains(shortcode,${"'" + this.basic_search + "'"}))`
       );
     },
     //新增tr   IsSingleCarrierProduct
@@ -156,7 +170,7 @@ export default {
       this.toChildData = {
         Id: 0,
         Name: "",
-        SupplierId:"",
+        SupplierId: "",
         ExternalPackage: "", //外包装
         CostPrice: 1,
         ClearingPrice: 1,
@@ -166,7 +180,7 @@ export default {
         ProvideSubClinicId: "", //发放子科室
         InstrumentListTemplate: 0,
         HowManyProductsPrintATotalBarCode: 0,
-        IsPrintInstrumentDetail: false,
+        HowManyInstrumentListArePrinted: 0,
         Remark: "", //备注
         Type: this.Type,
         InstrumentCounts: [], //器械列表
@@ -175,11 +189,11 @@ export default {
         IsCommonProduct: false,
         IsNotPrintBarCode: false,
         IsNumberProduct: false,
-        IsPrintLabel:false,
-        IsSingleCarrierProduct:false,
-        NumberProductQuantity:0,
-        ProvideGenerateType:0,
-        ProductPictures:[]
+        IsPrintLabel: false,
+        IsSingleCarrierProduct: false,
+        NumberProductQuantity: 0,
+        ProvideGenerateType: 0,
+        ProductPictures: []
       };
       this.showEditBox = true;
     },
@@ -198,13 +212,17 @@ export default {
             .delete(`/api/Product/${this.Type}/${this.table_data[index].Id}`)
             .then(res => {
               let type;
-              if(res.data.Code==200){
-                type='success';
+              if (res.data.Code == 200) {
+                type = "success";
                 this.table_data = res.data.Data;
-              }else{
-                type='error';
+              } else {
+                type = "error";
               }
-              this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+              this.showInformation({
+                classify: "message",
+                msg: res.data.Msg,
+                type: type
+              });
             })
             .catch(err => {});
         })
@@ -212,7 +230,7 @@ export default {
     },
     //编辑this tr
     editThisTr(index) {
-      this.toChildData = Object.assign({},this.table_data[index]); //深拷贝
+      this.toChildData = Object.assign({}, this.table_data[index]); //深拷贝
       this.showEditBox = true;
     },
     //器械列表组件传值

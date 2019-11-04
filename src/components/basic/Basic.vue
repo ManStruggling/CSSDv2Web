@@ -19,6 +19,7 @@
             mode="vertical"
             @select="handleSelect"
             :unique-opened="true"
+            :default-openeds="openedArr"
           >
             <el-submenu v-for="(item,index) in navData" :key="index" :index="item.id">
               <template slot="title">{{item.label}}</template>
@@ -53,6 +54,7 @@
 export default {
   data() {
     return {
+      openedArr: [],
       navData: [
         {
           label: "设备",
@@ -217,7 +219,16 @@ export default {
       next("/login");
     }
   },
-  created() {},
+  created() {
+    for (let i = 0; i < this.navData.length; i++) {
+      for (let j = 0; j < this.navData[i].children.length; j++) {
+        if (this.$route.path === this.navData[i].children[j].href) {
+          this.openedArr.splice(0, 1, this.navData[i].id);
+          return;
+        }
+      }
+    }
+  },
   methods: {
     handleSelect(key, keyPath) {}
   }

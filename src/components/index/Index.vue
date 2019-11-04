@@ -233,7 +233,7 @@
           <ul>
             <router-link to="/management/control">
               <li>
-                <p></p>
+                <p class="cssd_index_management"></p>
                 <span>管理控制台</span>
               </li>
             </router-link>
@@ -363,6 +363,12 @@ export default {
                 }
                 &.cssd_index_reserveCheck {
                   background-image: url("/images/reserveCheck.png");
+                }
+                &.cssd_index_reprint{
+                  background-image: url("/images/reprint.png");
+                }
+                &.cssd_index_management{
+                  background-image: url("/images/management.png");
                 }
               }
               span {

@@ -17,6 +17,28 @@
             <p>拼音简码</p>
             <el-input type="text" v-model="editBoxData.ShortCode" :disabled="true"></el-input>
           </li>
+          <li v-if="editBoxData.Type!=85">
+            <p>成本价格</p>
+            <el-input-number
+              placeholder="成本价格"
+              v-model="editBoxData.CostPrice"
+              :min="1"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'CostPrice')})"
+            ></el-input-number>
+          </li>
+          <li v-if="editBoxData.Type!=85">
+            <p>清算价格</p>
+            <el-input-number
+              placeholder="清算价格"
+              v-model="editBoxData.ClearingPrice"
+              :min="1"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ClearingPrice')})"
+            ></el-input-number>
+          </li>
           <li>
             <p>外包装</p>
             <el-select
@@ -30,55 +52,6 @@
                 :label="item.label"
                 :value="item.value"
               ></el-option>
-            </el-select>
-          </li>
-          <li v-if="editBoxData.Type!=85">
-            <p>器械清单模板</p>
-            <el-select
-              v-model="editBoxData.InstrumentListTemplate"
-              placeholder="器械清单模板"
-              class="green24x13"
-            >
-              <el-option label="A4" :value="0"></el-option>
-              <el-option label="A5" :value="1"></el-option>
-            </el-select>
-          </li>
-          <li v-if="editBoxData.Type!=85">
-            <p>成本价格</p>
-            <el-input-number
-              placeholder="成本价格"
-              v-model="editBoxData.CostPrice"
-              :min="1"
-              :max="99999999"
-              :controls="false"
-              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'CostPrice')})"
-            ></el-input-number>
-          </li>
-          <li v-if="editBoxData.Type!=85">
-            <p>清算价格</p>
-            <el-input-number
-              placeholder="清算价格"
-              v-model="editBoxData.ClearingPrice"
-              :min="1"
-              :max="99999999"
-              :controls="false"
-              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ClearingPrice')})"
-            ></el-input-number>
-          </li>
-          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
-            <p>几张打印一张总条码</p>
-            <el-input-number
-              v-model="editBoxData.HowManyProductsPrintATotalBarCode"
-              :min="0"
-              :max="99999999"
-              :controls="false"
-            ></el-input-number>
-          </li>
-          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
-            <p>是否打印器械明细</p>
-            <el-select v-model="editBoxData.IsPrintInstrumentDetail" class="green24x13">
-              <el-option :label="'是'" :value="true"></el-option>
-              <el-option :label="'否'" :value="false"></el-option>
             </el-select>
           </li>
           <li v-if="editBoxData.Type!=81">
@@ -113,6 +86,37 @@
               <el-option label="预定生成发放" :value="1"></el-option>
               <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
             </el-select>
+          </li>
+          <li v-if="editBoxData.Type!=85">
+            <p>器械清单模板</p>
+            <el-select
+              v-model="editBoxData.InstrumentListTemplate"
+              placeholder="器械清单模板"
+              class="green24x13"
+            >
+              <el-option label="A4" :value="0"></el-option>
+              <el-option label="A5" :value="1"></el-option>
+            </el-select>
+          </li>
+          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
+            <p>几张打印一张总条码</p>
+            <el-input-number
+              v-model="editBoxData.HowManyProductsPrintATotalBarCode"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyProductsPrintATotalBarCode')})"
+            ></el-input-number>
+          </li>
+          <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
+            <p>器械单打印数</p>
+            <el-input-number
+              v-model="editBoxData.HowManyInstrumentListArePrinted"
+              :min="0"
+              :max="999"
+              :controls="false"
+              @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyInstrumentListArePrinted')})"
+            ></el-input-number>
           </li>
           <li v-if="editBoxData.Type==80||editBoxData.Type==82">
             <p>通用包</p>
@@ -161,6 +165,7 @@
             <el-input-number
               v-model="editBoxData.NumberProductQuantity"
               :min="0"
+              :max="999"
               :controls="false"
               :disabled="numberForbid||singleCarrierProductForbid"
               @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'NumberProductQuantity')})"
@@ -460,7 +465,7 @@ export default {
     numberChange(newValue, oldValue, origin) {
       if (newValue == undefined) {
         setTimeout(() => {
-          this.editBoxData[origin] = 1;
+          this.editBoxData[origin] = oldValue;
         }, 0);
       }
     },

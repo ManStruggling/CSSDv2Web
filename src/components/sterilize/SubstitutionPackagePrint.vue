@@ -10,10 +10,10 @@
     </div>
     <div class="cssd_table_center cssd_totalBar">
       <div class="table_box table_unExpand">
-        <el-table :data="submitData.Products">
+        <el-table :data="submitData.ViewList">
           <el-table-column label="包名称" width="240">
             <template slot-scope="props">
-              <el-select v-model="props.row.ProductId" class="green18x10">
+              <el-select v-model="props.row.ProductId" class="green18x10" @change="((val)=>{productChange(val,props.row)})">
                 <el-option
                   v-for="(item,index) in proxySterilizeProducts"
                   :key="index"
@@ -27,7 +27,7 @@
             <template slot-scope="props">
               <el-input-number
                 v-model="props.row.Quantity"
-                :min="1"
+                :min="0"
                 :max="999"
                 :controls="false"
                 @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"
@@ -58,7 +58,8 @@ export default {
   data() {
     return {
       submitData: {
-        Products: []
+        Products: [],
+        ViewList: []
       },
       proxySterilizeProducts: []
     };
@@ -71,9 +72,16 @@ export default {
       .catch(err => {});
   },
   methods: {
+    //产品change事件
+    productChange(val,row){
+      row.ProvideSubClinicId = this.proxySterilizeProducts.filter(element=>{
+        return element.ProductId === val;
+      })[0].ProvideSubClinicId;
+    },
+    //打印条码
     printBarCode() {
       let verificationArr = [];
-      this.submitData.Products.forEach(element => {
+      this.submitData.ViewList.forEach(element => {
         verificationArr.push(element.ProductId);
       });
       if (
@@ -86,12 +94,48 @@ export default {
         ])
       ) {
         //to submit
-        
+        let temporaryObj = {};
+        this.submitData.ViewList.forEach(element => {
+          if (temporaryObj[element.ProductId] == undefined) {
+            temporaryObj[element.ProductId] = Object.assign({}, element);
+          } else {
+            let temporaryNum =
+              temporaryObj[element.ProductId].Quantity + element.Quantity;
+            temporaryObj[element.ProductId].Quantity = temporaryNum;
+          }
+        });
+        this.submitData.Products = [];
+        for (const key in temporaryObj) {
+          this.submitData.Products.push(temporaryObj[key]);
+        }
+        axios({
+          url: `/api/Package/PrintProxySterilizeProducts`,
+          method: "POST",
+          data: this.submitData
+        })
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              type = "success";
+              res.data.Data.forEach(element => {
+                CSManager.PrintBarcode(JSON.stringify(element));
+              });
+              this.$router.go(0);
+            } else {
+              type = "error";
+            }
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
+          })
+          .catch(err => {});
       }
     },
     //新增数据
     insertSubstitutionPackage() {
-      this.submitData.Products.push({
+      this.submitData.ViewList.push({
         ProductId: "",
         Quantity: 1
       });
@@ -105,10 +149,10 @@ export default {
           type: "warning"
         })
           .then(() => {
-            this.submitData.Products.splice(index, 1);
+            this.submitData.ViewList.splice(index, 1);
           })
           .catch(() => {
-            this.submitData.Products[index].Quantity = oldValue;
+            this.submitData.ViewList[index].Quantity = oldValue;
           });
       }
     }
