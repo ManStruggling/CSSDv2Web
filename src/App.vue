@@ -54,7 +54,7 @@ export default {
     if(sessionStorage.userInfo){
       window.UserInfo = JSON.parse(sessionStorage.userInfo);
       this.GLOBAL.UserInfo = UserInfo;
-      axios.defaults.headers.CssdId = UserInfo.ClinicId;
+      axios.defaults.headers.LocationId = UserInfo.ClinicId;
       axios.defaults.headers.UId = UserInfo.UId;
     }
   },

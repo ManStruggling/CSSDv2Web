@@ -253,7 +253,7 @@ function showInformation(option) {
                 title: '通知',
                 message: option.msg,
                 duration: option.duration,
-              })
+            })
             break;
         default:
             break;
@@ -289,10 +289,10 @@ function initWebSorcket(that, origin) {
 }
 
 //是否启用websocket
-function useWebsocketOrNot(that,origin){
-    if(sessionStorage.configure){
+function useWebsocketOrNot(that, origin) {
+    if (sessionStorage.configure) {
 
-    }else{
+    } else {
         return false;
     }
 }
@@ -301,17 +301,17 @@ function useWebsocketOrNot(that,origin){
 function cancelBubble() {}
 
 //获取地址栏参数
-function getParams(key){
+function getParams(key) {
     let arr = window.location.search.substr(1).split("&");
     let obj = {};
-    arr.forEach(val=>{
-        obj[val.split("=")[0]]=val.split("=")[1];
+    arr.forEach(val => {
+        obj[val.split("=")[0]] = val.split("=")[1];
     })
     return obj[key];
 }
 
 //时间格式化
-function timeFormatDuring(timeSeconds){
+function timeFormatDuring(timeSeconds) {
     var hours = parseInt((timeSeconds % (60 * 60 * 24)) / (60 * 60));
     var minutes = parseInt((timeSeconds % (60 * 60)) / 60);
     var seconds = timeSeconds % 60;
