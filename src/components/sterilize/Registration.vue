@@ -12,7 +12,7 @@
         <li @click="handleShowCountPackages">
           <p>计数包登记</p>
         </li>
-        <li @click="substitution">
+        <li @click="substitution" v-if="GLOBAL.UserInfo.HospitalVersion!='SONGJIANGNANYUAN'">
           <p>代消包登记</p>
         </li>
       </ul>
