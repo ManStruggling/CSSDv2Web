@@ -91,6 +91,7 @@
                           placement="right-start"
                           width="200"
                           trigger="hover"
+                          :style="'display:inline-block;'"
                           @show="showPatientMessage(value)"
                         >
                           <div>
