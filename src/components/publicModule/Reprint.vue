@@ -1,5 +1,5 @@
 <template>
-  <div class="cssd_box" id="reprint">
+  <div class="cssd_box" id="reprint2">
     <div class="cssd_title">
       <ul class="cssd_menu">
         <router-link to="/" tag="li">
@@ -287,7 +287,7 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/tableTotalBottomBar";
 
-#reprint {
+#reprint2 {
   .cssd_title {
     .cssd_title_right {
       p {

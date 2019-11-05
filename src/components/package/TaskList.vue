@@ -70,6 +70,7 @@
                   <p style="width:60px">可配数</p>
                   <p style="width:100px;">本次配包数</p>
                   <p>单包网篮</p>
+                  <p style="width:60px" v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'">操作</p>
                 </div>
                 <el-collapse
                   accordion
@@ -146,7 +147,7 @@
                         <div>{{value.CanBePackagedQuantity}}</div>
                       </div>
                       <!-- 本次配包数 -->
-                      <div class="collapseTd" style="width:150px;">
+                      <div class="collapseTd" style="width:140px;">
                         <template v-if="value.IsSingleCarrierProduct">1</template>
                         <template v-else>
                           <!-- 非个数包 -->
@@ -189,6 +190,12 @@
                       <div class="collapseTd">
                         <div v-if="value.IsSingleCarrierProduct">{{value.SingleCarrierName}}</div>
                         <div v-else>-</div>
+                      </div>
+                      <!-- 操作 -->
+                      <div v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'" class="collapseTd" style="width:100px;">
+                        <div>
+                          <a @click.stop="deleteThisTask(value.PackageTaskId)">删除</a>
+                        </div>
                       </div>
                     </div>
                     <div
@@ -281,8 +288,7 @@
       <ManualEnter
         v-if="isShowManualEnter"
         @to-father="scanner2father"
-        :BarCodeList="[]"
-        :ApiUrl="'/api/Scanner/Package/SingleProductCarrier'"
+        :func="handleBarCode"
       ></ManualEnter>
     </transition>
   </div>
@@ -468,6 +474,7 @@ export default {
                 data.SingleCarrierId;
               this.tableData[origin][i].PackageTasks[j].SingleCarrierName =
                 data.SingleCarrierName;
+              this.tableData[origin][i].PackageTasks[j].IsScanned = true;
               this.tabActiveName = i + "";
               this.activeName = j + "";
               this.currentlySelectedTask = this.tableData[origin][
@@ -496,6 +503,7 @@ export default {
                 data.SingleCarrierId;
               this.tableData[origin][i].PackageTasks[j].SingleCarrierName =
                 data.SingleCarrierName;
+              this.tableData[origin][i].PackageTasks[j].IsScanned = true;
               this.tabActiveName = i + "";
               this.activeName = j + "";
               this.currentlySelectedTask = this.tableData[origin][
@@ -504,6 +512,35 @@ export default {
               this.selectOrigin = origin;
               this.$forceUpdate();
               return true;
+            }
+          }
+        }
+      }
+    },
+    //检索外来器械任务
+    searchOuterPackage(data) {
+      for (const key in this.tableData) {
+        if (
+          (key == "TasksOfCanBePackage" ||
+            key == "PackageTasksFromSterilizeFailed") &&
+          this.tableData[key]
+        ) {
+          for (let i = 0; i < this.tableData[key].length; i++) {
+            for (
+              let j = 0;
+              j < this.tableData[key][i].PackageTasks.length;
+              j++
+            ) {
+              if (
+                this.tableData[key][i].PackageTasks[j].PackageTaskId ===
+                data.PackageTaskId
+              ) {
+                this.tableData[key][i].PackageTasks[j].IsScanned = true;
+                this.selectOrigin = key;
+                this.tabActiveName = i + "";
+                this.activeName = j + "";
+                return;
+              }
             }
           }
         }
@@ -566,6 +603,24 @@ export default {
     //添加辅料包
     addSupportMaterialProduct() {
       this.isShowPackageList = true;
+    },
+    //删除辅料包
+    deleteThisTask(PackageTaskId){
+      this.$confirm("您确定要删除该任务?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          axios({url:`/api/Package/SupportProductPackageTask/${PackageTaskId}`,method:"Delete"}).then(res=>{
+            if(res.data.Code==200){
+              window.location.href = `/package/taskList?origin=PackageTasksFromSupportMaterialProduct&tabIndex=${this.tabActiveName}`;
+            }else{
+              this.showInformation({classify:"message",msg:res.data.Msg});
+            }
+          }).catch(err=>{})
+        })
+        .catch(() => {});
     },
     //PackageList组件传递的值
     packgeList2father(data) {
@@ -684,10 +739,16 @@ export default {
                   j < this.tableData[key][i].PackageTasks.length;
                   j++
                 ) {
-                  if (this.tableData[key][i].PackageTasks[j].SingleCarrierId) {
-                    this.tableData[key][i].PackageTasks[
-                      j
-                    ].ThisTimePackageQuantity = 1;
+                  //已被扫描的配包任务
+                  if (this.tableData[key][i].PackageTasks[j].IsScanned) {
+                    //单网篮包配包任务
+                    if (
+                      this.tableData[key][i].PackageTasks[j].SingleCarrierId
+                    ) {
+                      this.tableData[key][i].PackageTasks[
+                        j
+                      ].ThisTimePackageQuantity = 1;
+                    }
                     submitData.Packages.push(
                       this.tableData[key][i].PackageTasks[j]
                     );
@@ -700,7 +761,7 @@ export default {
         if (submitData.Packages == "") {
           this.showInformation({
             classify: "message",
-            msg: "单网篮包没有绑定单包网篮！"
+            msg: "至少扫描一条任务！"
           });
           return;
         }
@@ -735,6 +796,16 @@ export default {
             type: type
           });
         });
+      } else if (/^WL/.test(msg.toUpperCase())) {
+        axios({ url: `/api/Scanner/Package/OuterProduct/${msg}` })
+          .then(res => {
+            if (res.data.Code == 200) {
+              this.searchOuterPackage(res.data.Data);
+            } else {
+              this.showInformation({ classify: "message", msg: res.data.Msg });
+            }
+          })
+          .catch(err => {});
       } else {
         axios({ url: `/api/Scanner/Package/SingleProductCarrier/${msg}` })
           .then(res => {

@@ -21,13 +21,18 @@
             :unique-opened="true"
             :default-openeds="openedArr"
           >
-            <el-submenu v-for="(item,index) in navData" :key="index" :index="item.id">
-              <template slot="title">{{item.label}}</template>
-              <el-menu-item v-for="(val,idx) in item.children" :key="idx" :index="val.index">
-                <router-link :to="val.href" :active-class="'isActive'">{{val.label}}</router-link>
+            <div v-for="(item,index) in navData" :key="index">
+              <el-submenu v-if="item.isHasSubmenu" :index="index+''">
+                <template slot="title">{{item.label}}</template>
+                <el-menu-item v-for="(val,idx) in item.children" :key="idx" :index="val.index">
+                  <router-link :to="val.href" :active-class="'isActive'">{{val.label}}</router-link>
+                </el-menu-item>
+              </el-submenu>
+              <el-menu-item v-else :index="index+''">
+                <router-link :to="item.href" :active-class="'isActive'" :class="'sub-item'">{{item.label}}</router-link>
               </el-menu-item>
-            </el-submenu>
-            <el-menu-item index="9">
+            </div>
+            <!-- <el-menu-item index="9">
               <router-link to="/basic/externalPackage" :active-class="'isActive'">外包装</router-link>
             </el-menu-item>
             <el-menu-item index="10">
@@ -41,7 +46,7 @@
             </el-menu-item>
             <el-menu-item index="13">
               <router-link to="/basic/failedCause" :active-class="'isActive'">失败原因</router-link>
-            </el-menu-item>
+            </el-menu-item> -->
           </el-menu>
         </div>
       </div>
@@ -57,35 +62,8 @@ export default {
       openedArr: [],
       navData: [
         {
-          label: "设备",
-          id: "1",
-          children: [
-            {
-              label: "灭菌设备",
-              index: "0",
-              href: "/basic/device/0"
-            },
-            {
-              label: "清洗设备",
-              index: "1",
-              href: "/basic/device/1"
-            }
-          ]
-        },
-        {
-          label: "器械",
-          id: "2",
-          children: [
-            {
-              label: "器械",
-              index: "0",
-              href: "/basic/instrument"
-            }
-          ]
-        },
-        {
           label: "产品",
-          id: "3",
+          isHasSubmenu: true,
           children: [
             {
               label: "追溯的无菌包",
@@ -120,46 +98,29 @@ export default {
           ]
         },
         {
-          label: "供应商",
-          id: "4",
+          label: "包组成",
+          isHasSubmenu: true,
           children: [
             {
-              label: "设备",
+              label: "器械",
               index: "0",
-              href: "/basic/supplier/0"
+              href: "/basic/instrument"
             },
             {
-              label: "外来器械",
+              label: "原料",
               index: "1",
-              href: "/basic/supplier/1"
-            }
-          ]
-        },
-        {
-          label: "生产商",
-          id: "5",
-          children: [
-            {
-              label: "设备",
-              index: "0",
-              href: "/basic/producer/0"
-            }
-          ]
-        },
-        {
-          label: "原料",
-          id: "6",
-          children: [
-            {
-              label: "包原料",
-              index: "0",
               href: "/basic/material"
-            }
+            },
+            {
+              label: "外包装",
+              index: "2",
+              href: "/basic/externalPackage"
+            },
           ]
         },
         {
           label: "网篮",
-          id: "7",
+          isHasSubmenu: true,
           children: [
             {
               label: "清洗网篮",
@@ -179,8 +140,51 @@ export default {
           ]
         },
         {
+          label: "生产商",
+          isHasSubmenu: true,
+          children: [
+            {
+              label: "设备",
+              index: "0",
+              href: "/basic/producer/0"
+            }
+          ]
+        },
+        {
+          label: "供应商",
+          isHasSubmenu: true,
+          children: [
+            {
+              label: "设备",
+              index: "0",
+              href: "/basic/supplier/0"
+            },
+            {
+              label: "外来器械",
+              index: "1",
+              href: "/basic/supplier/1"
+            }
+          ]
+        },
+        {
+          label: "设备",
+          isHasSubmenu: true,
+          children: [
+            {
+              label: "灭菌设备",
+              index: "0",
+              href: "/basic/device/0"
+            },
+            {
+              label: "清洗设备",
+              index: "1",
+              href: "/basic/device/1"
+            }
+          ]
+        },
+        {
           label: "车辆",
-          id: "8",
+          isHasSubmenu: true,
           children: [
             {
               label: "污车",
@@ -193,7 +197,27 @@ export default {
               href: "/basic/car/1"
             }
           ]
-        }
+        },
+        {
+          label: "科室",
+          isHasSubmenu: false,
+          href: "/basic/clinic"
+        },
+        {
+          label: "员工",
+          isHasSubmenu: false,
+          href: "/basic/staff"
+        },
+        {
+          label: "失败原因",
+          isHasSubmenu: false,
+          href: "/basic/failedCause"
+        },
+        {
+          label: "物流人员",
+          isHasSubmenu: false,
+          href: "/basic/logisticsStaff"
+        },
       ]
     };
   },
@@ -221,10 +245,12 @@ export default {
   },
   created() {
     for (let i = 0; i < this.navData.length; i++) {
-      for (let j = 0; j < this.navData[i].children.length; j++) {
-        if (this.$route.path === this.navData[i].children[j].href) {
-          this.openedArr.splice(0, 1, this.navData[i].id);
-          return;
+      if(this.navData[i].isHasSubmenu){
+        for (let j = 0; j < this.navData[i].children.length; j++) {
+          if (this.$route.path === this.navData[i].children[j].href) {
+            this.openedArr.splice(0, 1, i+"");
+            return;
+          }
         }
       }
     }
@@ -347,6 +373,9 @@ export default {
                 background: #00c16b;
                 width: 250px;
                 border-radius: 0px 4px 4px 0px;
+              }
+              &.sub-item{
+                padding-left: 20px;
               }
             }
           }

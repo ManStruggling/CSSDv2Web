@@ -655,6 +655,9 @@ export default {
             if (this.outerPackageChangeMode) {
               this.$router.push("/outerPackage/record");
             } else {
+              res.data.Data.forEach(element => {
+                CSManager.PrintBarcode(JSON.stringify(element));
+              });
               this.$router.go(0);
             }
           } else {
