@@ -40,7 +40,27 @@
             <p class="routeOfStainedCar">
                 <span>污车行程</span>
                 <el-select v-model="recoveryData.RecycleRouteId">
-                    <el-option v-for="(item,index) in routes" :key="index" :label="item.RouteBarCode" :value="item.RecycleRouteId"></el-option>
+                    <el-option v-for="(item,index) in routes" :key="index" :label="item.RouteBarCode" :value="item.RecycleRouteId">
+                        <el-popover placement="right" title="当前行程详情" width="200" trigger="hover">
+                            <div class="popover_div">
+                                <h5>司机：</h5>
+                                <h6>{{item.Driver}}</h6>
+                            </div>
+                            <div class="popover_div">
+                                <h5>副手：</h5>
+                                <h6>{{item.Helper}}</h6>
+                            </div>
+                            <div class="popover_div">
+                                <h5>路线条码：</h5>
+                                <h6>{{item.RouteBarCode}}</h6>
+                            </div>
+                            <div class="popover_div">
+                                <h5>结束时间：</h5>
+                                <h6>{{item.RouteEndTime}}</h6>
+                            </div>
+                            <div slot="reference">{{item.RouteBarCode}}</div>
+                        </el-popover>
+                    </el-option>
                 </el-select>
             </p>
             <p class="senderPerson">
@@ -771,6 +791,15 @@ export default {
 @import "../../assets/css/tableCollapse";
 @import "../../assets/css/tableExpand";
 
+.popover_div {
+    display: flex;
+
+    h5 {
+        width: 80px;
+        text-align: right;
+    }
+}
+
 #recoveryRegistration {
     .cssd_title_right {
         p {
@@ -806,6 +835,31 @@ export default {
                         color: #fff;
                         font-size: 18px;
                         font-weight: bold;
+                    }
+                }
+            }
+
+            &.routeOfStainedCar {
+                .el-input {
+                    &::after {
+                        content: "";
+                        background: url(../../assets/images/arrow_white24x13.png) no-repeat;
+                        background-size: 24px 13px;
+                        position: absolute;
+                        height: 13px;
+                        width: 24px;
+                        right: 11px;
+                        top: 14px;
+                    }
+
+                    &.is-focus {
+                        &::after {
+                            transform: rotate(180deg);
+                        }
+                    }
+
+                    span {
+                        display: none;
                     }
                 }
             }
