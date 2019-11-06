@@ -249,21 +249,12 @@ export default {
               type = "success";
               //socket推送消息
               if(this.websocket){
-                if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
-                  this.websocket.send(JSON.stringify({
-                    CssdId: this.GLOBAL.UserInfo.ClinicId,
-                    ReserveCheckState: true,
-                    PackageState:false,
-                    ProvideState:false
-                  }));
-                }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
-                  this.websocket.send(JSON.stringify({
-                    CssdId: this.GLOBAL.UserInfo.ClinicId,
-                    ReserveCheckState: true,
-                    PackageState:false,
-                    ProvideState:true
-                  }));
-                }
+                this.websocket.send(JSON.stringify({
+                  CssdId: this.GLOBAL.UserInfo.ClinicId,
+                  ReserveCheckState: true,
+                  PackageState:false,
+                  ProvideState:true
+                }));
               }
               res.data.Data.forEach(element => {
                 CSManager.PrintBarcode(JSON.stringify(element));

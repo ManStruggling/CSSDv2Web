@@ -512,15 +512,9 @@ export default {
                 let sendData = {
                   CssdId: this.GLOBAL.UserInfo.ClinicId,
                   ReserveCheckState: false,
-                  PackageState: true
+                  PackageState: true,
+                  ProvideState: true
                 };
-                if (this.GLOBAL.UserInfo.CssdProvideType === 0) {
-                  //回收生成发放
-                  sendData.ProvideState = true;
-                } else if (this.GLOBAL.UserInfo.CssdProvideType === 1) {
-                  //预定生成发放
-                  sendData.ProvideState = false;
-                }
                 this.websocket.send(JSON.stringify(sendData));
               }
               if (this.recoveryRecordModle) {

@@ -644,11 +644,7 @@ export default {
                 CssdId: this.GLOBAL.UserInfo.ClinicId,
                 ReserveCheckState: false,
                 PackageState: true,
-              }
-              if(this.GLOBAL.UserInfo.CssdProvideType===0){//回收生成发放
-                sendData.ProvideState = true;
-              }else if(this.GLOBAL.UserInfo.CssdProvideType===1){//预定生成发放
-                sendData.ProvideState = false;
+                ProvideState: true
               }
               this.websocket.send(JSON.stringify(sendData));
             }
