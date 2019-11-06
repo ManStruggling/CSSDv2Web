@@ -50,7 +50,7 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <PrintBarCodeList v-if="isShowBarCodeList" @printList-to-father="barCodeListToFather" :data="table_data" :labels="[{prop:'BarCode',label:'科室条码'},{prop:'Name',label:'科室名称'}]" :printUrl="'/api/Print/Staff'"></PrintBarCodeList>
+      <PrintBarCodeList v-if="isShowBarCodeList" @printList-to-father="barCodeListToFather" :data="table_data" :labels="[{prop:'BarCode',label:'科室条码'},{prop:'Name',label:'科室名称'}]" :printUrl="'/api/Print/Clinic'"></PrintBarCodeList>
     </transition>
     <!-- 科室编辑框 -->
     <transition
