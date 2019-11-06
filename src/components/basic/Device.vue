@@ -19,7 +19,9 @@
         <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
         <el-table-column label="设备条码" prop="BarCode" width="210"></el-table-column>
         <el-table-column label="总锅次" prop="TotalBatch" width="210"></el-table-column>
-        <el-table-column label="使用状态" prop="IsActive" width="210"></el-table-column>
+        <el-table-column label="使用状态" width="210">
+          <template slot-scope="props">{{props.row.IsActive?"是":"否"}}</template>
+        </el-table-column>
         <el-table-column label="操作" width="210">
           <template slot-scope="props">
             <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>

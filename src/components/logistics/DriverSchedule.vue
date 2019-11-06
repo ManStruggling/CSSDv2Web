@@ -20,7 +20,11 @@
           <li>
             <p class="font16gray">供应室</p>
             <div class="el_input_box">
-              <el-select v-model="submitData.ScheduleCssdId" class="green24x13" placeholder="供应室(必填)">
+              <el-select
+                v-model="submitData.ScheduleCssdId"
+                class="green24x13"
+                placeholder="供应室(必填)"
+              >
                 <el-option
                   v-for="(item,index) in data.Cssds"
                   :key="index"
@@ -33,45 +37,66 @@
           <li>
             <p class="font16gray">任务类型</p>
             <div class="el_input_box">
-              <el-select v-model="submitData.LogisticsType" class="green24x13" placeholder="任务类型(必填)">
+              <el-select
+                v-model="submitData.LogisticsType"
+                class="green24x13"
+                placeholder="任务类型(必填)"
+              >
                 <el-option label="回收" :value="0"></el-option>
                 <el-option label="发放" :value="1"></el-option>
               </el-select>
             </div>
           </li>
-          <li style="width:304px;">
-            <p class="font16gray">开始时间</p>
-            <div class="el_input_box" style="width: 230px;">
+          <li>
+            <p class="font16gray">行程日期</p>
+            <div class="el_input_box">
               <el-date-picker
-                v-model="submitData.PlanStartTime"
-                type="datetime"
+                v-model="submitData.PlanDate"
+                type="date"
                 :clearable="false"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间(必填)"
-                @change="startTimeChange"
-                default-time="06:00:00"
+                placeholder="选择日期(必填)"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </div>
           </li>
-          <li style="width:304px;">
+          <li>
+            <p class="font16gray">开始时间</p>
+            <div class="el_input_box">
+              <el-time-select
+                placeholder="开始时间(必填)"
+                v-model="submitData.StartTime"
+                @change="startTimeChange"
+                :picker-options="{
+                  start: '06:00',
+                  step: '00:15',
+                  end: '23:30'
+                }"
+              ></el-time-select>
+            </div>
+          </li>
+          <li>
             <p class="font16gray">结束时间</p>
-            <div class="el_input_box" style="width: 230px;">
-              <el-date-picker
-                v-model="submitData.PlanEndTime"
-                type="datetime"
-                :clearable="false"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间(填写)"
-                :picker-options="endPickerOptions"
-                default-time="06:00:00"
-                @change="endTimeChange"
-              ></el-date-picker>
+            <div class="el_input_box">
+              <el-time-select
+                placeholder="结束时间(必填)"
+                v-model="submitData.EndTime"
+                :picker-options="{
+                  start: '06:00',
+                  step: '00:15',
+                  end: '23:30',
+                  minTime: submitData.StartTime
+                }"
+              ></el-time-select>
             </div>
           </li>
           <li>
             <p class="font16gray">车辆</p>
             <div class="el_input_box">
-              <el-select v-model="submitData.LogisticsCarId" class="green24x13" placeholder="车辆(必填)">
+              <el-select
+                v-model="submitData.LogisticsCarId"
+                class="green24x13"
+                placeholder="选择车辆(必填)"
+              >
                 <el-option
                   v-for="(item,index) in data.Cars"
                   :key="index"
@@ -84,7 +109,12 @@
           <li>
             <p class="font16gray">司机</p>
             <div class="el_input_box">
-              <el-select v-model="submitData.DriverId" class="green24x13" placeholder="司机(必填)" @change="driverChange">
+              <el-select
+                v-model="submitData.DriverId"
+                class="green24x13"
+                placeholder="选择司机(必填)"
+                @change="driverChange"
+              >
                 <el-option
                   v-for="(item,index) in data.Drivers"
                   :key="index"
@@ -97,7 +127,12 @@
           <li>
             <p class="font16gray">副手</p>
             <div class="el_input_box">
-              <el-select v-model="submitData.HelperId" class="green24x13" placeholder="副手(必填)" @change="helperChange">
+              <el-select
+                v-model="submitData.HelperId"
+                class="green24x13"
+                placeholder="选择副手"
+                @change="helperChange"
+              >
                 <el-option
                   v-for="(item,index) in data.Drivers"
                   :key="index"
@@ -127,25 +162,19 @@ export default {
       submitData: {
         ScheduleCssdId: "",
         LogisticsType: "",
-        PlanStartTime:"",
-        PlanEndTime:"",
+        PlanDate: "",
+        StartTime: "",
+        EndTime: "",
+        PlanStartTime: "",
+        PlanEndTime: "",
         LogisticsCarId: "",
         DriverId: "",
-        HelperId:""
+        HelperId: ""
       },
       data: {
         Drivers: [],
         Cars: []
       },
-      endPickerOptions:{
-        disabledDate: (time) => {
-          if(this.submitData.PlanStartTime === ""){
-            return false;
-          }else{
-            return time.getTime() < new Date(this.submitData.PlanStartTime.split(" ")[0]+' 00:00:00');
-          }
-        }
-      }
     };
   },
   created() {
@@ -160,40 +189,76 @@ export default {
       .catch(err => {});
   },
   methods: {
-    //开始时间change
-    startTimeChange(val) {
-      if(val > this.submitData.PlanEndTime) {
-        this.submitData.PlanEndTime = "";
-      }
-    },
-    //结束时间change
-    endTimeChange(val){
-      if(val < this.submitData.PlanStartTime){
-        this.submitData.PlanEndTime = "";
-      }
+    //开始时间改变
+    startTimeChange() {
+      this.submitData.EndTime = "";
     },
     //司机change
     driverChange(val) {
-      if(this.submitData.HelperId === val) {
-        this.submitData.DriverId = '';
-        this.showInformation({ classify: "message", msg: "司机和副手不能相同！"});
+      if (this.submitData.HelperId === val) {
+        this.submitData.DriverId = "";
+        this.showInformation({
+          classify: "message",
+          msg: "司机和副手不能相同！"
+        });
       }
     },
     //副手change
     helperChange(val) {
-      if(this.submitData.DriverId === val) {
-        this.submitData.HelperId = '';
-        this.showInformation({ classify: "message", msg: "司机和副手不能相同！"});
+      if (this.submitData.DriverId === val) {
+        this.submitData.HelperId = "";
+        this.showInformation({
+          classify: "message",
+          msg: "司机和副手不能相同！"
+        });
       }
     },
     // 提交完成
     submitComplete() {
-      if(this.GLOBAL.VerificationHandle([
-        {val:this.submitData.ScheduleCssdId,type:"StringNotEmpty",msg:"供应室不能为空！"},{val:this.submitData.LogisticsType,type:"StringNotEmpty",msg:"任务类型不能为空！"},{val:this.submitData.PlanStartTime,type:"StringNotEmpty",msg:"开始时间不能为空！"},{val:this.submitData.PlanEndTime,type:"StringNotEmpty",msg:"结束时间不能为空！"},{val:this.submitData.LogisticsCarId,type:"StringNotEmpty",msg:"车辆不能为空！"},{val:this.submitData.DriverId,type:"StringNotEmpty",msg:"司机不能为空！"}
-      ])){
-        if(this.submitData.HelperId===""){
+      if (
+        this.GLOBAL.VerificationHandle([
+          {
+            val: this.submitData.ScheduleCssdId,
+            type: "StringNotEmpty",
+            msg: "供应室不能为空！"
+          },
+          {
+            val: this.submitData.LogisticsType,
+            type: "StringNotEmpty",
+            msg: "任务类型不能为空！"
+          },
+          {
+            val: this.submitData.PlanDate,
+            type: "StringNotEmpty",
+            msg: "行程日期不能为空！"
+          },
+          {
+            val: this.submitData.StartTime,
+            type: "StringNotEmpty",
+            msg: "开始时间不能为空！"
+          },
+          {
+            val: this.submitData.EndTime,
+            type: "StringNotEmpty",
+            msg: "结束时间不能为空！"
+          },
+          {
+            val: this.submitData.LogisticsCarId,
+            type: "StringNotEmpty",
+            msg: "车辆不能为空！"
+          },
+          {
+            val: this.submitData.DriverId,
+            type: "StringNotEmpty",
+            msg: "司机不能为空！"
+          }
+        ])
+      ) {
+        if (this.submitData.HelperId === "") {
           this.submitData.HelperId = 0;
         }
+        this.submitData.PlanStartTime = `${this.submitData.PlanDate} ${this.submitData.StartTime}`;
+        this.submitData.PlanEndTime = `${this.submitData.PlanDate} ${this.submitData.EndTime}`;
         axios({
           url: `/api/Logistics/DriverScheduleSubmit`,
           method: "Post",
@@ -255,8 +320,10 @@ export default {
           .el-date-editor {
             width: 100%;
           }
-          .el-date-editor{
-            width: 230px;
+          .el-date-editor {
+            input {
+              padding: 0 10px 0 30px;
+            }
           }
           .el-input__inner {
             font-size: 16px;
