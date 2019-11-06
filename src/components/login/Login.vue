@@ -45,7 +45,7 @@
         </dd>
       </dl>
       <h5>
-        <a href="\Client\CSSDv2Client1013.rar" download="CSSDv2Client1013.rar"><i class="el-icon-download"></i>下载客户端</a>
+        <a href="\Client\CSSDv2Client1013.rar" download="CSSDv2Client.rar"><i class="el-icon-download"></i>下载客户端</a>
         <b>上海倍而纳医疗器械科技有限公司</b>
         <s>{{versionMsg.HospitalVersion+" "+versionMsg.Version}}</s>
       </h5>
