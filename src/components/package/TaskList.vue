@@ -70,7 +70,10 @@
                   <p style="width:60px">可配数</p>
                   <p style="width:100px;">本次配包数</p>
                   <p>单包网篮</p>
-                  <p style="width:60px" v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'">操作</p>
+                  <p
+                    style="width:60px"
+                    v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'"
+                  >操作</p>
                 </div>
                 <el-collapse
                   accordion
@@ -193,7 +196,11 @@
                         <div v-else>-</div>
                       </div>
                       <!-- 操作 -->
-                      <div v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'" class="collapseTd" style="width:100px;">
+                      <div
+                        v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'"
+                        class="collapseTd"
+                        style="width:100px;"
+                      >
                         <div>
                           <a @click.stop="deleteThisTask(value.PackageTaskId)">删除</a>
                         </div>
@@ -264,7 +271,8 @@
         v-if="isShowPackageList"
         @packageList-to-father="packgeList2father"
         :packageClass="'追溯的辅料包'"
-        :getApiLimit="`type eq '追溯的辅料包'`"
+        :requestApi="`ProvideGenerateType eq '配包生成' and type eq '追溯的辅料包'`"
+        :submitApi="`/api/Package/SupportMaterialProductRegister`"
       ></PackageList>
     </transition>
     <transition
@@ -286,11 +294,7 @@
       leave-active-class="animated fadeOut faster"
     >
       <!-- 手工录入 -->
-      <ManualEnter
-        v-if="isShowManualEnter"
-        @to-father="scanner2father"
-        :func="handleBarCode"
-      ></ManualEnter>
+      <ManualEnter v-if="isShowManualEnter" @to-father="scanner2father" :func="handleBarCode"></ManualEnter>
     </transition>
   </div>
 </template>
@@ -606,20 +610,28 @@ export default {
       this.isShowPackageList = true;
     },
     //删除辅料包
-    deleteThisTask(PackageTaskId){
+    deleteThisTask(PackageTaskId) {
       this.$confirm("您确定要删除该任务?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          axios({url:`/api/Package/SupportProductPackageTask/${PackageTaskId}`,method:"Delete"}).then(res=>{
-            if(res.data.Code==200){
-              window.location.href = `/package/taskList?origin=PackageTasksFromSupportMaterialProduct&tabIndex=${this.tabActiveName}`;
-            }else{
-              this.showInformation({classify:"message",msg:res.data.Msg});
-            }
-          }).catch(err=>{})
+          axios({
+            url: `/api/Package/SupportProductPackageTask/${PackageTaskId}`,
+            method: "Delete"
+          })
+            .then(res => {
+              if (res.data.Code == 200) {
+                window.location.href = `/package/taskList?origin=PackageTasksFromSupportMaterialProduct&tabIndex=${this.tabActiveName}`;
+              } else {
+                this.showInformation({
+                  classify: "message",
+                  msg: res.data.Msg
+                });
+              }
+            })
+            .catch(err => {});
         })
         .catch(() => {});
     },
@@ -1005,6 +1017,9 @@ export default {
                   color: rgba(196, 201, 209, 1);
                   line-height: 19px;
                   font-weight: normal;
+                }
+                a {
+                  color: #f93e3e;
                 }
               }
               .el-select {

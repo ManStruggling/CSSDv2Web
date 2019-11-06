@@ -133,6 +133,7 @@
       <PackageList
         v-if="isShowPackageList"
         @packageList-to-father="packgeList2father"
+        :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`"
         :packageClass="'NewPurchasing'"
       ></PackageList>
     </transition>

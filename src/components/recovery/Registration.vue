@@ -242,8 +242,9 @@
       <PackageList
         v-if="isShowPackageList"
         @packageList-to-father="packgeList2father"
-        :getApiLimit="'IsNotPrintBarCode'"
         :packageClass="packageClass"
+        :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`"
+        :getApiLimit="urlLimit"
       ></PackageList>
     </transition>
     <transition
@@ -267,6 +268,7 @@ import AllocatedPackages from "./AllocatedPackages";
 export default {
   data() {
     return {
+      urlLimit: "",
       BarCodeList: [], //检测是否录入重复
       waitToAllocation: [], //待分配的条码通用包
       packageClass: "",
@@ -390,11 +392,13 @@ export default {
     //处理计数包登记
     handleShowCountPackages() {
       this.packageClass = "NotBarCodeProducts";
+      this.urlLimit = "IsNotPrintBarCode";
       this.isShowPackageList = true;
     },
     //处理条码丢失
     handelLostBarCode() {
       this.packageClass = "LostBarCode";
+      this.urlLimit = "IsNotPrintBarCode eq false";
       this.isShowPackageList = true;
     },
     actuallyRecycleQuantityChange(newValue, oldValue, row, index) {
