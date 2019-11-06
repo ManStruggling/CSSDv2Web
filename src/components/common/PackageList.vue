@@ -59,7 +59,7 @@
 export default {
   data() {
     return {
-      mode:1,//0新购入 1回收 2辅料包新任务 2条码丢失
+      mode:1,//0新购入 1回收 2辅料包新任务 3条码丢失
       requestUrl:"",
       getUrl:"",
       selectIsFix:false,
