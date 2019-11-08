@@ -87,61 +87,68 @@ export default {
         },
         //确认事件
         sendToFather() {
-            let arr = [];
-            this.multipleSelection.forEach(val => {
-                arr.push(val.ProvideSubClinicId);
-            });
-            if (
-                this.GLOBAL.VerificationHandle([{
-                    val: arr,
-                    type: "StringAllNotEmpty",
-                    msg: "您选择的通用包没有选择回收科室！请选择回收科室！"
-                }])
-            ) {
-                if (this.submitApi) {
-                    axios({
-                            url: this.submitApi,
-                            data: {
-                                Products: this.multipleSelection
-                            },
-                            method: "POST"
-                        })
-                        .then(res => {
-                            if (res.data.Code == 200) {
-                                this.$emit("packageList-to-father", res.data.Data);
-                            } else {
-                                this.showInformation({
-                                    classify: "message",
-                                    msg: res.data.Msg
-                                });
-                            }
-                        })
-                        .catch(err => {});
-                } else {
+            if (this.GLOBAL.VerificationHandle([{
+                    val: this.multipleSelection,
+                    type: "ArrayNotEmpty",
+                    msg: "至少选择一条！"
+                }])) {
+                let arr = [];
+                this.multipleSelection.forEach(val => {
+                    arr.push(val.ProvideSubClinicId);
+                });
+                if (
+                    this.GLOBAL.VerificationHandle([{
+                        val: arr,
+                        type: "StringAllNotEmpty",
+                        msg: "您选择的通用包没有选择回收科室！请选择回收科室！"
+                    }])
+                ) {
+                    if (this.submitApi) {
+                        axios({
+                                url: this.submitApi,
+                                data: {
+                                    Products: this.multipleSelection
+                                },
+                                method: "POST"
+                            })
+                            .then(res => {
+                                if (res.data.Code == 200) {
+                                    this.$emit("packageList-to-father", res.data.Data);
+                                } else {
+                                    this.showInformation({
+                                        classify: "message",
+                                        msg: res.data.Msg
+                                    });
+                                }
+                            })
+                            .catch(err => {});
+                    } else {
 
-                    for (let i = 0; i < this.multipleSelection.length; i++) {
-                        if (this.multipleSelection[i].IsCommonProduct) {
-                            for (let j = 0; j < this.clinicList.length; j++) {
-                                if (
-                                    this.multipleSelection[i].ProvideSubClinicId ===
-                                    this.clinicList[j].ProvideSubClinicId
-                                ) {
-                                    this.multipleSelection[
-                                        i
-                                    ].ProvideSubClinicName = this.clinicList[
-                                        j
-                                    ].ProvideSubClinicName;
-                                    this.multipleSelection[i].ProvideClinicName = this.clinicList[
-                                        j
-                                    ].ProvideClinicName;
+                        for (let i = 0; i < this.multipleSelection.length; i++) {
+                            if (this.multipleSelection[i].IsCommonProduct) {
+                                for (let j = 0; j < this.clinicList.length; j++) {
+                                    if (
+                                        this.multipleSelection[i].ProvideSubClinicId ===
+                                        this.clinicList[j].ProvideSubClinicId
+                                    ) {
+                                        this.multipleSelection[
+                                            i
+                                        ].ProvideSubClinicName = this.clinicList[
+                                            j
+                                        ].ProvideSubClinicName;
+                                        this.multipleSelection[i].ProvideClinicName = this.clinicList[
+                                            j
+                                        ].ProvideClinicName;
+                                    }
                                 }
                             }
+                            if (this.mode === 3) {
+                                this.multipleSelection[i].IsLostPackage = true;
+                            }
                         }
-                        if (this.mode === 3) {
-                            this.multipleSelection[i].IsLostPackage = true;
-                        }
+                        this.$emit("packageList-to-father", this.multipleSelection);
+
                     }
-                    this.$emit("packageList-to-father", this.multipleSelection);
 
                 }
 

@@ -52,7 +52,6 @@
                             <div class="content_title">
                                 <p>包名称</p>
                                 <p>回收时间</p>
-                                <p>回收科室</p>
                                 <p>发放科室</p>
                                 <p style="width:90px;">预计发放数</p>
                                 <p style="width:80px;">库存数</p>
@@ -70,10 +69,6 @@
                                         <!-- 回收时间 -->
                                         <div class="collapseTd">
                                             <p>{{value.RecycleDateTime}}</p>
-                                        </div>
-                                        <!-- 回收科室 -->
-                                        <div class="collapseTd">
-                                            <p>{{value.RecycleSubClinic}}</p>
                                         </div>
                                         <!-- 发放科室 -->
                                         <div class="collapseTd">
@@ -195,14 +190,22 @@ export default {
                                 }
                                 for (let j = 0; j < getData[i].SubClinics.length; j++) {
                                     //循环子科室
-                                    getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
-                                        ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
-                                        ThisClinicProvideNumber: 0,
-                                        ProvideTaskDetails: []
-                                    };
-                                    for (let k = 0; k < getData[i].ProvideTasks.length; k++) {
-                                        if (getData[i].SubClinics[j].SubClinicId === getData[i].ProvideTasks[k].ProvideSubClinicId) {
-                                            getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.push(getData[i].ProvideTasks[k]);
+                                    if (getData[i].IsCommonProduct) {
+                                        getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
+                                            ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
+                                            ThisClinicProvideNumber: 0,
+                                            ProvideTaskDetails: getData[i].ProvideTasks
+                                        }
+                                    } else {
+                                        getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
+                                            ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
+                                            ThisClinicProvideNumber: 0,
+                                            ProvideTaskDetails: []
+                                        };
+                                        for (let k = 0; k < getData[i].ProvideTasks.length; k++) {
+                                            if (getData[i].SubClinics[j].SubClinicId === getData[i].ProvideTasks[k].ProvideSubClinicId) {
+                                                getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.push(getData[i].ProvideTasks[k]);
+                                            }
                                         }
                                     }
                                 }
