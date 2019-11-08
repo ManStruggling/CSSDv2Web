@@ -44,7 +44,7 @@
                         <div class="tab_content table_collapse table_unExpand">
                             <div class="selectSubClinic">
                                 <p>本次发放科室</p>
-                                <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="provideSubClinicChange(index)">
+                                <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="provideSubClinicChange(index)" :filterable="true">
                                     <el-option label="全部" :value="0"></el-option>
                                     <el-option v-for="(value,idx) in item.SubClinics" :key="idx" :label="value.SubClinicName" :value="value.SubClinicId"></el-option>
                                 </el-select>
@@ -142,7 +142,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 产品列表 -->
-        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '不生成任务'`" :getApiLimit="`ProvideGenerateType eq '不生成任务'`" :submitApi="`/api/Provide/AddProvideTask`"></PackageList>
+        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></PackageList>
     </transition>
 </div>
 </template>
@@ -176,54 +176,46 @@ export default {
                 if (res.data.Code == 200) {
                     //处理数据 循环接口数据
                     let getData = res.data.Data;
-                    for (let i = 0; i < getData.length; i++) {
-                        getData[i].SubClinicTasks = {};
-                        getData[i].SelectedSubClinicId = 0;
-                        for (let j = 0; j < getData[i].SubClinics.length; j++) {
-                            //循环子科室
-                            getData[i].SubClinicTasks[
-                                getData[i].SubClinics[j].SubClinicId
-                            ] = {
-                                ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
-                                ThisClinicProvideNumber: 0,
-                                ProvideTaskDetails: []
-                            };
-                            for (
-                                let k = 0; k < getData[i].TasksOfFixedSubClinic.length; k++
-                            ) {
-                                //循环固定科室
-                                if (
-                                    getData[i].SubClinics[j].SubClinicId ===
-                                    getData[i].TasksOfFixedSubClinic[k].ProvideSubClinicId
-                                ) {
-                                    getData[i].SubClinicTasks[
-                                        getData[i].SubClinics[j].SubClinicId
-                                    ].ProvideTaskDetails.push(
-                                        getData[i].TasksOfFixedSubClinic[k]
-                                    );
+                    axios(`/api/Clinic/SubClinic`).then(res => {
+                        if (res.data.Code == 200) {
+                            res.data.Data.forEach(element => {
+                                element.SubClinicId = element.ProvideSubClinicId;
+                                element.SubClinicName = element.ProvideSubClinicName;
+                            });
+                            for (let i = 0; i < getData.length; i++) {
+                                getData[i].SubClinicTasks = {};
+                                getData[i].SelectedSubClinicId = 0;
+                                if (getData[i].IsCommonProduct) {
+                                    getData[i].SubClinics = res.data.Data;
+                                }
+                                getData[i].SubClinicTasks[0] = {
+                                    ProvideSubClinicId: 0,
+                                    ThisClinicProvideNumber: 0,
+                                    ProvideTaskDetails: getData[i].ProvideTasks
+                                }
+                                for (let j = 0; j < getData[i].SubClinics.length; j++) {
+                                    //循环子科室
+                                    getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
+                                        ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
+                                        ThisClinicProvideNumber: 0,
+                                        ProvideTaskDetails: []
+                                    };
+                                    for (let k = 0; k < getData[i].ProvideTasks.length; k++) {
+                                        if (getData[i].SubClinics[j].SubClinicId === getData[i].ProvideTasks[k].ProvideSubClinicId) {
+                                            getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.push(getData[i].ProvideTasks[k]);
+                                        }
+                                    }
                                 }
                             }
-                            getData[i].SubClinicTasks[
-                                getData[i].SubClinics[j].SubClinicId
-                            ].ProvideTaskDetails = getData[i].SubClinicTasks[
-                                getData[i].SubClinics[j].SubClinicId
-                            ].ProvideTaskDetails.concat(
-                                getData[i].TasksOfCanBeModifySubClinic
-                            );
-                            getData[i].SubClinicTasks[0] = {
-                                ProvideSubClinicId: 0,
-                                ThisClinicProvideNumber: 0,
-                                ProvideTaskDetails: []
-                            };
-                            getData[i].SubClinicTasks[0].ProvideTaskDetails = getData[
-                                i
-                            ].TasksOfFixedSubClinic.concat(
-                                getData[i].TasksOfCanBeModifySubClinic
-                            );
+                            this.provideTaskList = getData;
+                            this.defaultSelectFirstSubClinicId('0');
+                        } else {
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg
+                            });
                         }
-                    }
-                    this.provideTaskList = getData;
-                    this.defaultSelectFirstSubClinicId("0");
+                    }).catch(err => {})
                 } else {
                     this.showInformation({
                         classify: "message",
@@ -259,7 +251,7 @@ export default {
         },
         //发放子科室change
         provideSubClinicChange(index) {
-            this.provideTaskList[index].TasksOfCanBeModifySubClinic.forEach(
+            this.provideTaskList[index].ProvideTasks.forEach(
                 element => {
                     if (element.IsNotPrintBarCode) {
                         element.ThisTimeProvideQuantity = 0;
@@ -268,13 +260,6 @@ export default {
                     }
                 }
             );
-            this.provideTaskList[index].TasksOfFixedSubClinic.forEach(element => {
-                if (element.IsNotPrintBarCode) {
-                    element.ThisTimeProvideQuantity = 0;
-                } else {
-                    element.ProvidePackages = [];
-                }
-            });
             this.activeName = "-1";
         },
         //tab click 事件

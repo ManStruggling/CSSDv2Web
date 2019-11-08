@@ -85,7 +85,7 @@
               ></el-option>
               <el-option label="预定生成发放" :value="1"></el-option>
               <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
-              <el-option v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83" label="不生成任务" :value="3"></el-option>
+              <el-option v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83" label="手动生成任务" :value="3"></el-option>
             </el-select>
           </li>
           <li v-if="editBoxData.Type!=85">
