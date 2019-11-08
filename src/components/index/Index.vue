@@ -134,6 +134,12 @@
                 <span>重新打印包条码</span>
               </li>
             </router-link>
+            <router-link to="/apply/recycleInClinic">
+              <li>
+                <p></p>
+                <span>待回收包登记</span>
+              </li>
+            </router-link>
           </ul>
         </dd>
       </dl>

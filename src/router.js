@@ -567,6 +567,14 @@ const router = new Router({
                 },
                 component: () =>
                     import ('./components/apply/ReserveProductRecord')
+            }, {
+                path: '/apply/recycleInClinic',
+                name: 'applyRecycleInClinic',
+                meta: {
+                    index: 1,
+                },
+                component: () =>
+                    import ('./components/apply/RecycleInClinic.vue')
             }]
         },
         {
@@ -621,7 +629,7 @@ const router = new Router({
         {
             path: '/publicModule',
             name: 'publicModule',
-            component: ()=>
+            component: () =>
                 import ('./components/publicModule/Basic'),
             children: [{
                 path: '/publicModule/reprint',
@@ -629,8 +637,8 @@ const router = new Router({
                 meta: {
                     index: 1
                 },
-                component: ()=>
-                    import('./components/publicModule/Reprint')
+                component: () =>
+                    import ('./components/publicModule/Reprint')
             }]
         }
     ]
