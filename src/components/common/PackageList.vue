@@ -23,7 +23,7 @@
             </el-table-column>
             <el-table-column prop="ProductQuantity" label="数量" sortable :sort-by="'ProductQuantity'">
                 <template slot-scope="scope">
-                    <el-input-number v-model="scope.row.ProductQuantity" :min="1" :max="999" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,scope.$index)})"></el-input-number>
+                    <el-input-number v-model="scope.row.ProductQuantity" :min="1" :max="999" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,scope.$index)})" @blur.native.stop="GLOBAL.cancelBubble"></el-input-number>
                 </template>
             </el-table-column>
         </el-table>
@@ -59,6 +59,20 @@ export default {
         submitApi: String
     },
     created() {
+        axios({
+                url: "/api/Clinic/SubClinic"
+            })
+            .then(res => {
+                if (res.data.Code == 200) {
+                    this.clinicList = res.data.Data;
+                } else {
+                    this.showInformation({
+                        classify: "message",
+                        msg: res.data.Msg
+                    });
+                }
+            })
+            .catch(err => {});
         if (this.packageClass == "追溯的辅料包") {
             //配包辅料包任务添加
             this.mode = 2;
@@ -215,24 +229,6 @@ export default {
                         }
                     }
                     this.packageList = res.data.value;
-                    //请求科室列表
-                    if (!this.isRequested && this.packageClass != "追溯的辅料包") {
-                        this.isRequested = true;
-                        axios({
-                                url: "/api/Clinic/SubClinic"
-                            })
-                            .then(res => {
-                                if (res.data.Code == 200) {
-                                    this.clinicList = res.data.Data;
-                                } else {
-                                    this.showInformation({
-                                        classify: "message",
-                                        msg: res.data.Msg
-                                    });
-                                }
-                            })
-                            .catch(err => {});
-                    }
                 })
                 .catch(err => {});
         }

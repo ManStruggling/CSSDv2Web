@@ -98,7 +98,7 @@
                         <p style="width:60px;">加急包</p>
                     </div>
                     <el-collapse v-model="collapseActiveName" accordion>
-                        <el-collapse-item v-for="(value,collapseIndex) in item.RecycleProducts" :key="collapseIndex" :name="collapseIndex+''" :class="value.IsNotPrintBarCode?'collapseUnExpand':''">
+                        <el-collapse-item v-for="(value,collapseIndex) in item.RecycleProducts" :key="collapseIndex" :name="collapseIndex+''" :class="value.IsNotPrintBarCode||value.IsLostPackage?'collapseUnExpand':''">
                             <!-- ##根据是否是计数包来判断collapse能不能被展开 -->
                             <div slot="title" class="collapseTh">
                                 <div class="collapseTd">
@@ -196,10 +196,15 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 计数包回收 -->
-        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :packageClass="packageClass" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="urlLimit"></PackageList>
+        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :packageClass="'NotBarCodeProducts'" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="'IsNotPrintBarCode'"></PackageList>
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <!-- 通用包分配科室 -->
         <AllocatedPackages v-if="isShowAllocatedPackages" @allocated-to-father="allocatedToFather" :list="waitToAllocation"></AllocatedPackages>
+    </transition>
+    <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <!-- 丢失包登记 -->
+        <LostPackageList v-if="isShowLostPackageList" @lostPackage-to-father="lostPackageToFather"></LostPackageList>
     </transition>
 </div>
 </template>
@@ -208,10 +213,10 @@
 import ManualEnter from "../common/ManualEnter";
 import PackageList from "../common/PackageList";
 import AllocatedPackages from "./AllocatedPackages";
+import LostPackageList from "../common/LostPackageList";
 export default {
     data() {
         return {
-            urlLimit: "",
             BarCodeList: [], //检测是否录入重复
             waitToAllocation: [], //待分配的条码通用包
             packageClass: "",
@@ -220,6 +225,7 @@ export default {
             isShowManualEnter: false, //手工录入是否挂载
             isShowPackageList: false, //包列表是否挂载
             isShowAllocatedPackages: false, //待分配包是否挂载
+            isShowLostPackageList: false, //丢失包登记是否挂载
             recoveryRecordModle: false, //回收记录修改模式
             recoveryData: {
                 CarrierId: 0,
@@ -234,7 +240,8 @@ export default {
     components: {
         ManualEnter,
         PackageList,
-        AllocatedPackages
+        AllocatedPackages,
+        LostPackageList
     },
     created() {
         CSManager.handleDataThis = this;
@@ -349,15 +356,11 @@ export default {
         },
         //处理计数包登记
         handleShowCountPackages() {
-            this.packageClass = "NotBarCodeProducts";
-            this.urlLimit = "IsNotPrintBarCode";
             this.isShowPackageList = true;
         },
         //处理条码丢失
         handelLostBarCode() {
-            this.packageClass = "LostBarCode";
-            this.urlLimit = "IsNotPrintBarCode eq false";
-            this.isShowPackageList = true;
+            this.isShowLostPackageList = true;
         },
         actuallyRecycleQuantityChange(newValue, oldValue, row, index) {
             if (newValue === undefined) {
@@ -552,6 +555,15 @@ export default {
             this.isShowPackageList = false;
             if (data) {
                 //数量包处理
+                for (let i = 0; i < data.length; i++) {
+                    this.handleAddData(data[i]);
+                }
+            }
+        },
+        //lostPackageList组件与父组件通信
+        lostPackageToFather(data) {
+            this.isShowLostPackageList = false;
+            if (data) {
                 for (let i = 0; i < data.length; i++) {
                     this.handleAddData(data[i]);
                 }
