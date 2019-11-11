@@ -6,7 +6,7 @@
                 <el-option label="全部" value="all"></el-option>
                 <el-option label="追溯的无菌包" value="追溯的无菌包"></el-option>
                 <el-option label="高水平消毒包" value="高水平消毒包"></el-option>
-                <el-option label="追溯的辅料包" value="追溯的辅料包" :disabled="optionIsFix"></el-option>
+                <el-option label="追溯的辅料包" value="追溯的辅料包" v-show="!optionIsFix"></el-option>
             </el-select>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="packageSearch" :style="selectIsFix?'width:100%':''"></el-input>
         </h3>
@@ -56,7 +56,8 @@ export default {
         packageClass: String,
         getApiLimit: String,
         requestApi: String,
-        submitApi: String
+        submitApi: String,
+        headers: Object
     },
     created() {
         axios({
@@ -220,7 +221,14 @@ export default {
         },
         //请求数据
         getPackagesData(url) {
-            axios(url)
+            let requestHeader = {};
+            if (this.headers) {
+                requestHeader = this.headers;
+            }
+            axios({
+                    url: url,
+                    headers: requestHeader
+                })
                 .then(res => {
                     for (let i = 0; i < res.data.value.length; i++) {
                         //通用包默认无所属科室、需要用户自选
