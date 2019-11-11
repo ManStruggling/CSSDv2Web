@@ -595,6 +595,7 @@ export default {
                             this.collapseActiveName = j + "";
                             NoPackageClass = false;
                             this.recoveryData.Clinics[i].RecycleProducts[j].RecyclePackageIds.push(data);
+                            this.recoveryData.Clinics[i].RecycleProducts[j].NumberOfExpeditedProduct = data.NumberOfExpeditedProduct;
                             return;
                         }
                         //计数包
@@ -606,6 +607,7 @@ export default {
                             NoPackageClass = false;
                             this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
                                 data.ProductQuantity;
+                            this.recoveryData.Clinics[i].RecycleProducts[j].NumberOfExpeditedProduct = data.NumberOfExpeditedProduct;
                             return;
                         }
                         //丢失包

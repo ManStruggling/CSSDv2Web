@@ -603,6 +603,9 @@ const router = new Router({
             children: [{
                     path: '/management/control',
                     name: 'managementControl',
+                    meta: {
+                        index: 1
+                    },
                     component: () =>
                         import ('./components/management/Desktop')
                 },

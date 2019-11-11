@@ -136,7 +136,7 @@
             </router-link>
             <router-link to="/apply/recycleInClinic">
               <li>
-                <p></p>
+                <p class="waiting_for_recycling"></p>
                 <span>待回收包登记</span>
               </li>
             </router-link>
@@ -375,6 +375,9 @@ export default {
                 }
                 &.cssd_index_management{
                   background-image: url("/images/management.png");
+                }
+                &.waiting_for_recycling{
+                  background-image: url("/images/waiting_for_recycling.png");
                 }
               }
               span {
