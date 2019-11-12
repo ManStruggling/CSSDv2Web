@@ -65,6 +65,7 @@ export default {
                                                         type: "warning"
                                                     });
                                                     this.input_str = "";
+                                                    this.alreadyRequested = false;
                                                     return;
                                                 }
                                             }

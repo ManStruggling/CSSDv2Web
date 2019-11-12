@@ -429,10 +429,11 @@ export default {
                                 this.tableData[key][i].PackageTasks[j].PackageTaskId ===
                                 data.PackageTaskId
                             ) {
-                                this.tableData[key][i].PackageTasks[j].IsScanned = true;
+                                this.currentlySelectedTask = this.tableData[key][i].PackageTasks[j];
                                 this.selectOrigin = key;
                                 this.tabActiveName = i + "";
                                 this.activeName = j + "";
+                                this.packageComplete();
                                 return;
                             }
                         }

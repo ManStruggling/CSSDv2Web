@@ -2,15 +2,7 @@
   <!-- 设备 -->
   <div class="basic_main">
     <div class="basic_main_head">
-      <p>
-        <el-input
-          type="text"
-          placeholder="搜索"
-          class="basic_ipt_search"
-          v-model.trim="basic_search"
-          @input="searchThisTableData"
-        ></el-input>
-      </p>
+      <p></p>
       <el-button type="primary" class="basic_ipt_add" @click="addTableTr">新增设备</el-button>
     </div>
     <div class="basic_table table_unExpand">
@@ -46,7 +38,6 @@ export default {
   data() {
     return {
       Type: 0,
-      basic_search: "", //查询条件
       table_data: [], //表的显示数据
       showEditBox: false, //是否显示编辑框
       toChildData: {}
@@ -76,16 +67,6 @@ export default {
     }
   },
   methods: {
-    //查询表的数据
-    searchThisTableData() {
-      this.baseDataSearch(
-        `/odata/devices?$filter=type eq ${encodeURI(
-          "'" + this.GLOBAL.DeviceDictionary[this.Type] + "'"
-        )} and (contains(name,${"'" +
-          this.basic_search +
-          "'"}) or contains(shortcode,${"'" + this.basic_search + "'"}))`
-      );
-    },
     //新增tr
     addTableTr() {
       this.toChildData = {

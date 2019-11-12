@@ -262,7 +262,7 @@ function showInformation(option) {
 
 //初始化websocket
 function initWebSorcket(that, origin) {
-    that.websocket = new WebSocket(`ws:127.0.0.1:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
+    that.websocket = new WebSocket(`ws://localhost:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
     //连接发生错误的回调方法
     that.websocket.onerror = err => {
         that.showInformation({ classify: "notify", msg: "websocket连接失败！" });
@@ -278,6 +278,10 @@ function initWebSorcket(that, origin) {
     };
     //接收到消息的回调方法
     that.websocket.onmessage = event => {
+        if (JSON.parse(event.data).Istest) {
+            that.receiveMessage(JSON.parse(event.data));
+            return;
+        }
         if (origin && that.GLOBAL.UserInfo.ClinicId === JSON.parse(event.data).CssdId) {
             that.hasNewTask = JSON.parse(event.data)[origin];
         }
@@ -291,7 +295,7 @@ function initWebSorcket(that, origin) {
 //是否启用websocket
 function useWebsocketOrNot(that, origin) {
     if (sessionStorage.configure) {
-
+        this.initWebSorcket(that, origin);
     } else {
         return false;
     }
