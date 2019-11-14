@@ -6,14 +6,6 @@ function send() {
     JSManager.ShowMsg("Hello C#,我需要打印条码");
 }
 
-function startLoad(msg) {
-    alert(msg);
-    var msgTable = document.getElementById("msgTable");
-    var a = document.createElement('p');
-    a.innerText = msg;
-    msgTable.appendChild(a);
-}
-
 function testPrint() {
     var list = new Array();
     var model = {
@@ -339,7 +331,6 @@ export default {
     DeviceDictionary,
     send,
     UId,
-    startLoad,
     OpenMedia,
     CloseMedia,
     updateImage,
