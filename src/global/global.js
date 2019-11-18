@@ -254,7 +254,7 @@ function showInformation(option) {
 
 //初始化websocket
 function initWebSorcket(that, origin) {
-    that.websocket = new WebSocket(`ws://localhost:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
+    that.websocket = new WebSocket(`ws://${location.hostname}:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
     //连接发生错误的回调方法
     that.websocket.onerror = err => {
         that.showInformation({ classify: "notify", msg: "websocket连接失败！" });

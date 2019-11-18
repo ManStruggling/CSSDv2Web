@@ -24,7 +24,7 @@
         <h4 class="reviewerText">配包审核人</h4>
         <p>
           <el-input
-            v-model="submitData.ReviewerBarCode"
+            v-model.trim="submitData.ReviewerBarCode"
             placeholder="扫描或手动输入条码"
             @keyup.enter.native="submitConfirm"
             v-focus

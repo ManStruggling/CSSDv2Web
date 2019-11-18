@@ -640,11 +640,24 @@ export default {
                         }
                     }
 
-                    .collapseTd {
-                        a {
-                            color: #f93e3e;
-                            line-height: 65px;
-                            font-size: 18px;
+                    .el-collapse {
+                        .el-collapse-item__header {
+                            &.is-active {
+                                .collapseTd {
+                                    a {
+                                        color: #fff;
+                                    }
+                                }
+                            }
+
+                            .collapseTd {
+                                a {
+                                    color: #f93e3e;
+                                    line-height: 65px;
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                }
+                            }
                         }
                     }
 

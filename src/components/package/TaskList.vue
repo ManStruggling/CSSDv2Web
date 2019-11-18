@@ -66,7 +66,7 @@
                                 <p style="width:60px">可配数</p>
                                 <p style="width:100px;">本次配包数</p>
                                 <p>单包网篮</p>
-                                <p style="width:60px" v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'">操作</p>
+                                <p style="width:60px" v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'||GLOBAL.UserInfo.JobAndCompetence.includes('000')">操作</p>
                             </div>
                             <el-collapse accordion v-model="activeName" @change="((activeName)=>{collapseChange(activeName,index)})">
                                 <el-collapse-item v-for="(value,collapseIndex) in item.PackageTasks" :key="collapseIndex" :name="collapseIndex+''" :class="value.IsNotBarCodeProduct?'collapseUnExpand':''">
@@ -137,7 +137,7 @@
                                             <div v-else>-</div>
                                         </div>
                                         <!-- 操作 -->
-                                        <div v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'" class="collapseTd" style="width:100px;">
+                                        <div v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'||GLOBAL.UserInfo.JobAndCompetence.includes('000')" class="collapseTd" style="width:100px;">
                                             <div>
                                                 <a @click.stop="deleteThisTask(value.PackageTaskId)">删除</a>
                                             </div>
@@ -849,6 +849,10 @@ export default {
                                     .actuallyPackageNumber {
                                         color: #fff;
                                     }
+
+                                    a {
+                                        color: #fff;
+                                    }
                                 }
 
                                 .el-input-number {
@@ -951,6 +955,7 @@ export default {
 
                                 a {
                                     color: #f93e3e;
+                                    font-weight: bold;
                                 }
                             }
 
