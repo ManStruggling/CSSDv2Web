@@ -330,13 +330,13 @@ const router = new Router({
                         import ('./components/inventory/HasBarCode')
                 },
                 {
-                    path: '/inventory/notBarCode',
-                    name: 'inventoryNotBarCode',
+                    path: '/inventory/noBarCode',
+                    name: 'inventoryNoBarCode',
                     meta: {
                         index: 1
                     },
                     component: () =>
-                        import ('./components/inventory/NotBarCode')
+                        import ('./components/inventory/NoBarCode')
                 }
             ]
 
@@ -354,6 +354,14 @@ const router = new Router({
                 },
                 component: () =>
                     import ('./components/inventoryCounting/Registration')
+            }, {
+                path: '/inventoryCounting/record',
+                name: 'inventoryCountingRecord',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/inventoryCounting/Record.vue')
             }]
 
         },
