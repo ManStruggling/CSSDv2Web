@@ -164,61 +164,32 @@ export default {
     },
     created() {
         CSManager.handleDataThis = this;
+        // this.$http.all([axios("/api/Provide/ProvideTasks"),axios("/api/Clinic/SubClinic")]).then(this.$http.spread((acct,perms)=>{
+            
+        // }));
         axios({
                 url: `/api/Provide/ProvideTasks`
             })
             .then(res => {
                 if (res.data.Code == 200) {
                     //处理数据 循环接口数据
-                    let getData = res.data.Data;
-                    axios(`/api/Clinic/SubClinic`).then(res => {
-                        if (res.data.Code == 200) {
-                            res.data.Data.forEach(element => {
-                                element.SubClinicId = element.ProvideSubClinicId;
-                                element.SubClinicName = element.ProvideSubClinicName;
-                            });
-                            for (let i = 0; i < getData.length; i++) {
-                                getData[i].SubClinicTasks = {};
-                                getData[i].SelectedSubClinicId = 0;
-                                if (getData[i].IsCommonProduct) {
-                                    getData[i].SubClinics = res.data.Data;
-                                }
-                                getData[i].SubClinicTasks[0] = {
-                                    ProvideSubClinicId: 0,
-                                    ThisClinicProvideNumber: 0,
-                                    ProvideTaskDetails: getData[i].ProvideTasks
-                                }
-                                for (let j = 0; j < getData[i].SubClinics.length; j++) {
-                                    //循环子科室
-                                    if (getData[i].IsCommonProduct) {
-                                        getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
-                                            ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
-                                            ThisClinicProvideNumber: 0,
-                                            ProvideTaskDetails: getData[i].ProvideTasks
-                                        }
-                                    } else {
-                                        getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId] = {
-                                            ProvideSubClinicId: getData[i].SubClinics[j].SubClinicId,
-                                            ThisClinicProvideNumber: 0,
-                                            ProvideTaskDetails: []
-                                        };
-                                        for (let k = 0; k < getData[i].ProvideTasks.length; k++) {
-                                            if (getData[i].SubClinics[j].SubClinicId === getData[i].ProvideTasks[k].ProvideSubClinicId) {
-                                                getData[i].SubClinicTasks[getData[i].SubClinics[j].SubClinicId].ProvideTaskDetails.push(getData[i].ProvideTasks[k]);
-                                            }
-                                        }
-                                    }
-                                }
+                    res.data.Data.forEach(element => {
+                        element.SelectedSubClinicId = 0;
+                        element.SubClinicTasks = {
+                            0: {
+                                ProvideSubClinicId: 0,
+                                ThisClinicProvideNumber: 0,
+                                ThisClinicProvideNumber: 0,
+                                ProvideTaskDetails: element.ProvideTasks
                             }
-                            this.provideTaskList = getData;
-                            this.defaultSelectFirstSubClinicId('0');
-                        } else {
-                            this.showInformation({
-                                classify: "message",
-                                msg: res.data.Msg
-                            });
                         }
-                    }).catch(err => {})
+                    });
+                    this.provideTaskList = res.data.Data;
+                    if (this.provideTaskList.length > 0) {
+                        this.handleTabClick({
+                            index: '0'
+                        });
+                    }
                 } else {
                     this.showInformation({
                         classify: "message",
@@ -268,14 +239,62 @@ export default {
         //tab click 事件
         handleTabClick(vm) {
             this.activeName = "-1";
-            this.defaultSelectFirstSubClinicId(vm.index);
+            this.tabActiveName = vm.index;
+            this.getSubClinics(vm.index);
         },
-        //defaultSelectSubClinicId
-        defaultSelectFirstSubClinicId(index) {
-            if (this.provideTaskList[index].SubClinics.length === 1) {
-                this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
-                    index
-                ].SubClinics[0].SubClinicId;
+        //获取子科室
+        getSubClinics(index) {
+            if (!this.provideTaskList[index].SubClinics) {
+                let url = `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`;
+                if (this.provideTaskList[index].IsCommonProduct) {
+                    url = "/api/Clinic/SubClinic";
+                }
+                axios({
+                    url: url
+                }).then(res => {
+                    if (res.data.Code == 200) {
+                        if (this.provideTaskList[index].IsCommonProduct) {
+                            res.data.Data.forEach(element => {
+                                element.SubClinicId = element.ProvideSubClinicId;
+                                element.SubClinicName = element.ProvideSubClinicName;
+                            })
+                        }
+                        this.provideTaskList[index].SubClinics = res.data.Data;
+                        for (let j = 0; j < this.provideTaskList[index].SubClinics.length; j++) {
+                            //循环子科室
+                            if (this.provideTaskList[index].IsCommonProduct) {
+                                this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
+                                    ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
+                                    ThisClinicProvideNumber: 0,
+                                    ProvideTaskDetails: this.provideTaskList[index].ProvideTasks
+                                }
+                            } else {
+                                this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
+                                    ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
+                                    ThisClinicProvideNumber: 0,
+                                    ProvideTaskDetails: []
+                                };
+                                for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
+                                    if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
+                                        this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
+                                    }
+                                }
+                            }
+                        }
+                        //defaultSelectSubClinicId
+                        if (this.provideTaskList[index].SubClinics.length === 1) {
+                            this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
+                                index
+                            ].SubClinics[0].SubClinicId;
+                        }
+                        this.$forceUpdate();
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: res.data.Msg
+                        });
+                    }
+                }).catch(err => {})
             }
         },
         //计数包数量修改
