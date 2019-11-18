@@ -61,7 +61,7 @@
               <div class="el_input_box font16blod">
                 <el-input
                   v-model.trim="submitData.Patient.BedId"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                   placeholder="床号(必填)"
                 ></el-input>
@@ -72,7 +72,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.PatientName"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                   placeholder="病人姓名(必填)"
                 ></el-input>
@@ -83,7 +83,7 @@
               <div class="el_input_box">
                 <el-select 
                   v-model="submitData.OutpatientType"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod green24x13"
                   placeholder="门诊类型(必填)"
                 >
@@ -97,7 +97,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SubClinic"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -109,7 +109,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalName"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -126,7 +126,7 @@
                   placeholder="选择日期"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                 ></el-date-picker>
               </div>
             </li>
@@ -135,7 +135,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalRoom"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -145,7 +145,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.Stage"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -171,7 +171,7 @@
               <div class="el_input_box font16blod">
                 <el-input
                   v-model.trim="submitData.Patient.BedId"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                   placeholder="床号(必填)"
                 ></el-input>
@@ -182,7 +182,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.PatientName"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                   placeholder="病人姓名(必填)"
                 ></el-input>
@@ -193,7 +193,7 @@
               <div class="el_input_box">
                 <el-select 
                   v-model="submitData.OutpatientType"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod green24x13"
                   placeholder="门诊类型(必填)"
                 >
@@ -207,7 +207,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SubClinic"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -217,7 +217,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.Gender"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -225,7 +225,7 @@
             <li>
               <p class="font16gray">年龄</p>
               <div class="el_input_box">
-                <el-input v-model.trim="submitData.Patient.Age" :disabled="forbid" class="font16blod"></el-input>
+                <el-input v-model.trim="submitData.Patient.Age" :disabled="!submitData.Patient.HospitalId" class="font16blod"></el-input>
               </div>
             </li>
             <li>
@@ -240,7 +240,7 @@
                   placeholder="选择日期"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                 ></el-date-picker>
               </div>
             </li>
@@ -249,7 +249,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.Clinic"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -259,7 +259,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.RegisteredClinic"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -276,7 +276,7 @@
                   placeholder="选择日期"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                 ></el-date-picker>
               </div>
             </li>   
@@ -287,7 +287,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalName"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -297,7 +297,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalDoctor"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -314,7 +314,7 @@
                   placeholder="选择日期"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                 ></el-date-picker>
               </div>
             </li>
@@ -323,7 +323,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalSite"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -333,7 +333,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.SurgicalRoom"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -343,7 +343,7 @@
               <div class="el_input_box">
                 <el-input
                   v-model.trim="submitData.Patient.Stage"
-                  :disabled="forbid"
+                  :disabled="!submitData.Patient.HospitalId"
                   class="font16blod"
                 ></el-input>
               </div>
@@ -429,7 +429,6 @@ export default {
       dataToChild: "", //子组件与父组件通信数据
       search_HospitalId: "",
       isShowAddPackage: false,
-      forbid: true,
       outerPackageChangeMode: false, //记录修改
       submitData: {
         IsBackupPackage: false,//备用包
@@ -462,7 +461,6 @@ export default {
   created() {
     if (this.$route.query.recordId) {
       this.outerPackageChangeMode = true;
-      this.forbid = false;
       axios({
         url: `/api/Recycle/PendingUpdateOuterProduct/${this.$route.query.recordId}`
       })
@@ -532,7 +530,6 @@ export default {
       ) {
         axios({ url: `/api/Apply/MessageOfPatient/${this.search_HospitalId}` })
           .then(res => {
-            this.forbid = false;
             let type;
             if (res.data.Code == 200) {
               type = "success";

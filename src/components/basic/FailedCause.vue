@@ -70,7 +70,7 @@ export default {
       this.toChildData = {
         Id: 0,
         Name: "",
-        causeType: 0
+        CauseType: ""
       };
       this.showEditBox = true;
     },
