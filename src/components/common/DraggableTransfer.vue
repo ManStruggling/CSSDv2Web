@@ -40,7 +40,7 @@
           :indeterminate="isIndeterminateOfTarget"
           v-model="TargetCheckAll"
           @change="((val)=>{handleCheckAllChange(val,changeTargetData,1)})"
-        >未选报表参数</el-checkbox>
+        >已选报表参数</el-checkbox>
         <span>{{rightSelect ? rightSelect : 0}}/{{data2.length}}</span>
       </div>
 
