@@ -44,7 +44,7 @@
                         <div class="tab_content table_collapse table_unExpand">
                             <div class="selectSubClinic">
                                 <p>本次发放科室</p>
-                                <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="provideSubClinicChange(index)" :filterable="true">
+                                <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="((val)=>{provideSubClinicChange(val,index)})" :filterable="true">
                                     <el-option label="全部" :value="0"></el-option>
                                     <el-option v-for="(value,idx) in item.SubClinics" :key="idx" :label="value.SubClinicName" :value="value.SubClinicId"></el-option>
                                 </el-select>
@@ -98,7 +98,7 @@
                                         </div>
                                         <!-- 操作 -->
                                         <div class="collapseTd" style="width:90px;">
-                                            <a v-if="value.ProvideTaskGenerateType==3" @click.stop="deleteThisTask(value.ProvideTaskId)">删除</a>
+                                            <a v-if="value.ProvideTaskGenerateType==3||GLOBAL.UserInfo.JobAndCompetence.includes('000')" @click.stop="deleteThisTask(value.ProvideTaskId)">删除</a>
                                             <p v-else>-</p>
                                         </div>
                                     </div>
@@ -155,7 +155,8 @@ export default {
             tabActiveName: "0",
             isShowManualEnter: false,
             provideTaskList: [],
-            barCodeList: [] //已录入包的列表  用于检测是否重复
+            barCodeList: [], //已录入包的列表  用于检测是否重复
+            subClinics: [] //用于存储通用包可发的所有子科室
         };
     },
     components: {
@@ -164,40 +165,44 @@ export default {
     },
     created() {
         CSManager.handleDataThis = this;
-        // this.$http.all([axios("/api/Provide/ProvideTasks"),axios("/api/Clinic/SubClinic")]).then(this.$http.spread((acct,perms)=>{
-            
-        // }));
-        axios({
-                url: `/api/Provide/ProvideTasks`
-            })
-            .then(res => {
-                if (res.data.Code == 200) {
-                    //处理数据 循环接口数据
-                    res.data.Data.forEach(element => {
-                        element.SelectedSubClinicId = 0;
-                        element.SubClinicTasks = {
-                            0: {
-                                ProvideSubClinicId: 0,
-                                ThisClinicProvideNumber: 0,
-                                ThisClinicProvideNumber: 0,
-                                ProvideTaskDetails: element.ProvideTasks
-                            }
+        this.$http.all([axios("/api/Provide/ProvideTasks"), axios("/api/Clinic/SubClinic")]).then(this.$http.spread((res, perms) => {
+            if (perms.data.Code == 200) {
+                perms.data.Data.forEach(element => {
+                    element.SubClinicId = element.ProvideSubClinicId;
+                    element.SubClinicName = element.ProvideSubClinicName;
+                });
+                this.subClinics = perms.data.Data;
+            } else {
+                this.showInformation({
+                    classify: "message",
+                    msg: perms.data.Msg
+                });
+            }
+            if (res.data.Code == 200) {
+                //处理数据 循环接口数据
+                res.data.Data.forEach(element => {
+                    element.SelectedSubClinicId = 0;
+                    element.SubClinicTasks = {
+                        0: {
+                            ProvideSubClinicId: 0,
+                            ThisClinicProvideNumber: 0,
+                            ProvideTaskDetails: element.ProvideTasks
                         }
-                    });
-                    this.provideTaskList = res.data.Data;
-                    if (this.provideTaskList.length > 0) {
-                        this.handleTabClick({
-                            index: '0'
-                        });
                     }
-                } else {
-                    this.showInformation({
-                        classify: "message",
-                        msg: res.data.Msg
+                });
+                this.provideTaskList = res.data.Data;
+                if (this.provideTaskList.length > 0) {
+                    this.handleTabClick({
+                        index: '0'
                     });
                 }
-            })
-            .catch(err => {});
+            } else {
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                });
+            }
+        }));
     },
     mounted() {
         this.GLOBAL.useWebsocketOrNot(this, "ProvideState");
@@ -224,7 +229,7 @@ export default {
             }
         },
         //发放子科室change
-        provideSubClinicChange(index) {
+        provideSubClinicChange(val, index) {
             this.provideTaskList[index].ProvideTasks.forEach(
                 element => {
                     if (element.IsNotPrintBarCode) {
@@ -235,6 +240,10 @@ export default {
                 }
             );
             this.activeName = "-1";
+            //按照回收时间升序排列
+            this.provideTaskList[index].SubClinicTasks[val].ProvideTaskDetails.sort((a, b) => {
+                return a.RecycleDateTime > b.RecycleDateTime?1:-1;
+            });
         },
         //tab click 事件
         handleTabClick(vm) {
@@ -245,57 +254,55 @@ export default {
         //获取子科室
         getSubClinics(index) {
             if (!this.provideTaskList[index].SubClinics) {
-                let url = `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`;
                 if (this.provideTaskList[index].IsCommonProduct) {
-                    url = "/api/Clinic/SubClinic";
+                    this.provideTaskList[index].SubClinics = this.subClinics;
+                    this.getSubClinicTasks(index);
+                } else {
+                    axios({
+                        url: `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`
+                    }).then(res => {
+                        if (res.data.Code == 200) {
+                            this.provideTaskList[index].SubClinics = res.data.Data;
+                            this.getSubClinicTasks(index);
+                        } else {
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg
+                            });
+                        }
+                    }).catch(err => {})
                 }
-                axios({
-                    url: url
-                }).then(res => {
-                    if (res.data.Code == 200) {
-                        if (this.provideTaskList[index].IsCommonProduct) {
-                            res.data.Data.forEach(element => {
-                                element.SubClinicId = element.ProvideSubClinicId;
-                                element.SubClinicName = element.ProvideSubClinicName;
-                            })
-                        }
-                        this.provideTaskList[index].SubClinics = res.data.Data;
-                        for (let j = 0; j < this.provideTaskList[index].SubClinics.length; j++) {
-                            //循环子科室
-                            if (this.provideTaskList[index].IsCommonProduct) {
-                                this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
-                                    ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
-                                    ThisClinicProvideNumber: 0,
-                                    ProvideTaskDetails: this.provideTaskList[index].ProvideTasks
-                                }
-                            } else {
-                                this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
-                                    ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
-                                    ThisClinicProvideNumber: 0,
-                                    ProvideTaskDetails: []
-                                };
-                                for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
-                                    if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
-                                        this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
-                                    }
-                                }
-                            }
-                        }
-                        //defaultSelectSubClinicId
-                        if (this.provideTaskList[index].SubClinics.length === 1) {
-                            this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
-                                index
-                            ].SubClinics[0].SubClinicId;
-                        }
-                        this.$forceUpdate();
-                    } else {
-                        this.showInformation({
-                            classify: "message",
-                            msg: res.data.Msg
-                        });
-                    }
-                }).catch(err => {})
             }
+        },
+        //为子科室分配任务
+        getSubClinicTasks(index) {
+            for (let j = 0; j < this.provideTaskList[index].SubClinics.length; j++) {
+                //循环子科室
+                if (this.provideTaskList[index].IsCommonProduct) {
+                    this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
+                        ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
+                        ThisClinicProvideNumber: 0,
+                        ProvideTaskDetails: this.provideTaskList[index].ProvideTasks
+                    }
+                } else {
+                    this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
+                        ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
+                        ThisClinicProvideNumber: 0,
+                        ProvideTaskDetails: []
+                    };
+                    for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
+                        if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
+                            this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
+                        }
+                    }
+                }
+            }
+            if (this.provideTaskList[index].SubClinics.length === 1) {
+                this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
+                    index
+                ].SubClinics[0].SubClinicId;
+            }
+            this.$forceUpdate();
         },
         //计数包数量修改
         handleCountNumberPackage(newValue, oldValue, list, value) {
@@ -472,9 +479,11 @@ export default {
                     currentTaskList[j].ThisTimeProvideQuantity <
                     currentTaskList[j].RemainQuantity
                 ) {
-                    this.activeName = j + "";
                     currentTaskList[j].ProvidePackages.push(data);
                     currentTaskList[j].ThisTimeProvideQuantity += 1;
+                    let newItem = currentTaskList.splice(j, 1)[0];
+                    currentTaskList.unshift(newItem);
+                    this.activeName = "0";
                     return;
                 }
             }

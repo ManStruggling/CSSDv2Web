@@ -53,7 +53,7 @@
     </div>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 数量包登记   控制是否挂载   数据通信   类型 -->
-        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`ProvideSubClinicId eq ${GLOBAL.UserInfo.ClinicId} and IsCommonProduct eq false`" :headers="{LocationId:selectedCssdId}" :packageClass="'NewPurchasing'"></PackageList>
+        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`ProvideClinicId eq ${GLOBAL.UserInfo.ClinicId} and IsCommonProduct eq false`" :headers="{LocationId:selectedCssdId}" :packageClass="'NewPurchasing'"></PackageList>
     </transition>
 </div>
 </template>
