@@ -5,6 +5,12 @@
             <router-link to="/" tag="li">
                 <p>返回</p>
             </router-link>
+            <router-link to="/inventory/inboundRecord" tag="li">
+                <p>入库记录</p>
+            </router-link>
+            <router-link to="/inventory/outboundRecord" tag="li">
+                <p>出库记录</p>
+            </router-link>
         </ul>
         <div class="cssd_title_right">
             <p>

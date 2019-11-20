@@ -1,10 +1,10 @@
 <template>
-<div class="cssd_box" id="inventoryCountingRecord">
+<div class="cssd_box" id="outboundRecord">
     <div class="cssd_title">
         <ul class="cssd_menu">
-            <router-link to="/inventoryCounting/registration" tag="li">
+            <li @click="goBack">
                 <p>返回</p>
-            </router-link>
+            </li>
         </ul>
         <div class="cssd_title_right">
             <p class="search_date">
@@ -17,7 +17,8 @@
     </div>
     <div class="cssd_table_center cssd_table_expand cssd_record_ui table_unExpand">
         <div class="content_title">
-            <p>盘库日期</p>
+            <p>出库日期</p>
+            <p>出库类型</p>
             <p>操作人</p>
         </div>
         <el-collapse accordion @change="collapseChange">
@@ -27,10 +28,13 @@
                         <p>{{item.RecordDateTime}}</p>
                     </div>
                     <div class="collapseTd">
+                        <p>{{item.OutboundType}}</p>
+                    </div>
+                    <div class="collapseTd">
                         <p>{{item.Operator}}</p>
                     </div>
                 </div>
-                <el-table :data="item.Packages" :default-expand-all="true">
+                <el-table :data="item.Packages">
                     <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
                     <el-table-column label="包条码" prop="PackageBarCode" width="210"></el-table-column>
                     <el-table-column></el-table-column>
@@ -57,11 +61,14 @@ export default {
     },
     mounted() {},
     methods: {
+        goBack() {
+            this.$router.go(-1);
+        },
         //二次请求
         collapseChange(index) {
             if (index != "" && this.recordList[index].Packages == "") {
                 axios({
-                        url: `/api/Inventory/CheckInventoryRecordPackages/${this.recordList[index].CheckInventoryRecordId}`
+                        url: `/api/Inventory/OutboundPackages/${this.recordList[index].OutboundRecordId}`
                     })
                     .then(res => {
                         if (res.data.Code == 200) {
@@ -79,7 +86,7 @@ export default {
         //查询
         searchRecordsData() {
             axios({
-                url: `/api/Inventory/CheckInventoryRecord/${this.search_date[0]}/${this.search_date[1]}`
+                url: `/api/Inventory/OutboundRecord/${this.search_date[0]}/${this.search_date[1]}`
             }).then(res => {
                 let type;
                 if (res.data.Code == 200) {

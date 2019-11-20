@@ -26,6 +26,11 @@
             <el-table :data="submitData.Packages">
                 <el-table-column width="240" label="包名称" prop="ProductName"></el-table-column>
                 <el-table-column width="210" label="包条码" prop="BarCode"></el-table-column>
+                <el-table-column width="210" label="操作">
+                    <template slot-scope="props">
+                        <a @click="deletePackage(props.$index)">删除</a>
+                    </template>
+                </el-table-column>
                 <el-table-column></el-table-column>
             </el-table>
         </div>
@@ -83,6 +88,16 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        //删除包
+        deletePackage(index) {
+            this.$confirm("您确定要删除该包?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                this.submitData.Packages.splice(index, 1);
+            }).catch(() => {})
+        },
         //提交完成
         submitComplete() {
             if (this.GLOBAL.VerificationHandle([{
@@ -194,6 +209,11 @@ export default {
                         font-size: 18px;
                         color: #232e41;
                         font-weight: bold;
+                        a{
+                            cursor: pointer;
+                            color: #F93E3E;
+                            font-weight: bold;
+                        }
                     }
                 }
             }

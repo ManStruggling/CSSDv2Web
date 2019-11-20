@@ -337,6 +337,24 @@ const router = new Router({
                     },
                     component: () =>
                         import ('./components/inventory/NoBarCode')
+                },
+                {
+                    path: '/inventory/inboundRecord',
+                    name: 'inventoryInboundRecord',
+                    meta: {
+                        index: 2
+                    },
+                    component: () =>
+                        import ('./components/inventory/InboundRecord')
+                },
+                {
+                    path: '/inventory/outboundRecord',
+                    name: 'inventoryOutboundRecord',
+                    meta: {
+                        index: 2
+                    },
+                    component: () =>
+                        import ('./components/inventory/OutboundRecord')
                 }
             ]
 

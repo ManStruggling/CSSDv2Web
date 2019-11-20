@@ -68,6 +68,9 @@
                     font-weight: normal;
                 }
             }
+            .el-table__body-wrapper::-webkit-scrollbar{
+                width:7px;
+            }
             tbody {
                 tr {
                     height: 50px;
