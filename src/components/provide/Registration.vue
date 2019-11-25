@@ -36,7 +36,7 @@
                     <el-tab-pane v-for="(item,index) in provideTaskList" :key="index" :name="index+''">
                         <div slot="label">
                             <h3>{{item.ClinicName}}</h3>
-                            <p>
+                            <p v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
                                 <span>剩余总发放数:</span>
                                 <b>{{countRemainProvideQuantity(index)}}</b>
                             </p>
@@ -53,7 +53,7 @@
                                 <p>包名称</p>
                                 <p>回收时间</p>
                                 <p>发放科室</p>
-                                <p style="width:90px;">预计发放数</p>
+                                <p style="width:90px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">预计发放数</p>
                                 <p style="width:80px;">库存数</p>
                                 <p style="width:100px;">剩余发放数</p>
                                 <p style="width:100px;">本次发放数</p>
@@ -75,7 +75,7 @@
                                             <p>{{value.ProvideSubClinic}}</p>
                                         </div>
                                         <!-- 预计发放数 -->
-                                        <div class="collapseTd" style="width:130px;">
+                                        <div class="collapseTd" style="width:130px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
                                             <p>{{value.ScheduledQuantity}}</p>
                                         </div>
                                         <!-- 库存数 -->

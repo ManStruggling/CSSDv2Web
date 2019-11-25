@@ -20,7 +20,7 @@
                             <span>外来器械登记</span>
                         </li>
                     </router-link>
-                    <router-link to="/recovery/newPurchasing" v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')">
+                    <router-link to="/recovery/newPurchasing" v-if="GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('100')||GLOBAL.UserInfo.JobAndCompetence.includes('111')">
                         <li>
                             <p class="cssd_index_newPurchasing"></p>
                             <span>新购入包登记</span>

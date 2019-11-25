@@ -153,7 +153,7 @@ export default {
         //搜索数据
         searchThisTableData() {
             this.table_data = this.total_data.filter(element => {
-                if (element.Name.includes(this.basic_search) || (element.ShortCode ? element.ShortCode.includes(this.basic_search) : false)) {
+                if (element.Name.includes(this.basic_search.toUpperCase()) || (element.ShortCode ? element.ShortCode.includes(this.basic_search.toUpperCase()) : false)) {
                     return true;
                 }
             })

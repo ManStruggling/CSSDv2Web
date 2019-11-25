@@ -79,7 +79,6 @@
             v-if="item.IsNotBarCodeProduct==true?false:true"
           >
             <el-table-column label="包条码" prop="PackageBarCode" width="240"></el-table-column>
-            <!-- <el-table-column label="包内个数" prop="CountInPackage" v-if="IsNumberProduct==false?true:false"></el-table-column> -->
             <el-table-column label="分类" prop="Type" v-if="false" width="210"></el-table-column>
             <el-table-column label="操作" width="210">
               <template slot-scope="props">

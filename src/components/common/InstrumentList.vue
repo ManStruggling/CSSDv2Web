@@ -17,7 +17,7 @@
         :row-key="getRowKeys"
       >
         <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-        <el-table-column prop="Name" label="名称" width="120"></el-table-column>
+        <el-table-column prop="Name" label="名称" width="120" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="Specification" label="规格" width="80"></el-table-column>
         <el-table-column prop="Quantity" label="数量" show-overflow-tooltip>
           <template slot-scope="scope">

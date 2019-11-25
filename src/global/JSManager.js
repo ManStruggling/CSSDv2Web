@@ -117,7 +117,7 @@ function OpenVideo(frequency, deveice, userInfo) {
         CSManager.video_this = userInfo; //vue组件this
         JSManager.OpenVideo(frequency, deveice, "");
     } catch (error) {
-
+        console.log(error)
     }
 }
 /*
