@@ -70,6 +70,8 @@ export default {
                 ShortCode: "", //简码
                 CostPrice: 1, //价格
                 Specification: "", //规格
+                ProvideCssdId: 2,
+                ProvideSubClinicId: 1,
                 Remark: "",
                 Type: this.Type
             };

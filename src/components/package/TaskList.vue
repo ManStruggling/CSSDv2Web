@@ -43,10 +43,10 @@
             <div class="cssd_talbe_left_menu">
                 <div class="task_origin">
                     <el-select v-model="selectOrigin" @change="deselectTask" popper-class="taskOrigin">
-                        <el-option label="清洗完成可配包" value="TasksOfCanBePackage"></el-option>
-                        <el-option label="清洗未完成" value="PackageTasksFromCleanUndone"></el-option>
-                        <el-option label="灭菌失败" value="PackageTasksFromSterilizeFailed"></el-option>
-                        <el-option label="辅料包新任务" value="PackageTasksFromSupportMaterialProduct"></el-option>
+                        <el-option label="清洗完成可配包" value="TasksOfCanBePackage"><span>清洗完成可配包</span><b>{{countPackageTasks('TasksOfCanBePackage')}}</b></el-option>
+                        <el-option label="清洗未完成" value="PackageTasksFromCleanUndone"><span>清洗未完成</span><b>{{countPackageTasks('PackageTasksFromCleanUndone')}}</b></el-option>
+                        <el-option label="灭菌失败" value="PackageTasksFromSterilizeFailed"><span>灭菌失败</span><b>{{countPackageTasks('PackageTasksFromSterilizeFailed')}}</b></el-option>
+                        <el-option label="辅料包新任务" value="PackageTasksFromSupportMaterialProduct"><span>辅料包新任务</span><b>{{countPackageTasks('PackageTasksFromSupportMaterialProduct')}}</b></el-option>
                         <!-- <el-option label="灭菌过期" value="PackageTasksFromSterilizeExpired"></el-option> -->
                     </el-select>
                 </div>
@@ -227,68 +227,6 @@ export default {
         PackageList,
         PhotoView,
         ManualEnter
-    },
-    watch: {
-        "tableData.TasksOfCanBePackage": {
-            handler: function (newValue) {
-                if (newValue != null && newValue != "") {
-                    let num = 0;
-                    newValue.forEach(element => {
-                        num += element.PackageTasks.length;
-                    });
-                    $(".taskOrigin ul li:first-child").html(
-                        `<span>清洗完成可配包</span><b>${num}</b>`
-                    );
-                }
-            },
-            immediate: true,
-            deep: true
-        },
-        "tableData.PackageTasksFromCleanUndone": {
-            handler: function (newValue) {
-                if (newValue != null && newValue != "") {
-                    let num = 0;
-                    newValue.forEach(element => {
-                        num += element.PackageTasks.length;
-                    });
-                    $(".taskOrigin ul li:nth-child(2)").html(
-                        `<span>清洗未完成</span><b>${num}</b>`
-                    );
-                }
-            },
-            immediate: true,
-            deep: true
-        },
-        "tableData.PackageTasksFromSterilizeFailed": {
-            handler: function (newValue) {
-                if (newValue != null && newValue != "") {
-                    let num = 0;
-                    newValue.forEach(element => {
-                        num += element.PackageTasks.length;
-                    });
-                    $(".taskOrigin ul li:nth-child(3)").html(
-                        `<span>灭菌失败</span><b>${num}</b>`
-                    );
-                }
-            },
-            immediate: true,
-            deep: true
-        },
-        "tableData.PackageTasksFromSupportMaterialProduct": {
-            handler: function (newValue) {
-                if (newValue != null && newValue != "") {
-                    let num = 0;
-                    newValue.forEach(element => {
-                        num += element.PackageTasks.length;
-                    });
-                    $(".taskOrigin ul li:last-child").html(
-                        `<span>辅料包新任务</span><b>${num}</b>`
-                    );
-                }
-            },
-            immediate: true,
-            deep: true
-        }
     },
     created() {
         CSManager.handleDataThis = this;
@@ -734,7 +672,20 @@ export default {
                     .catch(err => {});
             }
         }
-    }
+    },
+    computed: {
+        countPackageTasks() {
+            return origin=>{
+                if (this.tableData[origin] != null && this.tableData[origin] != "") {
+                    let num = 0;
+                    this.tableData[origin].forEach(element => {
+                        num += element.PackageTasks.length;
+                    });
+                    return num;
+                }
+            }
+        }
+    },
 };
 </script>
 
