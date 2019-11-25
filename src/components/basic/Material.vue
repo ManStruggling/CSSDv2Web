@@ -121,9 +121,9 @@ export default {
     searchThisTableData() {
       this.baseDataSearch(
         `/odata/ProductMaterials?$filter=contains(name,${"'" +
-          this.basic_search +
+          encodeURIComponent(this.basic_search) +
           "'"}) or contains(shortcode,${"'" +
-          this.basic_search +
+          encodeURIComponent(this.basic_search) +
           "'"})`
       );
     },

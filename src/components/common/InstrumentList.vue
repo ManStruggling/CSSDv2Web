@@ -68,9 +68,9 @@ export default {
     instrumentSearch() {
       //code
       axios({url:`/odata/instruments?$filter=contains(name,${"'" +
-          this.searchShortCode +
+          encodeURIComponent(this.searchShortCode) +
           "'"}) or contains(shortcode,${"'" +
-          this.searchShortCode +
+          encodeURIComponent(this.searchShortCode) +
           "'"})`}).then(res=>{
             this.resetQuantity(res.data.value);
             this.instrumentList = res.data.value;

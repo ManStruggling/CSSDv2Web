@@ -152,13 +152,6 @@ export default {
         },
         //搜索数据
         searchThisTableData() {
-            // this.baseDataSearch(
-            //   `/odata/products?$filter=type eq ${encodeURI(
-            //     "'" + this.GLOBAL.ProductDictionary[this.Type] + "'"
-            //   )} and (contains(name,${"'" +
-            //     this.basic_search +
-            //     "'"}) or contains(shortcode,${"'" + this.basic_search + "'"}))`
-            // );
             this.table_data = this.total_data.filter(element => {
                 if (element.Name.includes(this.basic_search) || (element.ShortCode ? element.ShortCode.includes(this.basic_search) : false)) {
                     return true;

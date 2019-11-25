@@ -2,14 +2,7 @@
   <!-- 物流人员 -->
   <div class="basic_main">
     <div class="basic_main_head">
-      <p>
-        <!-- <el-input
-          placeholder="搜索"
-          class="basic_ipt_search"
-          v-model.trim="basic_search"
-          @input="searchThisTableData"
-        ></el-input> -->
-      </p>
+      <p></p>
       <el-button type="primary" class="basic_ipt_add" @click="addTableTr">新增物流人员</el-button>
     </div>
     <div class="basic_table table_unExpand">
@@ -64,13 +57,6 @@ export default {
   },
   mounted() {},
   methods: {
-    searchThisTableData() {
-    //   this.baseDataSearch(
-    //     `/odata/ProductMaterials?$filter=contains(name,${"'" +
-    //       this.basic_search +
-    //       "'"})`
-    //   );
-    },
     //新增tr
     addTableTr() {
       this.showEditBox = true;

@@ -184,8 +184,8 @@ export default {
             url =
                 this.getUrl +
                 ` and (contains(ProductShortCode,${"'" +
-          this.searchShortCode +
-          "'"}) or contains(ProductName,${"'" + this.searchShortCode + "'"}))`;
+          encodeURIComponent(this.searchShortCode) +
+          "'"}) or contains(ProductName,${"'" + encodeURIComponent(this.searchShortCode) + "'"}))`;
             this.getPackagesData(url);
         },
         handleSelectionChange(val) {

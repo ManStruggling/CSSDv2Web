@@ -149,8 +149,8 @@ export default {
               this.selectedSubClinicId
             } or IsCommonProduct)`;
             this.getUrl += ` and (contains(ProductShortCode,${"'" +
-        this.searchShortCode +
-        "'"}) or contains(ProductName,${"'" + this.searchShortCode + "'"}))`;
+        encodeURIComponent(this.searchShortCode) +
+        "'"}) or contains(ProductName,${"'" + encodeURIComponent(this.searchShortCode) + "'"}))`;
         },
         //请求数据
         getPackagesData(url) {
@@ -190,7 +190,9 @@ export default {
                             }
                         }
                     }
-                    res.data.value.sort((a,b)=>{return b-a;});
+                    res.data.value.sort((a, b) => {
+                        return b - a;
+                    });
                     this.packageList = res.data.value;
                 })
                 .catch(err => {});
