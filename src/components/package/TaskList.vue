@@ -675,7 +675,7 @@ export default {
     },
     computed: {
         countPackageTasks() {
-            return origin=>{
+            return origin => {
                 if (this.tableData[origin] != null && this.tableData[origin] != "") {
                     let num = 0;
                     this.tableData[origin].forEach(element => {
