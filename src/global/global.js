@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as signalR from "@aspnet/signalr";
 let TipsMsg = new Vue(); //显示验证消息
 
 function send() {
@@ -254,34 +255,16 @@ function showInformation(option) {
 
 //初始化websocket
 function initWebSorcket(that, origin) {
-    that.websocket = new WebSocket(`ws://${location.hostname}:${that.GLOBAL.UserInfo.WebSocketPort}/add`);
-    //连接发生错误的回调方法
-    that.websocket.onerror = err => {
-        that.showInformation({ classify: "notify", msg: "websocket连接失败！" });
-    };
-    //连接成功建立的回调方法
-    that.websocket.onopen = event => {
-        that.websocket.send(JSON.stringify({
-            CssdId: 0,
-            ReserveCheckState: false,
-            PackageState: false,
-            ProvideState: false
-        }))
-    };
-    //接收到消息的回调方法
-    that.websocket.onmessage = event => {
-        if (JSON.parse(event.data).Istest) {
-            that.receiveMessage(JSON.parse(event.data));
-            return;
+    that.connection = new signalR.HubConnectionBuilder()
+        .withUrl("/api/hubtest")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+    that.connection.start();
+    that.connection.on("taskUpdateReminder", data => {
+        if (typeof data == "object" && origin && that.GLOBAL.UserInfo.ClinicId === data.CssdId) {
+            that.hasNewTask = data[origin];
         }
-        if (origin && that.GLOBAL.UserInfo.ClinicId === JSON.parse(event.data).CssdId) {
-            that.hasNewTask = JSON.parse(event.data)[origin];
-        }
-    };
-    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    window.onbeforeunload = function() {
-        that.websocket.close();
-    };
+    });
 }
 
 //是否启用websocket

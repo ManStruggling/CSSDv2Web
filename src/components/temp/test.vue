@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import * as signalR from "@aspnet/signalr";
 export default {
     data() {
         return {
@@ -25,34 +26,38 @@ export default {
             IsSend: false,
             str: "",
             receiveData: ""
-        }
+        };
     },
     created() {
         if (sessionStorage.IsTestMode) {
             this.IsTestMode = JSON.parse(sessionStorage.IsTestMode);
         }
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl("/api/hubtest")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+        this.connection.start();
+        this.connection.on("taskUpdateReminder", data=> {
+            this.receiveData = data;
+        });
     },
-    mounted() {
-        this.GLOBAL.initWebSorcket(this, "test");
-    },
+    mounted() {},
     beforeDestroy() {
-        this.websocket.close();
+        this.connection.stop();
     },
     methods: {
         switchChange(val) {
             sessionStorage.IsTestMode = val;
         },
         sendMessage() {
-            this.websocket.send(JSON.stringify({
-                Istest:true,
-                test: this.str
-            }));
-        },
-        receiveMessage(data){
-            this.receiveData = JSON.stringify(data);
+            this.connection
+                .invoke("TaskUpdateNotification", this.str).catch(function (err) {
+                    return console.error(err);
+                });
         }
-    },
-}
+
+    }
+};
 </script>
 
 <style lang="scss" scoped>

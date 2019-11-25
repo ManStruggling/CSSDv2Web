@@ -319,8 +319,8 @@ export default {
         this.GLOBAL.useWebsocketOrNot(this, "PackageState");
     },
     beforeDestroy() {
-        if (this.websocket) {
-            this.websocket.close();
+        if (this.connection) {
+            this.connection.stop();
         }
         CSManager.handleDataThis = null;
     },
@@ -541,23 +541,27 @@ export default {
                 this.tableData = data;
                 this.selectOrigin = "PackageTasksFromSupportMaterialProduct";
                 this.deselectTask();
-                if (this.websocket) {
-                    this.websocket.send(
-                        JSON.stringify({
+                if (this.connection) {
+                    this.connection
+                        .invoke("TaskUpdateNotification", {
                             CssdId: this.GLOBAL.UserInfo.ClinicId,
                             ReserveCheckState: false,
                             PackageState: true,
                             ProvideState: false
-                        })
-                    );
+                        }).catch(function (err) {
+                            return console.error(err);
+                        });
                 }
             }
         },
         //taskListBox传递过来的值
         taskListBox2father(data, origin, tabIndex) {
             if (data) {
-                if (this.websocket) {
-                    this.websocket.send(JSON.stringify(data));
+                if (this.connection) {
+                    this.connection
+                        .invoke("TaskUpdateNotification", data).catch(function (err) {
+                            return console.error(err);
+                        });
                 }
                 window.location.href = `/package/taskList?origin=${origin}&tabIndex=${tabIndex}`;
             }
@@ -677,15 +681,16 @@ export default {
                         res.data.Data.forEach(element => {
                             CSManager.PrintBarcode(JSON.stringify(element));
                         });
-                        if (this.websocket) {
-                            this.websocket.send(
-                                JSON.stringify({
+                        if (this.connection) {
+                            this.connection
+                                .invoke("TaskUpdateNotification", {
                                     CssdId: this.GLOBAL.UserInfo.ClinicId,
                                     ReserveCheckState: false,
                                     PackageState: true,
                                     ProvideState: false
-                                })
-                            );
+                                }).catch(function (err) {
+                                    return console.error(err);
+                                });
                         }
                         window.location.href = `/package/taskList?origin=${this.selectOrigin}&clinicId=${this.tabActiveName}`;
                     } else {

@@ -213,8 +213,8 @@ export default {
     this.GLOBAL.useWebsocketOrNot(this);
   },
   beforeDestroy() {
-    if(this.websocket){
-      this.websocket.close();
+    if(this.connection){
+      this.connection.stop();
     }
   },
   methods: {
@@ -258,13 +258,16 @@ export default {
             if (res.data.Code == 200) {
               type = "success";
               //socket发送信息
-              if(this.websocket){
-                this.websocket.send(JSON.stringify({
+              if(this.connection){
+                this.connection
+                .invoke("TaskUpdateNotification", {
                   CssdId: this.submitData.BookCssdId,
                   ReserveCheckState: true,
                   PackageState:false,
                   ProvideState:false
-                }));
+                }).catch(function (err) {
+                    return console.error(err);
+                });
               }
               if(this.isChangeMode){
                 this.$router.push(`/apply/reserveRecord`);

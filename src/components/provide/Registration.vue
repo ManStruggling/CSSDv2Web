@@ -208,8 +208,8 @@ export default {
         this.GLOBAL.useWebsocketOrNot(this, "ProvideState");
     },
     beforeDestroy() {
-        if (this.websocket) {
-            this.websocket.close();
+        if (this.connection) {
+            this.connection.stop();
         }
         CSManager.handleDataThis = null;
     },
@@ -242,7 +242,7 @@ export default {
             this.activeName = "-1";
             //按照回收时间升序排列
             this.provideTaskList[index].SubClinicTasks[val].ProvideTaskDetails.sort((a, b) => {
-                return a.RecycleDateTime > b.RecycleDateTime?1:-1;
+                return a.RecycleDateTime > b.RecycleDateTime ? 1 : -1;
             });
         },
         //tab click 事件
@@ -394,15 +394,16 @@ export default {
                         let type;
                         if (res.data.Code == 200) {
                             type = "success";
-                            if (this.websocket) {
-                                this.websocket.send(
-                                    JSON.stringify({
+                            if (this.connection) {
+                                this.connection
+                                    .invoke("TaskUpdateNotification", {
                                         CssdId: this.GLOBAL.UserInfo.ClinicId,
                                         ReserveCheckState: false,
                                         PackageState: false,
                                         ProvideState: true
-                                    })
-                                );
+                                    }).catch(function (err) {
+                                        return console.error(err);
+                                    });
                             }
                             res.data.Data.forEach(element => {
                                 CSManager.PrintBarcode(JSON.stringify(element));

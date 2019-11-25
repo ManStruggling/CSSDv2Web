@@ -478,8 +478,8 @@ export default {
     this.GLOBAL.useWebsocketOrNot(this);
   },
   beforeDestroy() {
-    if(this.websocket){
-      this.websocket.close();
+    if(this.connection){
+      this.connection.stop();
     }
   },
   methods: {
@@ -636,14 +636,17 @@ export default {
           if (res.data.Code == 200) {
             type = "success";
             //socket发送信息
-            if(this.websocket){
+            if(this.connection){
               let sendData = {
                 CssdId: this.GLOBAL.UserInfo.ClinicId,
                 ReserveCheckState: false,
                 PackageState: true,
                 ProvideState: true
               }
-              this.websocket.send(JSON.stringify(sendData));
+              this.connection
+                .invoke("TaskUpdateNotification", sendData).catch(function (err) {
+                    return console.error(err);
+                });
             }
             if (this.outerPackageChangeMode) {
               this.$router.push("/outerPackage/record");
