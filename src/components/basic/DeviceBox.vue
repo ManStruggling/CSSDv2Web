@@ -10,7 +10,7 @@
           </li>
           <li>
             <p>设备简码</p>
-            <el-input type="text" v-model="editBoxData.ShortCode" :disabled="true"></el-input>
+            <el-input type="text" v-model="editBoxData.ShortCode" :disabled="editBoxData.Id==0"></el-input>
           </li>
           <li>
             <p>设备条码</p>

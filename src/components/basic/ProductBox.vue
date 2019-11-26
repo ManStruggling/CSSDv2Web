@@ -10,7 +10,7 @@
                 </li>
                 <li>
                     <p>拼音简码</p>
-                    <el-input type="text" v-model="editBoxData.ShortCode" :disabled="true"></el-input>
+                    <el-input type="text" v-model="editBoxData.ShortCode" :disabled="editBoxData.Id==0"></el-input>
                 </li>
                 <li v-if="editBoxData.Type!=85">
                     <p>成本价格</p>
@@ -420,7 +420,6 @@ export default {
                     type: "StringNotEmpty",
                     msg: "外来器械包还没有关联供应商！"
                 });
-                delete this.editBoxData.ProvideCssdId;
             } else {
                 //非外来器械包
                 this.editBoxData.SupplierId = 0;

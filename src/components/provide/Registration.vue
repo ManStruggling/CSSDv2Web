@@ -36,9 +36,15 @@
                     <el-tab-pane v-for="(item,index) in provideTaskList" :key="index" :name="index+''">
                         <div slot="label">
                             <h3>{{item.ClinicName}}</h3>
-                            <p v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
-                                <span>剩余总发放数:</span>
-                                <b>{{countRemainProvideQuantity(index)}}</b>
+                            <p>
+                                <span>
+                                    <span>可发放总数:</span>
+                                    <b>{{countCanBeProvidePackageNumber(index)}}</b>
+                                </span>
+                                <span v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
+                                    <span>剩余总发放数:</span>
+                                    <b>{{countRemainProvideQuantity(index)}}</b>
+                                </span>
                             </p>
                         </div>
                         <div class="tab_content table_collapse table_unExpand">
@@ -214,6 +220,17 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        countCanBeProvidePackageNumber(index) {
+            let num = 0;
+            let productList = [];
+            this.provideTaskList[index].ProvideTasks.forEach(item => {
+                if (!productList.includes(item.ProductId)) {
+                    productList.push(item.ProductId);
+                    num += item.InventoryQuantity;
+                }
+            });
+            return num;
+        },
         //刷新
         refresh() {
             window.location.reload();
@@ -640,6 +657,13 @@ export default {
                     font-size: 14px;
                     font-family: Microsoft YaHei;
                     font-weight: bold;
+                    display: flex;
+                    >span{
+                        &:first-child{
+                            margin-right: 10px;
+                        }
+                        width: 100px;
+                    }
                 }
             }
 

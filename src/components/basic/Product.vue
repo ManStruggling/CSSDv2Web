@@ -29,6 +29,9 @@
         <el-table :data="table_data">
             <el-table-column label="包名称" prop="Name" width="240"></el-table-column>
             <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
+            <el-table-column label="发放供应室" prop="ProvideCssdName" width="210"></el-table-column>
+            <el-table-column label="发放主科室" prop="ProvideClinicName" width="210"></el-table-column>
+            <el-table-column label="发放子科室" prop="ProvideSubClinicName" width="210"></el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>

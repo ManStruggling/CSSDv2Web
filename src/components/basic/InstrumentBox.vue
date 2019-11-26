@@ -9,7 +9,7 @@
           </li>
           <li>
             <p>器械简码</p>
-            <el-input type="text" v-model="editBoxData.ShortCode" :disabled="true"></el-input>
+            <el-input type="text" v-model="editBoxData.ShortCode" :disabled="editBoxData.Id==0"></el-input>
           </li>
           <li>
             <p>规格</p>
