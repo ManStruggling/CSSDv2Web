@@ -60,7 +60,6 @@ export default {
     };
   },
   created() {
-    console.log(this.deviceId)
     axios({ url: `/api/Clean/CleanDevices` })
       .then(res => {
         if (res.data.Code == 200) {

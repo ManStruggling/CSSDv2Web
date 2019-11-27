@@ -204,7 +204,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 丢失包登记 -->
-        <LostPackageList v-if="isShowLostPackageList" @lostPackage-to-father="lostPackageToFather"></LostPackageList>
+        <SelectSubClinicOfProduct v-if="isShowLostPackageList" @selectSubClinicOfProduct-to-father="lostPackageToFather" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`IsNotPrintBarCode eq false`"></SelectSubClinicOfProduct>
     </transition>
 </div>
 </template>
@@ -213,7 +213,7 @@
 import ManualEnter from "../common/ManualEnter";
 import PackageList from "../common/PackageList";
 import AllocatedPackages from "./AllocatedPackages";
-import LostPackageList from "../common/LostPackageList";
+import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
     data() {
         return {
@@ -241,7 +241,7 @@ export default {
         ManualEnter,
         PackageList,
         AllocatedPackages,
-        LostPackageList
+        SelectSubClinicOfProduct
     },
     created() {
         CSManager.handleDataThis = this;
@@ -689,20 +689,6 @@ export default {
         },
         handleBarCode(msg) {
             this.getBarCodeArray();
-            // let onOff = true;
-            // this.BarCodeList.forEach(item => {
-            //   //发现已录入
-            //   if (item.BarCode == msg.toUpperCase()) {
-            //     this.showInformation({
-            //       classify: "message",
-            //       msg: "该条码已录入！",
-            //       type: "warning"
-            //     });
-            //     onOff = false;
-            //     return;
-            //   }
-            // });
-            // if (onOff) {
             axios({
                     url: `/api/Scanner/Recycle/${msg}`
                 })
@@ -732,7 +718,6 @@ export default {
                     }
                 })
                 .catch(err => {});
-            // }
         }
     },
     computed: {

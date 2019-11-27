@@ -4,7 +4,7 @@
       <el-table :data="$props.list" height="500" tooltip-effect="dark">
         <el-table-column width="240" label="包名称" prop="ProductName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column width="170" label="包条码" prop="BarCode"></el-table-column>
-        <el-table-column width="180" label="发放科室">
+        <el-table-column width="180" label="回收科室">
           <template slot-scope="props">
             <el-select
               v-model="props.row.ProvideSubClinicId"

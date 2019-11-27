@@ -15,7 +15,7 @@
         <el-table ref="multipleTable" :data="selectedSubClinicId?packageList:[]" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @row-click="handleRowClick" @selection-change="handleSelectionChange" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column prop="ProductName" label="包名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="ProvideSubClinicName" label="所属科室" sortable :sort-by="'ProvideSubClinicShortCode'" width="160"></el-table-column>
+            <el-table-column prop="ProvideSubClinicName" :label="submitApi?'发放科室':'回收科室'" sortable :sort-by="'ProvideSubClinicShortCode'" width="160"></el-table-column>
             <el-table-column prop="ProductQuantity" label="数量" sortable :sort-by="'ProductQuantity'">
                 <template slot-scope="scope">
                     <el-input-number v-model="scope.row.ProductQuantity" :min="0" :max="999" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,scope.$index)})"></el-input-number>
@@ -35,17 +35,19 @@ export default {
     data() {
         return {
             selectedSubClinicId: "",
-            requestUrl: `type eq '高水平消毒包' or type eq '追溯的无菌包'`,
-            getApiLimit: `IsNotPrintBarCode eq false`,
             getUrl: "",
             packageBoxClassSelect: "all", //筛选类别
             searchShortCode: "", //简码搜索字段
             packageList: [], //显示的包列表
             multipleSelection: [],
-            isRequested: false, //是否请求
             clinicList: [],
             pendingRecycleProducts: []
         };
+    },
+    props: {
+        requestApi: String,
+        getApiLimit: String,
+        submitApi: String,
     },
     created() {
         this.$http
@@ -55,7 +57,7 @@ export default {
             ])
             .then(
                 this.$http.spread((acct, perms) => {
-                    // Both requests are now complete
+                    //请求所有子科室
                     if (acct.data.Code == 200) {
                         this.clinicList = acct.data.Data;
                     } else {
@@ -64,6 +66,7 @@ export default {
                             msg: acct.data.Msg
                         });
                     }
+                    //获取待回收的产品(发放决定回收)
                     if (perms.data.Code == 200) {
                         this.pendingRecycleProducts = perms.data.Data;
                     } else {
@@ -101,20 +104,43 @@ export default {
                 this.multipleSelection.forEach(element => {
                     arr.push(element.ProductQuantity);
                 });
-                if (
-                    this.GLOBAL.VerificationHandle([{
-                        val: arr,
-                        type: "NumberAllCannotBeZero",
-                        msg: "包数量不能为0！"
-                    }])
-                ) {
-                    this.$emit("lostPackage-to-father", this.multipleSelection);
+                if (this.submitApi) {
+                    axios({
+                            url: this.submitApi,
+                            data: {
+                                Products: this.multipleSelection
+                            },
+                            method: "POST"
+                        })
+                        .then(res => {
+                            if (res.data.Code == 200) {
+                                this.$emit("selectSubClinicOfProduct-to-father", res.data.Data);
+                            } else {
+                                this.showInformation({
+                                    classify: "message",
+                                    msg: res.data.Msg
+                                });
+                            }
+                        })
+                        .catch(err => {});
+                } else {
+                    if (
+                        this.GLOBAL.VerificationHandle([{
+                            val: arr,
+                            type: "NumberAllCannotBeZero",
+                            msg: "包数量不能为0！"
+                        }])
+                    ) {
+                        this.$emit("selectSubClinicOfProduct-to-father", this.multipleSelection);
+                    }
+
                 }
+
             }
         },
         //取消事件
         cancelSend() {
-            this.$emit("lostPackage-to-father", false);
+            this.$emit("selectSubClinicOfProduct-to-father", false);
         },
         //点击当前行选择数据
         handleRowClick(row) {
@@ -140,59 +166,42 @@ export default {
         judgedParameters() {
             this.getUrl =
                 this.packageBoxClassSelect == "all" ?
-                `/odata/AllProducts?$filter=(${this.getApiLimit}) and (${this.requestUrl}) and (ProvideSubClinicId eq ${this.selectedSubClinicId} or IsCommonProduct)` :
-                `/odata/AllProducts?$filter=(${
-              this.getApiLimit
-            }) and(type eq ${encodeURI(
-              "'" + this.packageBoxClassSelect + "'"
-            )}) and (ProvideSubClinicId eq ${
-              this.selectedSubClinicId
-            } or IsCommonProduct)`;
-            this.getUrl += ` and (contains(ProductShortCode,${"'" +
-        encodeURIComponent(this.searchShortCode) +
-        "'"}) or contains(ProductName,${"'" + encodeURIComponent(this.searchShortCode) + "'"}))`;
+                `/odata/AllProducts?$filter=(${this.getApiLimit}) and (${this.requestApi}) and (ProvideSubClinicId eq ${this.selectedSubClinicId} or IsCommonProduct)` :
+                `/odata/AllProducts?$filter=(${this.getApiLimit}) and(type eq ${encodeURI("'" + this.packageBoxClassSelect + "'")}) and (ProvideSubClinicId eq ${this.selectedSubClinicId} or IsCommonProduct)`;
+            this.getUrl += ` and (contains(ProductShortCode,${"'" + encodeURIComponent(this.searchShortCode) + "'"}) or contains(ProductName,${"'" + encodeURIComponent(this.searchShortCode) +     "'"}))`;
         },
         //请求数据
         getPackagesData(url) {
             axios(url)
                 .then(res => {
                     for (let i = 0; i < res.data.value.length; i++) {
-                        res.data.value[i].IsLostPackage = true;
-                        res.data.value[i].ProductQuantity = 0;
-                        for (let j = 0; j < this.pendingRecycleProducts.length; j++) {
-                            if (
-                                res.data.value[i].ProductId ===
-                                this.pendingRecycleProducts[j].ProductId
-                            ) {
-                                res.data.value[
-                                    i
-                                ].ProductQuantity += this.pendingRecycleProducts[
-                                    j
-                                ].ProductQuantity;
-                                break;
-                            }
-                        }
+                        //通用包指定选择的子科室
                         if (res.data.value[i].IsCommonProduct) {
                             res.data.value[i].ProvideSubClinicId = this.selectedSubClinicId;
                             for (let j = 0; j < this.clinicList.length; j++) {
-                                if (
-                                    this.selectedSubClinicId ===
-                                    this.clinicList[j].ProvideSubClinicId
-                                ) {
-                                    res.data.value[i].ProvideSubClinicName = this.clinicList[
-                                        j
-                                    ].ProvideSubClinicName;
-                                    res.data.value[i].ProvideClinicName = this.clinicList[
-                                        j
-                                    ].ProvideClinicName;
+                                if (this.selectedSubClinicId === this.clinicList[j].ProvideSubClinicId) {
+                                    res.data.value[i].ProvideSubClinicName = this.clinicList[j].ProvideSubClinicName;
+                                    res.data.value[i].ProvideClinicName = this.clinicList[j].ProvideClinicName;
+                                    res.data.value[i].ProvideClinicId = this.clinicList[j].ProvideClinicId;
                                     break;
                                 }
                             }
                         }
+                        //丢失条码登记
+                        if (!this.submitApi) {
+                            res.data.value[i].IsLostPackage = true;
+                            res.data.value[i].ProductQuantity = 0;
+                            for (let j = 0; j < this.pendingRecycleProducts.length; j++) {
+                                if (res.data.value[i].ProductId === this.pendingRecycleProducts[j].ProductId) {
+                                    res.data.value[i].ProductQuantity += this.pendingRecycleProducts[j].ProductQuantity;
+                                    break;
+                                }
+                            }
+                            res.data.value.sort((a, b) => {
+                                return b.ProductQuantity - a.ProductQuantity;
+                            });
+                        }
                     }
-                    res.data.value.sort((a, b) => {
-                        return b - a;
-                    });
                     this.packageList = res.data.value;
                 })
                 .catch(err => {});

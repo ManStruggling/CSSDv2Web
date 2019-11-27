@@ -54,102 +54,79 @@ export default {
                                         });
                                     } else {
                                         if (res.data.Data.PackageBarCodeScannerVm) {
-                                            for (let i = 0; i < this.$props.BarCodeList.length; i++) {
-                                                if (
-                                                    this.$props.BarCodeList[i].BarCode ==
-                                                    res.data.Data.PackageBarCodeScannerVm.BarCode
-                                                ) {
-                                                    this.showInformation({
-                                                        classify: "message",
-                                                        msg: "该条码已录入！",
-                                                        type: "warning"
-                                                    });
-                                                    this.input_str = "";
-                                                    this.alreadyRequested = false;
-                                                    return;
-                                                }
+                                            if (!this.duplicateCheck(this.$props.BarCodeList, res.data.Data.PackageBarCodeScannerVm.BarCode)) {
+                                                this.requestFailed("warning", "该条码已录入！");
+                                                return;
                                             }
                                         }
                                         this.$emit("to-father", res.data.Data, this.input_str);
                                     }
                                 } else if (res.data.Code == 300) {
-                                    this.alreadyRequested = false;
-                                    this.input_str = "";
-                                    this.showInformation({
-                                        classify: "message",
-                                        msg: res.data.Msg,
-                                        type: "warning"
-                                    });
+                                    this.requestFailed("warning", res.data.Msg);
                                 } else {
-                                    this.alreadyRequested = false;
-                                    this.input_str = "";
-                                    this.showInformation({
-                                        classify: "message",
-                                        msg: res.data.Msg,
-                                        type: "error"
-                                    });
+                                    this.requestFailed("error", res.data.Msg);
                                 }
                             })
                             .catch(err => {});
                     }
                 } else {
                     //先匹配重复再决定是否请求
-                    this.$props.BarCodeList.forEach(item => {
-                        //发现已录入
-                        if (item.BarCode == this.input_str.toUpperCase()) {
-                            this.showInformation({
-                                classify: "message",
-                                msg: "该条码已录入！",
-                                type: "warning"
-                            });
-                            this.input_str = "";
-                            return;
-                        }
-                    });
+                    if (!this.duplicateCheck(this.$props.BarCodeList, this.input_str)) {
+                        this.requestFailed("warning", "该条码已录入！");
+                        return;
+                    }
                     //没有录入
-                    if (this.input_str) {
-                        if (this.alreadyRequested == false) {
-                            this.alreadyRequested = true;
-                            axios(`${this.$props.ApiUrl}/${this.input_str}`)
-                                .then(res => {
-                                    if (res.data.Code == 200) {
-                                        if (this.$props.task_index >= 0) {
-                                            this.$emit("to-father", {
-                                                data: res.data.Data,
-                                                index: this.$props.task_index
-                                            });
-                                        } else {
-                                            this.$emit("to-father", res.data.Data, this.input_str);
-                                        }
-                                    } else if (res.data.Code == 300) {
-                                        this.alreadyRequested = false;
-                                        this.input_str = "";
-                                        this.showInformation({
-                                            classify: "message",
-                                            msg: res.data.Msg,
-                                            type: "warning"
+                    if (this.alreadyRequested == false && this.input_str) {
+                        this.alreadyRequested = true;
+                        axios(`${this.$props.ApiUrl}/${this.input_str}`)
+                            .then(res => {
+                                if (res.data.Code == 200) {
+                                    if (this.$props.task_index >= 0) {
+                                        this.$emit("to-father", {
+                                            data: res.data.Data,
+                                            index: this.$props.task_index
                                         });
                                     } else {
-                                        if (this.CustomBarcode) {
-                                            this.$emit("to-father", {
-                                                BarCode: this.input_str,
-                                                IsOldPackageBarCode: true
-                                            })
-                                        }
-                                        this.alreadyRequested = false;
-                                        this.input_str = "";
-                                        this.showInformation({
-                                            classify: "message",
-                                            msg: res.data.Msg,
-                                            type: "error"
-                                        });
+                                        this.$emit("to-father", res.data.Data, this.input_str);
                                     }
-                                })
-                                .catch(err => {});
-                        }
+                                } else if (res.data.Code == 300) {
+                                    this.requestFailed("warning", res.data.Msg);
+                                } else if (res.data.Code == 404) {
+                                    if (this.CustomBarcode) {
+                                        this.$emit("to-father", {
+                                            BarCode: this.input_str,
+                                            IsOldPackageBarCode: true
+                                        });
+                                    } else {
+                                        this.requestFailed("error", res.data.Msg);
+                                    }
+                                } else {
+                                    this.requestFailed("error", res.data.Msg);
+                                }
+                            })
+                            .catch(err => {});
                     }
                 }
             }
+        },
+        //请求失败执行函数
+        requestFailed(type, msg) {
+            this.alreadyRequested = false;
+            this.input_str = "";
+            this.showInformation({
+                classify: "message",
+                msg: msg,
+                type: type
+            });
+        },
+        //检测重复
+        duplicateCheck(list, BarCode) {
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].BarCode == BarCode.toUpperCase()) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 };

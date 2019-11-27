@@ -34,20 +34,20 @@
             <div class="cssd_talbe_left_menu">
                 <el-tabs :tab-position="'left'" v-model="tabActiveName" @tab-click="handleTabClick">
                     <el-tab-pane v-for="(item,index) in provideTaskList" :key="index" :name="index+''">
-                        <div slot="label">
+                        <div slot="label" v-show="showAllTask?true:(GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'?true:item.RemainInventoryTotalQuantity)" class="el-tabs__item_clinic">
                             <h3>{{item.ClinicName}}</h3>
                             <p>
-                                <span>
-                                    <span>可发放总数:</span>
+                                <span v-if="GLOBAL.UserInfo.HospitalVersion=='YANCHENGFUBAO'">
+                                    <span>剩余总库存数:</span>
                                     <b>{{countCanBeProvidePackageNumber(index)}}</b>
                                 </span>
-                                <span v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
+                                <span v-else>
                                     <span>剩余总发放数:</span>
                                     <b>{{countRemainProvideQuantity(index)}}</b>
                                 </span>
                             </p>
                         </div>
-                        <div class="tab_content table_collapse table_unExpand">
+                        <div class="tab_content table_collapse table_unExpand" v-show="showAllTask?true:(GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'?true:item.RemainInventoryTotalQuantity)">
                             <div class="selectSubClinic">
                                 <p>本次发放科室</p>
                                 <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="((val)=>{provideSubClinicChange(val,index)})" :filterable="true">
@@ -143,14 +143,14 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 产品列表 -->
-        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></PackageList>
+        <SelectSubClinicOfProduct v-if="isShowPackageList" @selectSubClinicOfProduct-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></SelectSubClinicOfProduct>
     </transition>
 </div>
 </template>
 
 <script>
 import ManualEnter from "../common/ManualEnter";
-import PackageList from "../common/PackageList";
+import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
     data() {
         return {
@@ -167,27 +167,16 @@ export default {
     },
     components: {
         ManualEnter,
-        PackageList
+        SelectSubClinicOfProduct
     },
     created() {
         CSManager.handleDataThis = this;
-        this.$http.all([axios("/api/Provide/ProvideTasks"), axios("/api/Clinic/SubClinic")]).then(this.$http.spread((res, perms) => {
-            if (perms.data.Code == 200) {
-                perms.data.Data.forEach(element => {
-                    element.SubClinicId = element.ProvideSubClinicId;
-                    element.SubClinicName = element.ProvideSubClinicName;
-                });
-                this.subClinics = perms.data.Data;
-            } else {
-                this.showInformation({
-                    classify: "message",
-                    msg: perms.data.Msg
-                });
-            }
+        axios("/api/Provide/ProvideTasks").then(res => {
             if (res.data.Code == 200) {
                 //处理数据 循环接口数据
                 res.data.Data.forEach(element => {
                     element.SelectedSubClinicId = 0;
+                    element.RemainInventoryTotalQuantity = 0;
                     element.SubClinicTasks = {
                         0: {
                             ProvideSubClinicId: 0,
@@ -208,7 +197,8 @@ export default {
                     msg: res.data.Msg
                 });
             }
-        }));
+        }).catch(err => {});
+
     },
     mounted() {
         this.GLOBAL.useWebsocketOrNot(this, "ProvideState");
@@ -220,17 +210,6 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
-        countCanBeProvidePackageNumber(index) {
-            let num = 0;
-            let productList = [];
-            this.provideTaskList[index].ProvideTasks.forEach(item => {
-                if (!productList.includes(item.ProductId)) {
-                    productList.push(item.ProductId);
-                    num += item.InventoryQuantity;
-                }
-            });
-            return num;
-        },
         //刷新
         refresh() {
             window.location.reload();
@@ -271,48 +250,38 @@ export default {
         //获取子科室
         getSubClinics(index) {
             if (!this.provideTaskList[index].SubClinics) {
-                if (this.provideTaskList[index].IsCommonProduct) {
-                    this.provideTaskList[index].SubClinics = this.subClinics;
-                    this.getSubClinicTasks(index);
-                } else {
-                    axios({
-                        url: `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`
-                    }).then(res => {
-                        if (res.data.Code == 200) {
-                            this.provideTaskList[index].SubClinics = res.data.Data;
-                            this.getSubClinicTasks(index);
-                        } else {
-                            this.showInformation({
-                                classify: "message",
-                                msg: res.data.Msg
-                            });
-                        }
-                    }).catch(err => {})
-                }
+
+                axios({
+                    url: `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`
+                }).then(res => {
+                    if (res.data.Code == 200) {
+                        this.provideTaskList[index].SubClinics = res.data.Data;
+                        this.getSubClinicTasks(index);
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: res.data.Msg
+                        });
+                    }
+                }).catch(err => {})
+
             }
         },
         //为子科室分配任务
         getSubClinicTasks(index) {
             for (let j = 0; j < this.provideTaskList[index].SubClinics.length; j++) {
                 //循环子科室
-                if (this.provideTaskList[index].IsCommonProduct) {
-                    this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
-                        ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
-                        ThisClinicProvideNumber: 0,
-                        ProvideTaskDetails: this.provideTaskList[index].ProvideTasks
-                    }
-                } else {
-                    this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
-                        ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
-                        ThisClinicProvideNumber: 0,
-                        ProvideTaskDetails: []
-                    };
-                    for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
-                        if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
-                            this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
-                        }
+                this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId] = {
+                    ProvideSubClinicId: this.provideTaskList[index].SubClinics[j].SubClinicId,
+                    ThisClinicProvideNumber: 0,
+                    ProvideTaskDetails: []
+                };
+                for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
+                    if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
+                        this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
                     }
                 }
+
             }
             if (this.provideTaskList[index].SubClinics.length === 1) {
                 this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
@@ -580,7 +549,21 @@ export default {
                 });
                 return num;
             };
-        }
+        },
+        countCanBeProvidePackageNumber() {
+            return index => {
+                let num = 0;
+                let productList = [];
+                this.provideTaskList[index].ProvideTasks.forEach(item => {
+                    if (!productList.includes(item.ProductId)) {
+                        productList.push(item.ProductId);
+                        num += item.InventoryQuantity;
+                    }
+                });
+                this.provideTaskList[index].RemainInventoryTotalQuantity = num;
+                return num;
+            }
+        },
     }
 };
 </script>
@@ -624,12 +607,17 @@ export default {
     .cssd_table_center {
         .el-tabs {
             .el-tabs__item {
-                padding: 24px 20px;
+                padding: 0;
+                height: auto;
 
                 &.is-active {
                     p {
                         color: #c6f3df;
                     }
+                }
+
+                .el-tabs__item_clinic {
+                    padding: 24px 20px;
                 }
 
                 h4 {
@@ -658,10 +646,12 @@ export default {
                     font-family: Microsoft YaHei;
                     font-weight: bold;
                     display: flex;
-                    >span{
-                        &:first-child{
+
+                    >span {
+                        &:first-child {
                             margin-right: 10px;
                         }
+
                         width: 100px;
                     }
                 }

@@ -33,13 +33,13 @@
                     </el-select>
                 </li>
                 <li>
-                    <p>发放科室</p>
+                    <p>所属科室</p>
                     <el-cascader expand-trigger="hover" :options="optionClinicList" v-model="selectedOptions" @change="handleChange" placeholder="请选择(必选)"></el-cascader>
                 </li>
                 <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
                     <p>发放生成方式</p>
                     <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13">
-                        <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0"></el-option>
+                        <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0" :disabled="editBoxData.IsCommonProduct"></el-option>
                         <el-option label="预定生成发放" :value="1"></el-option>
                         <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
                         <el-option v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83" label="手动生成任务" :value="3"></el-option>
@@ -62,7 +62,7 @@
                 </li>
                 <li v-if="editBoxData.Type==80||editBoxData.Type==82">
                     <p>通用包</p>
-                    <el-select v-model="editBoxData.IsCommonProduct" class="green24x13">
+                    <el-select v-model="editBoxData.IsCommonProduct" class="green24x13" @change="commonPackageChange">
                         <el-option label="是" :value="true"></el-option>
                         <el-option label="否" :value="false"></el-option>
                     </el-select>
@@ -339,6 +339,12 @@ export default {
                 }, 0);
             }
         },
+        //
+        commonPackageChange(val) {
+            if (val) {
+                this.editBoxData.ProvideGenerateType = 3;
+            }
+        },
         //个数包change事件
         numberPackageChange(val) {
             if (val) {
@@ -381,17 +387,6 @@ export default {
         editBoxSave() {
             //before submit must to do： 数据转换 表单验证;
             let axiosMethod = "";
-            if (this.editBoxData.Id == 0) {
-                //新增模式
-                axiosMethod = "post";
-            } else {
-                //更新模式
-                axiosMethod = "put";
-            }
-            if (this.editBoxData.IsNumberProduct) {
-                //个数包没有器械 editBoxData.SupplierId
-                this.editBoxData.InstrumentCounts = [];
-            }
             let arr = [{
                     val: this.editBoxData.Name,
                     type: "StringNotEmpty",
@@ -413,6 +408,22 @@ export default {
                     msg: "发放供应室不能为空！"
                 }
             ];
+            if (this.editBoxData.Id == 0) {
+                //新增模式
+                axiosMethod = "post";
+            } else {
+                //更新模式
+                axiosMethod = "put";
+                arr.push({
+                    val: this.editBoxData.ShortCode,
+                    type: "ValueNotEmptyAndNotNull",
+                    msg: "简码不能为空！"
+                });
+            }
+            if (this.editBoxData.IsNumberProduct) {
+                //个数包没有器械 editBoxData.SupplierId
+                this.editBoxData.InstrumentCounts = [];
+            }
             // 外来器械包
             if (this.editBoxData.Type === 81) {
                 arr.push({

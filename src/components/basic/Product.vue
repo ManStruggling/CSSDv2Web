@@ -30,8 +30,8 @@
             <el-table-column label="包名称" prop="Name" width="240"></el-table-column>
             <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
             <el-table-column label="发放供应室" prop="ProvideCssdName" width="210"></el-table-column>
-            <el-table-column label="发放主科室" prop="ProvideClinicName" width="210"></el-table-column>
-            <el-table-column label="发放子科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+            <el-table-column label="所属主科室" prop="ProvideClinicName" width="210"></el-table-column>
+            <el-table-column label="所属子科室" prop="ProvideSubClinicName" width="210"></el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
@@ -211,6 +211,7 @@ export default {
                             if (res.data.Code == 200) {
                                 type = "success";
                                 this.table_data = res.data.Data;
+                                this.total_data = JSON.parse(JSON.stringify(res.data.Data));
                             } else {
                                 type = "error";
                             }
@@ -234,6 +235,7 @@ export default {
             this.showEditBox = false;
             if (data) {
                 this.table_data = data;
+                this.total_data = JSON.parse(JSON.stringify(data));
             }
         }
     }

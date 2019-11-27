@@ -118,6 +118,8 @@ function Verification(obj) {
     switch (obj.type) {
         case "StringNotEmpty": //string不能为空
             return obj.val === "" ? error : correct;
+        case "ValueNotEmptyAndNotNull":
+            return obj.val === "" || obj.val === null ? error : correct;
         case "StringAllNotEmpty": //string都不能为空
             for (let i = 0; i < obj.val.length; i++) {
                 if (obj.val[i] === '') {

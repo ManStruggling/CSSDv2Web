@@ -469,10 +469,6 @@ export default {
         this.submitData.IsDbTestProgram = data.IsDbTestProgram;
       }
     },
-    //删除网篮
-    deleteThisCarrier(index) {
-      this.submitData.Carriers.splice(index, 1);
-    },
     //处理JSManager传过来的BarCode
     handleBarCode(msg) {
       let BarCodeList = this.submitData.Carriers.concat(

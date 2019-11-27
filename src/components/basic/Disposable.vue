@@ -10,6 +10,7 @@
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
             <el-table-column label="一次性物品名称" prop="Name" width="240"></el-table-column>
+            <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
             <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
             <el-table-column label="价格" prop="CostPrice" width="210"></el-table-column>
             <el-table-column label="操作" width="210">

@@ -29,7 +29,7 @@
         <el-tab-pane v-for="(item,index) in submitData.Carriers" :key="index" :name="index+''">
           <div slot="label" class="tab_title">
             <p>{{item.Name}}</p>
-            <span @click="deleteThisCarrier"></span>
+            <span @click="deleteThisCarrier(index)"></span>
           </div>
           <div class="tab_content table_unExpand">
             <el-table :data="item.PackageBarCodeDetailList">

@@ -208,7 +208,7 @@
     </div>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 手工录入 -->
-        <ManualEnter v-if="isShowManualEnter" @to-father="packageData2father" :BarCodeList="submitData.Packages" :ApiUrl="'/api/Scanner/Apply'" :CustomBarcode="true"></ManualEnter>
+        <ManualEnter v-if="isShowManualEnter" @to-father="packageData2father" :BarCodeList="submitData.Packages.concat(submitData.OlderSystemPackages)" :ApiUrl="'/api/Scanner/Apply'" :CustomBarcode="true"></ManualEnter>
     </transition>
 </div>
 </template>
@@ -501,7 +501,7 @@ export default {
         handleBarCode(msg) {
             if (this.submitData.Patient.HospitalId) {
                 let onOff = true;
-                this.submitData.Packages.forEach(item => {
+                this.submitData.Packages.concat(this.submitData.OlderSystemPackages).forEach(item => {
                     //发现已录入
                     if (item.BarCode == msg.toUpperCase()) {
                         this.showInformation({
@@ -520,7 +520,7 @@ export default {
                         .then(res => {
                             if (res.data.Code == 200) {
                                 this.packageData2father(res.data.Data);
-                            } else if (res.data.Code == 400) {
+                            } else if (res.data.Code == 404) {
                                 this.packageData2father({
                                     BarCode: this.input_str,
                                     IsOldPackageBarCode: true
