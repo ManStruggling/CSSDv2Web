@@ -37,7 +37,7 @@
               :key="idx"
             >
               <el-button
-                :disabled="item.CleanDeviceType===1||deviceId==item.Id||item.Status==0?false:true"
+                :disabled="item.Status==0||item.CleanDeviceType===1||(mode&&OriginDeviceId==item.Id)?false:true"
                 :class="$route.query.deviceId==item.Id&&$route.query.programId==val.Id?'is-selected':''"
                 @click="selectProgram(index,idx)"
               >{{val.Name}}</el-button>
@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  props:['deviceId'],
+  props:['mode','OriginDeviceId'],
   data() {
     return {
       last_select_device_id:0,

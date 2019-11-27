@@ -37,7 +37,7 @@
               :key="idx"
             >
               <el-button
-                :disabled="deviceId==item.SterilizeDeviceId||item.Status==0?false:true"
+                :disabled="item.Status==0||(mode&&OriginDeviceId==item.SterilizeDeviceId)?false:true"
                 :class="$route.query.deviceId==item.SterilizeDeviceId&&$route.query.programId==val.ProgramId?'is-selected':''"
                 @click="selectProgram(index,idx)"
               >{{val.IsDbTestProgram?`${val.ProgramName}(BD测试程序)`:val.ProgramName}}</el-button>
@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  props:['deviceId'],
+  props:['mode','OriginDeviceId'],
   data() {
     return {
       deviceList: []
