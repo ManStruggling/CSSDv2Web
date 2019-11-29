@@ -5,6 +5,9 @@
             <router-link to="/inventory/hasBarCode" tag="li">
                 <p>返回</p>
             </router-link>
+            <router-link to="/inventory/disposableItemInboundRecord" tag="li">
+                <p>一次性物品入库记录</p>
+            </router-link>
         </ul>
         <div class="cssd_title_right">
             <p>
@@ -20,7 +23,7 @@
             <el-table :data="submitData.Products">
                 <el-table-column width="240" label="一次性物品名称">
                     <template slot-scope="props">
-                        <el-select v-model="props.row.ProductId" class="green18x10">
+                        <el-select v-model="props.row.ProductId" class="green18x10" @change="getValidDate(props.$index)">
                             <el-option v-for="(item,index) in initialData.DisposableProducts" :key="index" :label="item.ProductName" :value="item.ProductId"></el-option>
                         </el-select>
                     </template>
@@ -32,12 +35,12 @@
                 </el-table-column>
                 <el-table-column width="210" label="有效日期" prop="ValidDate">
                     <template slot-scope="props">
-                        <el-date-picker v-model="props.row.ValidDate" type="date" placeholder="选择日期" :clearable="false"></el-date-picker>
+                        <el-date-picker v-model="props.row.ValidDate" type="date" placeholder="选择日期" :clearable="false" value-format="yyyy-MM-dd" :disabled="props.row.Forbid"></el-date-picker>
                     </template>
                 </el-table-column>
                 <el-table-column width="210" label="本次入库数" prop="Quantity">
                     <template slot-scope="props">
-                        <el-input-number v-model="props.row.Quantity" :controls="false" :min="1" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
+                        <el-input-number v-model="props.row.Quantity" :controls="false" :min="1" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.row)})"></el-input-number>
                     </template>
                 </el-table-column>
                 <el-table-column width="210" label="操作">
@@ -53,7 +56,7 @@
             <p>共计
                 <span>{{submitData.Products.length}}</span> 包</p>
             <p>
-                <el-button type="primary" round>入库完成</el-button>
+                <el-button type="primary" round @click="submitComplete">入库完成</el-button>
             </p>
         </div>
     </div>
@@ -82,6 +85,9 @@ export default {
         axios("/api/Inventory/DisposableProductInitialVm").then(res => {
             if (res.data.Code == 200) {
                 Object.assign(this.initialData, res.data.Data);
+                if(this.initialData.SubClinics.length==1){
+                    this.submitData.SubClinicId = this.initialData.SubClinics[0].SubClinicId;
+                }
             } else {
                 this.showInformation({
                     classify: "message",
@@ -108,17 +114,76 @@ export default {
                 ProductId: "",
                 BatchNumber: "",
                 ValidDate: "",
+                Forbid: false,
                 Quantity: 0
-            })
+            });
         },
+        //批号失焦事件 获取已存在库存的产品以及批号，相同则自动取得有效日期
         getValidDate(index) {
-
+            // 在录入array里search
+            for(let i=0; i<this.submitData.Products.length;i++){
+                if(i == index){
+                    continue;
+                }
+                if(this.submitData.Products[index].ProductId&&this.submitData.Products[index].BatchNumber&&this.submitData.Products[i].ProductId==this.submitData.Products[index].ProductId&&this.submitData.Products[i].BatchNumber==this.submitData.Products[index].BatchNumber){
+                    this.submitData.Products[index].BatchNumber = "";
+                    this.showInformation({classify:"message",type:"warning",msg:"禁止录入相同产品相同批号！"});
+                    break;
+                }
+            }
+            //在现有库存里search
+            for (let i = 0; i < this.initialData.CurrentProducts.length; i++) {
+                if (this.initialData.CurrentProducts[i].ProductId == this.submitData.Products[index].ProductId && this.initialData.CurrentProducts[i].BatchNumber == this.submitData.Products[index].BatchNumber) {
+                    this.submitData.Products[index].ValidDate = this.initialData.CurrentProducts[i].ValidDate;
+                    this.submitData.Products[index].Forbid = true;
+                    return;
+                }
+            }
+            this.submitData.Products[index].Forbid = false;
+        },
+        //提交
+        submitComplete() {
+            //验证是字段是否为空
+            let verifyEmptyArr = [];
+            this.submitData.Products.forEach(item => {
+                verifyEmptyArr.push(item.ProductId);
+                verifyEmptyArr.push(item.BatchNumber);
+                verifyEmptyArr.push(item.ValidDate);
+            });
+            if (this.GLOBAL.VerificationHandle([{
+                    val: this.submitData.SubClinicId,
+                    type: "StringNotEmpty",
+                    msg: "入库科室不能为空！"
+                }, {
+                    val: this.submitData.Products,
+                    type: "ArrayNotEmpty",
+                    msg: "至少入库一个产品！"
+                }, {
+                    val: verifyEmptyArr,
+                    type: "StringAllNotEmpty",
+                    msg: "产品、批号或有效日期不能为空！"
+                }])) {
+                axios({
+                    url: "/api/Inventory/DisposableProductInbound",
+                    data: this.submitData,
+                    method: "POST"
+                }).then(res => {
+                    if (res.data.Code == 200) {
+                        this.$router.go(0);
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: res.data.Msg
+                        });
+                    }
+                }).catch(err => {})
+            }
         },
         //数量change事件
-        handleNumberChange(newValue, oldValue, index) {
+        handleNumberChange(newValue, oldValue, rowItem) {
             if (newValue == undefined) {
                 setTimeout(() => {
-                    this.submitData.Products[index].Quantity = 1;
+                    rowItem.Quantity = 1;
                 }, 0);
             }
         }
@@ -202,11 +267,11 @@ export default {
                     }
                 }
             }
-        }
 
-        .el-button {
-            margin-top: 20px;
-            color: #fff;
+            .el-button {
+                margin-top: 20px;
+                color: #fff;
+            }
         }
 
         .cssd_table_bottom {

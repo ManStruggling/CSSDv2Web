@@ -156,9 +156,11 @@ export default {
     computed: {
         countPackageNumber() {
             let num = 0;
-            this.inventoryData.Products.forEach(val => {
-                num += val.InventoryQuantity;
-            });
+            if(this.inventoryData.Products){
+                this.inventoryData.Products.forEach(val => {
+                    num += val.InventoryQuantity;
+                });
+            }
             return num;
         }
     }

@@ -175,6 +175,7 @@ export default {
         printBookList(id) {
             axios({
                 url: '/api/Book/PrintBookList',
+                method: "POST",
                 data: {
                     BookTaskId: [id]
                 }

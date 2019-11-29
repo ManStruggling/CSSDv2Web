@@ -364,6 +364,15 @@ const router = new Router({
                     },
                     component: () =>
                         import ('./components/inventory/DisposableItemInbound')
+                },
+                {
+                    path: '/inventory/disposableItemInboundRecord',
+                    name: 'inventoryDisposableItemInboundRecord',
+                    meta: {
+                        index: 3
+                    },
+                    component: () =>
+                        import ('./components/inventory/DisposableItemInboundRecord')
                 }
             ]
 
@@ -678,6 +687,10 @@ const router = new Router({
                 component: () =>
                     import ('./components/publicModule/Reprint')
             }]
+        },
+        {
+            path: "*",
+            redirect: "/"
         }
     ]
 });

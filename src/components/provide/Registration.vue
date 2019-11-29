@@ -8,7 +8,7 @@
             <li @click="handleShowManualEnter">
                 <p>手工录入</p>
             </li>
-            <li @click="handleShowPackgeList">
+            <li @click="handleShowProductList">
                 <p>添加任务</p>
             </li>
             <router-link to="/provide/borrowRegistration" tag="li">
@@ -65,7 +65,7 @@
                                 <p style="width:100px;">本次发放数</p>
                                 <p style="width:50px;">操作</p>
                             </div>
-                            <el-collapse v-model="activeName" accordion>
+                            <el-collapse v-model="activeName" accordion @change="((index)=>{handleCollapseChange(index,item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails)})">
                                 <el-collapse-item v-for="(value,collapseIndex) in item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails" :key="collapseIndex" :name="collapseIndex+''" :class="value.IsNotPrintBarCode?'collapseUnExpand':''" v-show="showAllTask?true:value.InventoryQuantity!=0">
                                     <div slot="title" class="collapseTh">
                                         <!-- 包名称 -->
@@ -97,7 +97,11 @@
                                         </div>
                                         <!-- 本次发放数 -->
                                         <div class="collapseTd" style="width:140px;">
-                                            <p v-if="!value.IsNotPrintBarCode">{{countThisProvideNumber(value.ProvidePackages,value)}}</p>
+                                            <!-- 条码包 -->
+                                            <p v-if="!value.IsNotPrintBarCode&&!value.IsDisposableProduct">{{countThisProvideNumber(value)}}</p>
+                                            <!-- 一次性物品 -->
+                                            <p v-if="!value.IsNotPrintBarCode&&value.IsDisposableProduct">{{countDisposableThisProvideNumber(value)}}</p>
+                                            <!-- 计数包 -->
                                             <p v-if="value.IsNotPrintBarCode">
                                                 <el-input-number v-model="value.ThisTimeProvideQuantity" :min="0" :max="value.MaxLimit=value.InventoryQuantity>value.RemainQuantity?value.RemainQuantity:value.InventoryQuantity" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails,value)})"></el-input-number>
                                             </p>
@@ -107,19 +111,41 @@
                                             <a v-if="value.ProvideTaskGenerateType==3||GLOBAL.UserInfo.JobAndCompetence.includes('000')" @click.stop="deleteThisTask(value.ProvideTaskId)">删除</a>
                                             <p v-else>-</p>
                                         </div>
-                                        <div class="collapseTd" style="width:90px;">{{value.IsCommonProduct}}</div>
                                     </div>
-                                    <el-table :data="value.ProvidePackages" v-if="!value.IsNotPrintBarCode">
+                                    <el-table :data="value.ProvidePackages" v-if="!value.IsNotPrintBarCode&&!value.IsDisposableProduct">
                                         <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
                                         <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                                         <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                                         <el-table-column label="操作" width="210">
                                             <template slot-scope="props">
-                                                <el-button @click="deleteProvidePackage(value.ProvidePackages,props.$index)">删除</el-button>
+                                                <el-button @click="deleteProvideProduct(value.ProvidePackages,props.$index)">删除</el-button>
                                             </template>
                                         </el-table-column>
                                         <el-table-column></el-table-column>
                                     </el-table>
+                                    <el-table :data="value.DisposableProducts" v-if="!value.IsNotPrintBarCode&&value.IsDisposableProduct">
+                                        <el-table-column label="批号" width="240">
+                                            <template slot-scope="props">
+                                                <el-select v-model="props.row.BatchNumber" class="green18x10" @change="((val)=>{handleBatchNumberChange(val,value,props.$index)})">
+                                                    <el-option v-for="(batchItem,batchIndex) in value.DisposableBatchNumbers" :key="batchIndex" :label="batchItem.BatchNumber" :value="batchItem.BatchNumber"></el-option>
+                                                </el-select>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                                        <el-table-column label="库存数" prop="InventoryQuantity" width="210"></el-table-column>
+                                        <el-table-column label="数量" prop="Quantity" width="210">
+                                            <template slot-scope="props">
+                                                <el-input-number v-model.trim="props.row.Quantity" :controls="false" :min="0" :max="props.row.InventoryQuantity" @change="((newValue,oldValue)=>{handleDisposableNumberChange(newValue,oldValue,value,props.$index,item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails)})" :disabled="!props.row.BatchNumber"></el-input-number>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column label="操作" width="210">
+                                            <template slot-scope="props">
+                                                <el-button @click="deleteProvideProduct(value.DisposableProducts,props.$index)">删除</el-button>
+                                            </template>
+                                        </el-table-column>
+                                        <el-table-column></el-table-column>
+                                    </el-table>
+                                    <el-button v-if="!value.IsNotPrintBarCode&&value.IsDisposableProduct" class="btn88x32 insertDisposableProduct" @click="insertDisposableProduct(value.DisposableProducts)">新增批次</el-button>
                                 </el-collapse-item>
                             </el-collapse>
                             <div class="tab_content_bottom">
@@ -144,7 +170,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 产品列表 -->
-        <SelectSubClinicOfProduct v-if="isShowPackageList" @selectSubClinicOfProduct-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></SelectSubClinicOfProduct>
+        <SelectSubClinicOfProduct v-if="isShowProductList" @selectSubClinicOfProduct-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></SelectSubClinicOfProduct>
     </transition>
 </div>
 </template>
@@ -155,8 +181,8 @@ import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
     data() {
         return {
-            isShowPackageList: false,
-            showAllTask: false,
+            isShowProductList: false,
+            showAllTask: true,
             hasNewTask: false,
             activeName: "-1",
             tabActiveName: "0",
@@ -268,12 +294,13 @@ export default {
         refresh() {
             window.location.reload();
         },
-        handleShowPackgeList() {
-            this.isShowPackageList = true;
+        //显示包列表
+        handleShowProductList() {
+            this.isShowProductList = true;
         },
         //产品列表与父组件通信
         packgeList2father(data) {
-            this.isShowPackageList = false;
+            this.isShowProductList = false;
             if (data === null) {
                 this.$router.go(0);
             }
@@ -337,14 +364,109 @@ export default {
 
             }
             if (this.provideTaskList[index].SubClinics.length === 1) {
-                this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[
-                    index
-                ].SubClinics[0].SubClinicId;
+                this.provideTaskList[index].SelectedSubClinicId = this.provideTaskList[index].SubClinics[0].SubClinicId;
             }
             this.$forceUpdate();
         },
+        //新增批次
+        insertDisposableProduct(DisposableProducts) {
+            DisposableProducts.push({
+                BatchNumber: "",
+                ValidDate: "",
+                Quantity: 0,
+            });
+        },
+        //一次性物品批号change
+        handleBatchNumberChange(val, value, index) {
+            value.DisposableProducts[index].Quantity = 0;
+            for (let i = 0; i < value.DisposableProducts.length; i++) {
+                if (i == index) {
+                    continue;
+                }
+                if (value.DisposableProducts[i].BatchNumber && value.DisposableProducts[index].BatchNumber && value.DisposableProducts[i].BatchNumber == value.DisposableProducts[index].BatchNumber) {
+                    value.DisposableProducts[index].BatchNumber = "";
+                    this.showInformation({
+                        classify: "message",
+                        msg: "批号不能重复！"
+                    });
+                    return;
+                }
+            }
+            value.DisposableBatchNumbers.forEach(item => {
+                if (item.BatchNumber == val) {
+                    value.DisposableProducts[index].ValidDate = item.ValidDate;
+                    value.DisposableProducts[index].InventoryQuantity = item.InventoryQuantity;
+                    return;
+                }
+            })
+        },
+        //collapse 展开闭合改变的事件
+        handleCollapseChange(index, tasks) {
+            if (index) {
+                let disposableTaskItem = tasks[index];
+                if (!disposableTaskItem.Requested) {
+                    axios({
+                        url: `/api/Provide/DisposableProductBatchNumber/${disposableTaskItem.ProductId}`
+                    }).then(res => {
+                        if (res.data.Code == 200) {
+                            disposableTaskItem.DisposableBatchNumbers = res.data.Data;
+                            disposableTaskItem.Requested = true;
+                        } else {
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg
+                            });
+                        }
+                    }).catch(err => {});
+                }
+            }
+        },
+        //一次性物品数量chagne
+        handleDisposableNumberChange(newValue, oldValue, value, index, tasks) {
+            if (newValue == undefined) {
+                setTimeout(() => {
+                    value.DisposableProducts[index].Quantity = 0;
+                }, 0);
+            } else {
+                let num = 0; //统计页面目前已录入该产品该批号的一次性物品数量
+                for (let i = 0; i < tasks.length; i++) {
+                    if (tasks[i].ProductId == value.ProductId) {
+                        for (let j = 0; j < tasks[i].DisposableProducts.length; j++) {
+                            if (tasks[i].DisposableProducts[j].BatchNumber == value.DisposableProducts[index].BatchNumber) {
+                                num += tasks[i].DisposableProducts[j].Quantity;
+                            }
+                        }
+                    }
+                }
+                if (num > value.DisposableProducts[index].InventoryQuantity) {
+                    setTimeout(() => {
+                        value.DisposableProducts[index].Quantity = oldValue;
+                    }, 0);
+                    this.showInformation({
+                        classify: "message",
+                        msg: "所选的发放总数量大于库存数！",
+                        type: "warning"
+                    });
+                }
+
+                let thisTimeTotalProvideNumber = 0; //统计该一次性物品总计发放数量
+                value.DisposableProducts.forEach(item => {
+                    thisTimeTotalProvideNumber += item.Quantity;
+                });
+                if (thisTimeTotalProvideNumber > value.RemainQuantity) {
+                    setTimeout(() => {
+                        value.DisposableProducts[index].Quantity = oldValue;
+                    }, 0);
+                    this.showInformation({
+                        classify: "message",
+                        msg: "所选的发放数量大于剩余发放数！",
+                        type: "warning"
+                    });
+                }
+            }
+        },
         //计数包数量修改
-        handleCountNumberPackage(newValue, oldValue, list, value) {
+        handleCountNumberPackage(newValue, oldValue, tasks, value) {
             //计算该类包的已选数量value
             if (newValue == undefined) {
                 setTimeout(() => {
@@ -352,7 +474,7 @@ export default {
                 }, 0);
             } else {
                 let num = 0; //统计页面目前已录该包的数量
-                list.forEach(val => {
+                tasks.forEach(val => {
                     if (value.ProductId == val.ProductId) {
                         num += val.ThisTimeProvideQuantity;
                     }
@@ -363,12 +485,13 @@ export default {
                     }, 0);
                     this.showInformation({
                         classify: "message",
-                        msg: "您所选的数量大于库存数！",
+                        msg: "您所选的发放总数量大于库存数！",
                         type: "warning"
                     });
                 }
             }
         },
+
         //处理手工录入
         handleShowManualEnter() {
             if (this.getBarCodeArray()) {
@@ -422,47 +545,78 @@ export default {
                     msg: "您还没有发放包，请至少添加一个包！"
                 }])
             ) {
-                axios({
-                        url: `/api/Provide/ProvideComplete`,
-                        method: "POST",
-                        data: this.provideTaskList[this.tabActiveName].SubClinicTasks[
-                            this.provideTaskList[this.tabActiveName].SelectedSubClinicId
-                        ]
-                    })
-                    .then(res => {
-                        let type;
-                        if (res.data.Code == 200) {
-                            type = "success";
-                            if (this.connection) {
-                                this.connection
-                                    .invoke("TaskUpdateNotification", {
-                                        CssdId: this.GLOBAL.UserInfo.ClinicId,
-                                        ReserveCheckState: false,
-                                        PackageState: false,
-                                        ProvideState: true
-                                    }).catch(function (err) {
-                                        return console.error(err);
-                                    });
-                            }
-                            res.data.Data.forEach(element => {
-                                CSManager.PrintBarcode(JSON.stringify(element));
-                            });
-                            this.$router.go(0);
-                        } else {
-                            type = "error";
+                //一次性物品发放数量不能为0
+                let numberCanNotBeZeroOfVerify = [];
+                //一次性物品批号不能为空
+                let verifyArr = [];
+                let tasks = this.provideTaskList[this.tabActiveName].SubClinicTasks[
+                    this.provideTaskList[this.tabActiveName].SelectedSubClinicId
+                ].ProvideTaskDetails;
+                for (let i = 0; i < tasks.length; i++) {
+                    if (tasks[i].IsDisposableProduct) {
+                        for (let j = 0; j < tasks[i].DisposableProducts.length; j++) {
+                            numberCanNotBeZeroOfVerify.push(tasks[i].DisposableProducts[j].Quantity);
+                            verifyArr.push(tasks[i].DisposableProducts[j].BatchNumber);
                         }
-                        this.showInformation({
-                            classify: "message",
-                            msg: res.data.Msg,
-                            type: type
-                        });
-                    })
-                    .catch(err => {});
+                    }
+                }
+                if (this.GLOBAL.VerificationHandle([{
+                        val: verifyArr,
+                        type: "StringAllNotEmpty",
+                        msg: "一次性物品批号不能为空！"
+                    }, {
+                        val: numberCanNotBeZeroOfVerify,
+                        type: "NumberAllCannotBeZero",
+                        msg: "一次性物品数量不能为0！"
+                    }])) {
+                    axios({
+                            url: `/api/Provide/ProvideComplete`,
+                            method: "POST",
+                            data: this.provideTaskList[this.tabActiveName].SubClinicTasks[
+                                this.provideTaskList[this.tabActiveName].SelectedSubClinicId
+                            ]
+                        })
+                        .then(res => {
+                            let type;
+                            if (res.data.Code == 200) {
+                                type = "success";
+                                if (this.connection) {
+                                    this.connection
+                                        .invoke("TaskUpdateNotification", {
+                                            CssdId: this.GLOBAL.UserInfo.ClinicId,
+                                            ReserveCheckState: false,
+                                            PackageState: false,
+                                            ProvideState: true
+                                        }).catch(function (err) {
+                                            return console.error(err);
+                                        });
+                                }
+                                res.data.Data.forEach(element => {
+                                    CSManager.PrintBarcode(JSON.stringify(element));
+                                });
+                                this.$router.go(0);
+                            } else {
+                                type = "error";
+                            }
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg,
+                                type: type
+                            });
+                        })
+                        .catch(err => {});
+                }
             }
         },
         //删除包
-        deleteProvidePackage(ProvidePackages, $index) {
-            ProvidePackages.splice($index, 1);
+        deleteProvideProduct(ProvideProducts, $index) {
+            this.$confirm("您确定要删除该项?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                ProvideProducts.splice($index, 1);
+            }).catch(() => {})
         },
         //删除任务
         deleteThisTask(ProvideTaskId) {
@@ -570,19 +724,36 @@ export default {
         countPackageNumber() {
             return (obj, index) => {
                 let num = 0;
-                obj.ProvideTaskDetails.forEach(val => {
-                    num += val.ThisTimeProvideQuantity;
-                });
+                for (let i = 0; i < obj.ProvideTaskDetails.length; i++) {
+                    if (obj.ProvideTaskDetails[i].IsDisposableProduct) {
+                        for (let j = 0; j < obj.ProvideTaskDetails[i].DisposableProducts.length; j++) {
+                            num += obj.ProvideTaskDetails[i].DisposableProducts[j].Quantity;
+                        }
+                    } else {
+                        num += obj.ProvideTaskDetails[i].ThisTimeProvideQuantity;
+                    }
+                }
                 obj.ThisClinicProvideNumber = num;
                 return num;
             };
         },
         //计算本次发放数
         countThisProvideNumber() {
-            return (list, value) => {
-                value.ThisTimeProvideQuantity = list.length;
-                return list.length;
+            return (value) => {
+                value.ThisTimeProvideQuantity = value.ProvidePackages.length;
+                return value.ProvidePackages.length;
             };
+        },
+        //一次性物品本次发放数
+        countDisposableThisProvideNumber() {
+            return (value) => {
+                let num = 0;
+                value.DisposableProducts.forEach(item => {
+                    num += item.Quantity;
+                });
+                value.ThisTimeProvideQuantity = num;
+                return num;
+            }
         },
         //科室剩余发放总数
         countRemainProvideQuantity() {
@@ -757,6 +928,11 @@ export default {
                         }
                     }
 
+                    .insertDisposableProduct {
+                        margin: 20px 0 20px 40px;
+                        color: #fff;
+                    }
+
                     .tab_content_bottom {
                         p {
                             &:first-child {
@@ -782,6 +958,24 @@ export default {
 
                     &:hover {
                         background: none;
+                    }
+                }
+
+                .el-select {
+                    width: 160px;
+
+                    input {
+                        font-size: 16px;
+                        font-weight: bold;
+                    }
+                }
+
+                .el-input-number {
+                    width: 50px;
+                    height: 24px;
+
+                    input {
+                        height: 100%;
                     }
                 }
             }
