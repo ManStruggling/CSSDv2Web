@@ -34,13 +34,13 @@
                   </p>
                 </div>
               </dt>
-              <dd v-if="item.CleanDeviceType===0 && item.Status!=2?true:false">
+              <dd v-if="item.DeviceType===0 && item.Status!=2?true:false">
                 <div class="deviceTimebox clear_float">
                   <b>{{GLOBAL.timeFormatDuring(item.CurrentTime)}}</b>
                   <el-button @click="resetDeviceTime(index)" :disabled="item.Status==0?true:false" class="resetTImeBtn"></el-button>
                 </div>
               </dd>
-              <dd class="clear_float" v-if="item.CleanDeviceType===0 && item.Status==2?true:false">
+              <dd class="clear_float" v-if="item.DeviceType===0 && item.Status==2?true:false">
                 <div class="deviceTimebox clear_float">
                   <b class="progError">程序出错</b>
                   <el-button @click="resetDeviceStatus(index)" class="resetTImeBtn"></el-button>
@@ -53,7 +53,7 @@
                 :key="idx"
               >
                 <el-button
-                  :disabled="item.CleanDeviceType===1||item.Status==0?false:true"
+                  :disabled="item.DeviceType===1||item.Status==0?false:true"
                   @click="selectProgram(index,idx)"
                 >{{val.Name}}</el-button>
               </li>
@@ -79,7 +79,7 @@ export default {
           this.deviceList = res.data.Data;
           //开启计时器do countdown
           this.deviceList.forEach((val, index) => {
-            if (val.CleanDeviceType===0&&val.CurrentTime > 0) {
+            if (val.DeviceType===0&&val.CurrentTime > 0) {
               val["Countdown" + index] = setInterval(() => {
                 val.CurrentTime--;
                 if (val.CurrentTime <= 0) {

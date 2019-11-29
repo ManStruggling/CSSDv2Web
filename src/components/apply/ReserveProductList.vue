@@ -40,14 +40,7 @@ export default {
     },
     props: ["cssdId"],
     created() {
-        axios({
-            url: `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成'`,
-            headers: {
-                CssdId: this.$props.cssdId
-            }
-        }).then(res => {
-            this.list = res.data.value;
-        }).catch(err => {})
+        this.getPackagesData(`/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成'`);
     },
     methods: {
         //el-input-number change 事件
@@ -72,17 +65,7 @@ export default {
         },
         //搜索事件
         packageSearch() {
-            //code
-            let url;
-            url = `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成' and (contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) or  contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"}))`
-            axios({
-                url: url,
-                headers: {
-                    CssdId: this.$props.cssdId
-                }
-            }).then(res => {
-                this.list = res.data.value;
-            }).catch(err => {})
+            this.getPackagesData(`/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成' and (contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) or  contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"}))`);
 
         },
         handleSelectionChange(val) {
@@ -93,14 +76,14 @@ export default {
         },
         //类别选择change 请求 
         packageClassChange() {
-            this.getUrl = this.packageBoxClassSelect == "all" ? `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成` : `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成' and type eq ${encodeURI("'" + this.packageBoxClassSelect + "'")}`;
+            this.getUrl = this.packageBoxClassSelect == "all" ? `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成'` : `/odata/AllProducts?$filter=type ne '外来器械包' and type ne '一次性物品' and ProvideGenerateType eq '预定生成' and type eq ${encodeURI("'" + this.packageBoxClassSelect + "'")}`;
             this.getPackagesData(this.getUrl);
         },
         getPackagesData(url) {
             axios({
                     url: url,
                     headers: {
-                        CssdId: this.$props.cssdId
+                        LocationId: this.$props.cssdId
                     }
                 })
                 .then(res => {

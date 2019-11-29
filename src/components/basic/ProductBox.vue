@@ -33,8 +33,8 @@
                     </el-select>
                 </li>
                 <li>
-                    <p>所属科室</p>
-                    <el-cascader expand-trigger="hover" :options="optionClinicList" v-model="selectedOptions" @change="handleChange" placeholder="请选择(必选)"></el-cascader>
+                    <p v-show="!editBoxData.IsCommonProduct">所属科室</p>
+                    <el-cascader v-show="!editBoxData.IsCommonProduct" expand-trigger="hover" :options="optionClinicList" v-model="selectedOptions" @change="handleChange" placeholder="请选择(必选)"></el-cascader>
                 </li>
                 <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
                     <p>发放生成方式</p>
@@ -103,6 +103,14 @@
                     <el-select v-model="editBoxData.IsSingleCarrierProduct" class="green24x13" @change="singleCarrierProductChange">
                         <el-option label="否" :value="false"></el-option>
                         <el-option label="是" :value="true"></el-option>
+                    </el-select>
+                </li>
+                <li v-if="editBoxData.Type != 82">
+                    <p>灭菌类型</p>
+                    <el-select v-model="editBoxData.DeviceType" class="green24x13">
+                        <el-option label="高温蒸汽" :value="2"></el-option>
+                        <el-option label="低温等离子" :value="3"></el-option>
+                        <el-option label="环氧乙烷" :value="4"></el-option>
                     </el-select>
                 </li>
                 <li class="textareaBox">

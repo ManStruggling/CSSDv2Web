@@ -49,11 +49,14 @@
                         <el-option :label="'否'" :value="false"></el-option>
                     </el-select>
                 </li>
-                <li v-if="editBoxData.Type===1">
+                <li>
                     <p>设备类型</p>
-                    <el-select v-model="editBoxData.CleanDeviceType" class="green24x13">
-                        <el-option label="单腔" :value="0"></el-option>
-                        <el-option label="长龙" :value="1"></el-option>
+                    <el-select v-model="editBoxData.DeviceType" class="green24x13">
+                        <el-option label="单腔" :value="0" v-if="editBoxData.Type==1"></el-option>
+                        <el-option label="长龙" :value="1" v-if="editBoxData.Type==1"></el-option>
+                        <el-option label="高温蒸汽" :value="2" v-if="editBoxData.Type==0"></el-option>
+                        <el-option label="低温等离子" :value="3" v-if="editBoxData.Type==0"></el-option>
+                        <el-option label="环氧乙烷" :value="4" v-if="editBoxData.Type==0"></el-option>
                     </el-select>
                 </li>
             </ul>

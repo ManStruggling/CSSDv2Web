@@ -30,8 +30,9 @@
             <el-table-column label="包名称" prop="Name" width="240"></el-table-column>
             <el-table-column label="简码" prop="ShortCode" width="210"></el-table-column>
             <el-table-column label="发放供应室" prop="ProvideCssdName" width="210"></el-table-column>
-            <el-table-column label="所属主科室" prop="ProvideClinicName" width="210"></el-table-column>
-            <el-table-column label="所属子科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+            <el-table-column label="所属科室" prop="ProvideClinicName" width="300">
+                <template slot-scope="props">{{props.row.ProvideClinicName+'/'+props.row.ProvideSubClinicName}}</template>
+            </el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
@@ -189,8 +190,12 @@ export default {
                 IsSingleCarrierProduct: false,
                 NumberProductQuantity: 0,
                 ProvideGenerateType: 0,
+                DeviceType: 2,
                 ProductPictures: []
             };
+            if (this.Type == 82) {
+                this.toChildData.DeviceType = 0;
+            }
             this.showEditBox = true;
         },
         //删除this tr

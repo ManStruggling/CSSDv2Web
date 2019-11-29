@@ -59,7 +59,7 @@
                 <li>
                     <p>灭菌日期</p>
                     <div class="el_input_box">
-                        <el-date-picker v-model="packageMessage.SterilizeDate" type="datetime" placeholder="选择日期时间" :clearable="false" value-format="yyyy-MM-dd HH:mm:ss">
+                        <el-date-picker v-model="packageMessage.SterilizeDate" type="datetime" placeholder="选择日期时间" :clearable="false" value-format="yyyy-MM-dd HH:mm">
                         </el-date-picker>
                     </div>
                 </li>

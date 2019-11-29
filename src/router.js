@@ -355,6 +355,15 @@ const router = new Router({
                     },
                     component: () =>
                         import ('./components/inventory/OutboundRecord')
+                },
+                {
+                    path: '/inventory/disposableItemInbound',
+                    name: '/inventoryDisposableItemInbound',
+                    meta: {
+                        index: 2
+                    },
+                    component: () =>
+                        import ('./components/inventory/DisposableItemInbound')
                 }
             ]
 

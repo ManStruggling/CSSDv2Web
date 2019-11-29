@@ -61,6 +61,7 @@
                                         <div class="collapseTd">
                                             <p>
                                                 <a @click.stop="editBookTask(value.BookTaskId)">编辑</a>
+                                                <a @click.stop="printBookList(value.BookTaskId)">打印</a>
                                             </p>
                                         </div>
                                     </div>
@@ -170,6 +171,29 @@ export default {
                 }
             });
         },
+        //打印预订单
+        printBookList(id) {
+            axios({
+                url: '/api/Book/PrintBookList',
+                data: {
+                    BookTaskId: [id]
+                }
+            }).then(res => {
+                let type;
+                if (res.data.Code == 200) {
+                    type = "success";
+                    res.data.Data.forEach(element => {
+                        CSManager.PrintBarcode(JSON.stringify(element));
+                    });
+                } else {
+                    type = "error";
+                }
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                });
+            }).catch(err => {})
+        },
         //审核不通过
         submitNotPass() {
             let data = [];
@@ -254,9 +278,6 @@ export default {
                                         return console.error(err);
                                     });
                             }
-                            res.data.Data.forEach(element => {
-                                CSManager.PrintBarcode(JSON.stringify(element));
-                            });
                             this.$router.go(0);
                         } else {
                             type = "error";
@@ -351,6 +372,7 @@ export default {
                     font-family: Microsoft YaHei;
                     font-weight: bold;
                     color: #00c16b;
+                    margin-right: 10px;
                 }
 
                 .el-popover__reference {

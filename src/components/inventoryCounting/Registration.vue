@@ -198,7 +198,7 @@ export default {
         overflow: hidden;
 
         .table_box {
-            padding: 40px 20px 40px;
+            padding: 30px 40px;
             height: 100%;
             box-sizing: border-box;
             overflow-y: scroll;

@@ -709,6 +709,8 @@ export default {
       font-size: 16px;
       font-family: Microsoft YaHei;
       color: rgba(135, 141, 159, 1);
+      width: 94px;
+      text-align: right;
     }
     p {
       s {

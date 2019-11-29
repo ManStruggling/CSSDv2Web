@@ -34,14 +34,7 @@ export default {
     },
     props: ["cssdId"],
     created() {
-        axios({
-            url: `/odata/AllProducts?$filter=type eq '一次性物品'`,
-            headers: {
-                CssdId: this.$props.cssdId
-            }
-        }).then(res => {
-            this.list = res.data.value;
-        }).catch(err => {})
+        this.getProductData(`/odata/AllProducts?$filter=type eq '一次性物品'`);
     },
     methods: {
         //el-input-number change 事件
@@ -66,21 +59,21 @@ export default {
         },
         //搜索事件
         packageSearch() {
-            //code
-            let url;
-            url = `/odata/AllProducts?$filter=type eq '一次性物品' and (contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) or contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"}))`
+            this.getProductData(`/odata/AllProducts?$filter=type eq '一次性物品' and (contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) or contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"}))`);
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        //获取数据
+        getProductData(url) {
             axios({
                 url: url,
                 headers: {
-                    CssdId: this.$props.cssdId
+                    LocationId: this.cssdId
                 }
             }).then(res => {
                 this.list = res.data.value;
             }).catch(err => {})
-
-        },
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
         },
         getRowKeys(row) {
             return row.ProductId;

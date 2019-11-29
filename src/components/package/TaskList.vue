@@ -94,6 +94,20 @@
                                                 {{value.ProductName}}
                                                 <i class="viewPictures" @click.stop="viewProductImg(value.ProductId)"></i>
                                             </div>
+                                            <div class="sterilizeType">
+                                                <p class="H2O2" v-show="value.DeviceType==3">
+                                                    <span>H</span>
+                                                    <b>2</b>
+                                                    <span>O</span>
+                                                    <b>2</b>
+                                                </p>
+                                                <p class="EO" v-show="value.DeviceType==4">
+                                                    <span>EO</span>
+                                                </p>
+                                                <p class="SS" v-show="value.DeviceType==2">
+                                                    <span>SS</span>
+                                                </p>
+                                            </div>
                                         </div>
                                         <!-- 回收时间 -->
                                         <div class="collapseTd">{{value.RecycleDate}}</div>
@@ -800,7 +814,16 @@ export default {
                                     .viewPictures {
                                         background-image: url("../../assets/images/imgLogo_white.png");
                                     }
-
+                                    .sterilizeType{
+                                        p{
+                                            &.H2O2,&.EO,&.SS{
+                                                border-color: #fff;
+                                                span,b{
+                                                    color: #fff;
+                                                }
+                                            }
+                                        }
+                                    }
                                     .numberPackageSpan,
                                     .actuallyPackageNumber {
                                         color: #fff;
@@ -860,7 +883,8 @@ export default {
                                 font-size: inherit;
                                 font-weight: inherit;
                                 font-family: inherit;
-
+                                display: flex;
+                                align-items: center;
                                 .viewPictures {
                                     width: 19px;
                                     height: 16px;
@@ -868,6 +892,45 @@ export default {
                                     margin-left: 8px;
                                     background: url("../../assets/images/imgLogo_green.png") no-repeat;
                                     background-size: 100% 100%;
+                                }
+
+                                .sterilizeType{
+                                    line-height: 24px;
+                                    width: 40px;
+                                    height: 24px;
+                                    p{
+                                        border: 2px solid;
+                                        height: 100%;
+                                        box-sizing: border-box;
+                                        display: flex;
+                                        justify-content: center;
+                                        border-radius:4px;
+                                        margin-left: 5px;
+                                        width: 100%;
+                                        &.H2O2{
+                                            color: #08872E;
+                                            border-color: #08872E;
+                                        }
+                                        &.EO{
+                                            color: #333;
+                                            border-color: #333;
+                                        }
+                                        &.SS{
+                                            color: #2553B7;
+                                            border-color: #2553B7;
+                                        }
+                                        span{
+                                            line-height: 20px;
+                                            font-size:12px;
+                                            font-weight: bold;
+                                        }
+                                        b{
+                                            font-size: 8px;
+                                            font-weight: bold;
+                                            line-height: 22px;
+                                            -webkit-transform:scale(0.8);
+                                        }
+                                    }
                                 }
 
                                 >div,

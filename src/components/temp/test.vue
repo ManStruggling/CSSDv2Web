@@ -13,6 +13,15 @@
             <p>接收</p>
             <span>{{receiveData}}</span>
         </li>
+        <li>
+            <el-input v-model="obj.Title"></el-input>
+            <el-input type="textarea" v-model="obj.Content"></el-input>
+            <el-button @click="sendMessage2">发放</el-button>
+        </li>
+        <li>
+            <p>接收</p>
+            <span>{{receiveData2}}</span>
+        </li>
     </ul>
 </div>
 </template>
@@ -25,7 +34,12 @@ export default {
             IsTestMode: false,
             IsSend: false,
             str: "",
-            receiveData: ""
+            receiveData: "",
+            receiveData2: "",
+            obj: {
+                Title: "",
+                Content: ""
+            }
         };
     },
     created() {
@@ -33,12 +47,20 @@ export default {
             this.IsTestMode = JSON.parse(sessionStorage.IsTestMode);
         }
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("/api/hubtest")
+            .withUrl("/api/WebHub")
             .configureLogging(signalR.LogLevel.Information)
             .build();
         this.connection.start();
-        this.connection.on("taskUpdateReminder", data=> {
+        this.connection.on("taskUpdateReminder", data => {
             this.receiveData = data;
+        });
+        this.connection2 = new signalR.HubConnectionBuilder()
+            .withUrl("/api/PdaHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+        this.connection2.start();
+        this.connection2.on("callRecycleNotification", data => {
+            this.receiveData2 = JSON.stringify(data);
         });
     },
     mounted() {},
@@ -54,8 +76,13 @@ export default {
                 .invoke("TaskUpdateNotification", this.str).catch(function (err) {
                     return console.error(err);
                 });
+        },
+        sendMessage2() {
+            this.connection2
+                .invoke("CallRecycleNotification", JSON.stringify(this.obj)).catch(function (err) {
+                    return console.error(err);
+                });
         }
-
     }
 };
 </script>

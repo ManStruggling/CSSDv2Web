@@ -5,6 +5,9 @@
             <router-link to="/" tag="li">
                 <p>返回</p>
             </router-link>
+            <router-link to="/inventory/disposableItemInbound" tag="li">
+                <p>一次性物品入库</p>
+            </router-link>
             <router-link to="/inventory/inboundRecord" tag="li">
                 <p>入库记录</p>
             </router-link>

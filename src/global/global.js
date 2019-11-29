@@ -258,7 +258,7 @@ function showInformation(option) {
 //初始化websocket
 function initWebSorcket(that, origin) {
     that.connection = new signalR.HubConnectionBuilder()
-        .withUrl("/api/hubtest")
+        .withUrl("/api/WebHub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
     that.connection.start();
@@ -269,10 +269,22 @@ function initWebSorcket(that, origin) {
     });
 }
 
+//一键通知回收
+function notificationRecycling(that) {
+    that.connection = new signalR.HubConnectionBuilder()
+        .withUrl("/api/PdaHub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+    that.connection.start();
+    that.connection.on("callRecycleNotification", data => {
+        that.showInformation({ classify: "message", type: "success", msg: "通知成功！" });
+    });
+}
+
 //是否启用websocket
 function useWebsocketOrNot(that, origin) {
     if (sessionStorage.configure) {
-        this.initWebSorcket(that, origin);
+        initWebSorcket(that, origin);
     } else {
         return false;
     }
@@ -305,6 +317,7 @@ function timeFormatDuring(timeSeconds) {
 Vue.prototype.showInformation = showInformation;
 
 export default {
+    notificationRecycling,
     timeFormatDuring,
     useWebsocketOrNot,
     getParams,

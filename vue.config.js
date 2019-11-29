@@ -1,11 +1,11 @@
-let Version = '1024';
+let Version = '1127';
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production' ?
         '/' : '/',
     //打包过后的文件夹名
     outputDir: 'wwwroot',
     //设置打包后的静态资源的文件夹名
-    assetsDir: 'web'+Version,
+    assetsDir: 'web' + Version,
     //文件名是否添加hash值
     filenameHashing: true,
 

@@ -5,7 +5,7 @@
             <router-link to="/" tag="li">
                 <p>返回</p>
             </router-link>
-            <li>
+            <li @click="toNotificationRecycling">
                 <p>一键通知回收</p>
             </li>
         </ul>
@@ -92,8 +92,20 @@ export default {
             }
         }).catch(err => {})
     },
-    mounted() {},
+    mounted() {
+        this.GLOBAL.notificationRecycling(this);
+    },
     methods: {
+        //一键通知回收
+        toNotificationRecycling() {
+            this.connection
+                .invoke("CallRecycleNotification", JSON.stringify({
+                    Title: "回收通知",
+                    Content: `${this.GLOBAL.UserInfo.ClinicName}有包要回收了！`
+                })).catch(function (err) {
+                    return console.error(err);
+                });
+        },
         //删除加急产品
         deleteProduct(index) {
             this.$confirm("您确定要删除该产品?", "提示", {

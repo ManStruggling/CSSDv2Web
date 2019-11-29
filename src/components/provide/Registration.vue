@@ -61,7 +61,7 @@
                                 <p>发放科室</p>
                                 <p style="width:90px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">预计发放数</p>
                                 <p style="width:80px;">库存数</p>
-                                <p style="width:100px;">剩余发放数</p>
+                                <p style="width:100px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">剩余发放数</p>
                                 <p style="width:100px;">本次发放数</p>
                                 <p style="width:50px;">操作</p>
                             </div>
@@ -89,7 +89,7 @@
                                             <p>{{value.InventoryQuantity}}</p>
                                         </div>
                                         <!-- 剩余发放数 -->
-                                        <div class="collapseTd" style="width:140px;">
+                                        <div class="collapseTd" style="width:140px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
                                             <p>
                                                 {{value.RemainQuantity}}
                                                 <span class="expeditedTag" v-if="value.ExpeditedPackageQuantity!=0">加急 : {{value.ExpeditedPackageQuantity}}</span>
@@ -107,6 +107,7 @@
                                             <a v-if="value.ProvideTaskGenerateType==3||GLOBAL.UserInfo.JobAndCompetence.includes('000')" @click.stop="deleteThisTask(value.ProvideTaskId)">删除</a>
                                             <p v-else>-</p>
                                         </div>
+                                        <div class="collapseTd" style="width:90px;">{{value.IsCommonProduct}}</div>
                                     </div>
                                     <el-table :data="value.ProvidePackages" v-if="!value.IsNotPrintBarCode">
                                         <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
@@ -185,6 +186,59 @@ export default {
                         }
                     }
                 });
+                // if (this.GLOBAL.UserInfo.HospitalVersion == "YANCHENGFUBAO") {
+                //     let commonProductTaskList = [];
+                //     let commonProductItems = {
+                //         ClinicName: "通用包",
+                //         RemainInventoryTotalQuantity: 0,
+                //         SelectedSubClinicId: 0,
+                //         ProvideTasks: commonProductTaskList,
+                //         SubClinicTasks: {
+                //             0: {
+                //                 ProvideSubClinicId: 0,
+                //                 ThisClinicProvideNumber: 0,
+                //                 ProvideTaskDetails: commonProductTaskList
+                //             }
+                //         },
+                //         SubClinics: []
+                //     };
+                //     for (let i = 0; i < res.data.Data.length; i++) {
+                //         for (let j = 0; j < res.data.Data[i].ProvideTasks.length; j++) {
+                //             if (res.data.Data[i].ProvideTasks[j].IsCommonProduct) {
+                //                 commonProductTaskList.push(res.data.Data[i].ProvideTasks.splice(j, 1)[0]);
+                //             }
+                //         }
+                //     }
+                //     let Data = res.data.Data;
+                //     axios("/api/Clinic/SubClinic").then(res => {
+                //         if (res.data.Code == 200) {
+                //             res.data.Data.forEach(element => {
+                //                 element.SubClinicId = element.ProvideSubClinicId;
+                //                 element.SubClinicName = element.ProvideSubClinicName;
+                //             });
+                //             commonProductItems.SubClinics = res.data.Data;
+                //             Data.unshift(commonProductItems);
+                //             this.provideTaskList = Data;
+                //             if (this.provideTaskList.length > 0) {
+                //                 this.handleTabClick({
+                //                     index: '0'
+                //                 });
+                //             }
+                //         } else {
+                //             this.showInformation({
+                //                 classify: "message",
+                //                 msg: res.data.Msg
+                //             });
+                //         }
+                //     }).catch(err => {})
+                // } else {
+                //     this.provideTaskList = res.data.Data;
+                //     if (this.provideTaskList.length > 0) {
+                //         this.handleTabClick({
+                //             index: '0'
+                //         });
+                //     }
+                // }
                 this.provideTaskList = res.data.Data;
                 if (this.provideTaskList.length > 0) {
                     this.handleTabClick({
@@ -250,7 +304,6 @@ export default {
         //获取子科室
         getSubClinics(index) {
             if (!this.provideTaskList[index].SubClinics) {
-
                 axios({
                     url: `/api/Clinic/SubClinicsBy/${this.provideTaskList[index].ClinicId}`
                 }).then(res => {
