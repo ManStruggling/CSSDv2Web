@@ -21,7 +21,7 @@
                 path: '/recovery/record',
                 query: {
                     sourceRoute: `/recovery/newPurchasing`,
-                    requestUrl: `/api/RecycleRecords/NewPurchasing`
+                    requestUrl: `/api/Recycle/RecycleRecords/NewPurchasing`
                 }
             }" tag="li" v-if="!isNewpurchasingChangeMode">
                 <p>录入记录</p>

@@ -26,7 +26,7 @@
                 path:'/recovery/record',
                 query:{
                     sourceRoute: `/recovery/registration`,
-                    requestUrl: `/api/RecycleRecords/Recycle`
+                    requestUrl: `/api/Recycle/RecycleRecords/Recycle`
                 }
             }" v-if="!recoveryRecordModle" tag="li">
                 <p>回收记录</p>

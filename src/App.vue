@@ -54,7 +54,7 @@ export default {
             return Promise.reject(error);
         })
 
-        //为请求加上UId 和 CssdId
+        //为请求加上UId 和 LocationId
         if (sessionStorage.userInfo) {
             window.UserInfo = JSON.parse(sessionStorage.userInfo);
             this.GLOBAL.UserInfo = UserInfo;
