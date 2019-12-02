@@ -222,13 +222,7 @@ export default {
     },
     //查询
     searchRecordsData() {
-      this.GLOBAL.searchRecord(
-        this.search_date[0],
-        this.search_date[1],
-        this,
-        "/odata/OuterProductRegisterRecords",
-        "registerDate"
-      );
+      this.GLOBAL.searchRecord(`/api/OuterProductRegisterRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
     },
   }
 };

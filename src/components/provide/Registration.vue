@@ -78,7 +78,8 @@
                                         </div>
                                         <!-- 发放科室 -->
                                         <div class="collapseTd">
-                                            <p>{{value.ProvideSubClinic}}</p>
+                                            <p v-if="GLOBAL.UserInfo.HospitalVersion=='YANCHENGFUBAO'&&value.IsCommonProduct">-</p>
+                                            <p v-else>{{value.ProvideSubClinic}}</p>
                                         </div>
                                         <!-- 预计发放数 -->
                                         <div class="collapseTd" style="width:130px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
@@ -182,7 +183,7 @@ export default {
     data() {
         return {
             isShowProductList: false,
-            showAllTask: true,
+            showAllTask: false,
             hasNewTask: false,
             activeName: "-1",
             tabActiveName: "0",
@@ -212,64 +213,74 @@ export default {
                         }
                     }
                 });
-                // if (this.GLOBAL.UserInfo.HospitalVersion == "YANCHENGFUBAO") {
-                //     let commonProductTaskList = [];
-                //     let commonProductItems = {
-                //         ClinicName: "通用包",
-                //         RemainInventoryTotalQuantity: 0,
-                //         SelectedSubClinicId: 0,
-                //         ProvideTasks: commonProductTaskList,
-                //         SubClinicTasks: {
-                //             0: {
-                //                 ProvideSubClinicId: 0,
-                //                 ThisClinicProvideNumber: 0,
-                //                 ProvideTaskDetails: commonProductTaskList
-                //             }
-                //         },
-                //         SubClinics: []
-                //     };
-                //     for (let i = 0; i < res.data.Data.length; i++) {
-                //         for (let j = 0; j < res.data.Data[i].ProvideTasks.length; j++) {
-                //             if (res.data.Data[i].ProvideTasks[j].IsCommonProduct) {
-                //                 commonProductTaskList.push(res.data.Data[i].ProvideTasks.splice(j, 1)[0]);
-                //             }
-                //         }
-                //     }
-                //     let Data = res.data.Data;
-                //     axios("/api/Clinic/SubClinic").then(res => {
-                //         if (res.data.Code == 200) {
-                //             res.data.Data.forEach(element => {
-                //                 element.SubClinicId = element.ProvideSubClinicId;
-                //                 element.SubClinicName = element.ProvideSubClinicName;
-                //             });
-                //             commonProductItems.SubClinics = res.data.Data;
-                //             Data.unshift(commonProductItems);
-                //             this.provideTaskList = Data;
-                //             if (this.provideTaskList.length > 0) {
-                //                 this.handleTabClick({
-                //                     index: '0'
-                //                 });
-                //             }
-                //         } else {
-                //             this.showInformation({
-                //                 classify: "message",
-                //                 msg: res.data.Msg
-                //             });
-                //         }
-                //     }).catch(err => {})
-                // } else {
-                //     this.provideTaskList = res.data.Data;
-                //     if (this.provideTaskList.length > 0) {
-                //         this.handleTabClick({
-                //             index: '0'
-                //         });
-                //     }
-                // }
-                this.provideTaskList = res.data.Data;
-                if (this.provideTaskList.length > 0) {
-                    this.handleTabClick({
-                        index: '0'
-                    });
+                if (this.GLOBAL.UserInfo.HospitalVersion == "YANCHENGFUBAO") {
+                    let commonProductTaskList = []; //获取所有通用包的任务数组
+                    let commonProductItems = {
+                        ClinicName: "通用包",
+                        RemainInventoryTotalQuantity: 0,
+                        SelectedSubClinicId: 0,
+                        ProvideTasks: commonProductTaskList,
+                        SubClinicTasks: {
+                            0: {
+                                ProvideSubClinicId: 0,
+                                ThisClinicProvideNumber: 0,
+                                ProvideTaskDetails: commonProductTaskList
+                            }
+                        },
+                        SubClinics: []
+                    };
+                    for (let i = 0; i < res.data.Data.length; i++) {
+                        for (let j = 0; j < res.data.Data[i].ProvideTasks.length; j++) {
+                            if (res.data.Data[i].ProvideTasks[j].IsCommonProduct) {
+                                let commonProductTask = res.data.Data[i].ProvideTasks.splice(j, 1)[0]; //该次通用包任务
+                                j -= 1;
+                                //检查commonProductTaskList是否已存在该产品的任务
+                                let checkRepeat = commonProductTaskList.filter(item => {
+                                    return item.ProductId == commonProductTask.ProductId;
+                                });
+                                if (checkRepeat == '') {
+                                    //不存在
+                                    commonProductTaskList.push(commonProductTask);
+                                } else {
+                                    //存在
+                                    checkRepeat[0].RemainQuantity += commonProductTask.RemainQuantity;
+                                }
+                            }
+                        }
+                        if (res.data.Data[i].ProvideTasks == '') {
+                            res.data.Data.splice(i, 1);
+                            i -= 1;
+                        }
+                    }
+                    let Data = res.data.Data;
+                    axios("/api/Clinic/SubClinic").then(res => {
+                        if (res.data.Code == 200) {
+                            res.data.Data.forEach(element => {
+                                element.SubClinicId = element.ProvideSubClinicId;
+                                element.SubClinicName = element.ProvideSubClinicName;
+                            });
+                            commonProductItems.SubClinics = res.data.Data;
+                            Data.unshift(commonProductItems);
+                            this.provideTaskList = Data;
+                            if (this.provideTaskList.length > 0) {
+                                this.handleTabClick({
+                                    index: '0'
+                                });
+                            }
+                        } else {
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg
+                            });
+                        }
+                    }).catch(err => {})
+                } else {
+                    this.provideTaskList = res.data.Data;
+                    if (this.provideTaskList.length > 0) {
+                        this.handleTabClick({
+                            index: '0'
+                        });
+                    }
                 }
             } else {
                 this.showInformation({
@@ -404,7 +415,7 @@ export default {
         handleCollapseChange(index, tasks) {
             if (index) {
                 let disposableTaskItem = tasks[index];
-                if (!disposableTaskItem.Requested) {
+                if (disposableTaskItem.IsDisposableProduct && !disposableTaskItem.Requested) {
                     axios({
                         url: `/api/Provide/DisposableProductBatchNumber/${disposableTaskItem.ProductId}`
                     }).then(res => {

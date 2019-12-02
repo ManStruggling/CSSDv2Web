@@ -18,11 +18,12 @@
                 <p>新购入包录入</p>
             </li>
             <router-link :to="{
-            path:'/recovery/record',
-            query:{
-              source:`source eq '新购入'`
-            }
-          }" tag="li" v-if="!isNewpurchasingChangeMode">
+                path: '/recovery/record',
+                query: {
+                    sourceRoute: `/recovery/newPurchasing`,
+                    requestUrl: `/api/RecycleRecords/NewPurchasing`
+                }
+            }" tag="li" v-if="!isNewpurchasingChangeMode">
                 <p>录入记录</p>
             </router-link>
         </ul>

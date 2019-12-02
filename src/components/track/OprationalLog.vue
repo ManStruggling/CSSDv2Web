@@ -59,6 +59,8 @@ export default {
   },
   created() {
     CSManager.handleDataThis = this;
+    let date = this.GLOBAL.GetNowDate();
+    this.search_date = [date,date];
   },
   beforeDestroy() {
     CSManager.handleDataThis = null;

@@ -74,6 +74,16 @@ export default {
     mounted() {
         CSManager.ListenKeyDownEvent();
     },
+    provide() {
+        return {
+            test: this.test
+        }
+    },
+    methods: {
+        test(){
+            console.log('inject test')
+        }
+    },
 }
 </script>
 

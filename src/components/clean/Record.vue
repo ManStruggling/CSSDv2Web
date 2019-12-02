@@ -194,13 +194,7 @@ export default {
     },
     //查询
     searchRecordsData() {
-      this.GLOBAL.searchRecord(
-        this.search_date[0],
-        this.search_date[1],
-        this,
-        "/odata/CleanRecords",
-        "CleanStartDateTime"
-      );
+      this.GLOBAL.searchRecord(`/api/CleanRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
     },
   }
 };

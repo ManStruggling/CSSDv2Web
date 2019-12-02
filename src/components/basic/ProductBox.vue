@@ -3,121 +3,135 @@
 <div id="editBox">
     <div class="editContainer">
         <div class="editContent EditBoxContentOfProduct table_unExpand">
-            <ul class="clear_float">
-                <li>
-                    <p>包名称</p>
-                    <el-input type="text" placeholder="包名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
-                </li>
-                <li>
-                    <p>拼音简码</p>
-                    <el-input type="text" v-model="editBoxData.ShortCode" :disabled="editBoxData.Id==0"></el-input>
-                </li>
-                <li v-if="editBoxData.Type!=85">
-                    <p>成本价格</p>
-                    <el-input-number placeholder="成本价格" v-model="editBoxData.CostPrice" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'CostPrice')})"></el-input-number>
-                </li>
-                <li v-if="editBoxData.Type!=85">
-                    <p>清算价格</p>
-                    <el-input-number placeholder="清算价格" v-model="editBoxData.ClearingPrice" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ClearingPrice')})"></el-input-number>
-                </li>
-                <li>
-                    <p>外包装</p>
-                    <el-select v-model="editBoxData.ExternalPackage" placeholder="请选择(必选)" class="green24x13">
-                        <el-option v-for="item in optionExternalPackageList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </li>
-                <li>
-                    <p>发放供应室</p>
-                    <el-select v-model="editBoxData.ProvideCssdId" placeholder="请选择(必选)" class="green24x13">
-                        <el-option v-for="item in optionCssdList" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                </li>
-                <li>
-                    <p v-show="!editBoxData.IsCommonProduct">所属科室</p>
-                    <el-cascader v-show="!editBoxData.IsCommonProduct" expand-trigger="hover" :options="optionClinicList" v-model="selectedOptions" @change="handleChange" placeholder="请选择(必选)"></el-cascader>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
-                    <p>发放生成方式</p>
-                    <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13">
-                        <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0" :disabled="editBoxData.IsCommonProduct"></el-option>
-                        <el-option label="预定生成发放" :value="1"></el-option>
-                        <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
-                        <el-option v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83" label="手动生成任务" :value="3"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type!=85">
-                    <p>器械清单模板</p>
-                    <el-select v-model="editBoxData.InstrumentListTemplate" placeholder="器械清单模板" class="green24x13">
-                        <el-option label="A4" :value="0"></el-option>
-                        <el-option label="A5" :value="1"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
-                    <p>几张打印一张总条码</p>
-                    <el-input-number v-model="editBoxData.HowManyProductsPrintATotalBarCode" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyProductsPrintATotalBarCode')})"></el-input-number>
-                </li>
-                <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
-                    <p>器械单打印数</p>
-                    <el-input-number v-model="editBoxData.HowManyInstrumentListArePrinted" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyInstrumentListArePrinted')})"></el-input-number>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82">
-                    <p>通用包</p>
-                    <el-select v-model="editBoxData.IsCommonProduct" class="green24x13" @change="commonPackageChange">
-                        <el-option label="是" :value="true"></el-option>
-                        <el-option label="否" :value="false"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82">
-                    <p>计数包</p>
-                    <el-select v-model="editBoxData.IsNotPrintBarCode" @change="countPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
-                        <el-option label="是" :value="true"></el-option>
-                        <el-option label="否" :value="false"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82">
-                    <p>打印标签</p>
-                    <el-select v-model="editBoxData.IsPrintLabel" :disabled="forbid||singleCarrierProductForbid" class="green24x13">
-                        <el-option label="是" :value="true"></el-option>
-                        <el-option label="否" :value="false"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82">
-                    <p>个数包</p>
-                    <el-select v-model="editBoxData.IsNumberProduct" @change="numberPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
-                        <el-option label="是" :value="true"></el-option>
-                        <el-option label="否" :value="false"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type==80||editBoxData.Type==82">
-                    <p>几个打一个包</p>
-                    <el-input-number v-model="editBoxData.NumberProductQuantity" :min="0" :max="999" :controls="false" :disabled="numberForbid||singleCarrierProductForbid" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'NumberProductQuantity')})"></el-input-number>
-                </li>
-                <li v-if="editBoxData.Type==81">
-                    <p>关联供应商</p>
-                    <el-select filterable v-model="editBoxData.SupplierId" class="green24x13" placeholder="请选择(必选)">
-                        <el-option v-for="(item,index) in suppliers" :key="index" :label="item.Name" :value="item.SupplierId"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type==80">
-                    <p>单网篮包</p>
-                    <el-select v-model="editBoxData.IsSingleCarrierProduct" class="green24x13" @change="singleCarrierProductChange">
-                        <el-option label="否" :value="false"></el-option>
-                        <el-option label="是" :value="true"></el-option>
-                    </el-select>
-                </li>
-                <li v-if="editBoxData.Type != 82">
-                    <p>灭菌类型</p>
-                    <el-select v-model="editBoxData.DeviceType" class="green24x13">
-                        <el-option label="高温蒸汽" :value="2"></el-option>
-                        <el-option label="低温等离子" :value="3"></el-option>
-                        <el-option label="环氧乙烷" :value="4"></el-option>
-                    </el-select>
-                </li>
-                <li class="textareaBox">
-                    <p>备注</p>
-                    <el-input type="textarea" placeholder="填写备注" v-model.trim="editBoxData.Remark" maxlength="20" show-word-limit></el-input>
-                </li>
-            </ul>
+            <el-tabs class="productAttributes">
+                <el-tab-pane label="基本信息" name="0">
+                    <ul class="clear_float ul_form_style">
+                        <li>
+                            <p>包名称</p>
+                            <el-input type="text" placeholder="包名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                        </li>
+                        <li>
+                            <p>拼音简码</p>
+                            <el-input type="text" v-model="editBoxData.ShortCode" :disabled="editBoxData.Id==0"></el-input>
+                        </li>
+                        <li>
+                            <p>外包装</p>
+                            <el-select v-model="editBoxData.ExternalPackage" placeholder="请选择(必选)" class="green24x13">
+                                <el-option v-for="item in optionExternalPackageList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
+                            <p>总条码包数量</p>
+                            <el-input-number v-model="editBoxData.HowManyProductsPrintATotalBarCode" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyProductsPrintATotalBarCode')})"></el-input-number>
+                        </li>
+                        <li>
+                            <p>发放供应室</p>
+                            <el-select v-model="editBoxData.ProvideCssdId" placeholder="请选择(必选)" class="green24x13">
+                                <el-option v-for="item in optionCssdList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                            </el-select>
+                        </li>
+                        <li>
+                            <p>{{editBoxData.Type==81?'发放科室':'所属科室'}}</p>
+                            <el-cascader expand-trigger="hover" :options="optionClinicList" v-model="selectedOptions" @change="handleChange" placeholder="请选择(必选)"></el-cascader>
+                        </li>
+                        <li v-if="editBoxData.Type!=85">
+                            <p>器械清单模板</p>
+                            <el-select v-model="editBoxData.InstrumentListTemplate" placeholder="器械清单模板" class="green24x13">
+                                <el-option label="A4" :value="0"></el-option>
+                                <el-option label="A5" :value="1"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type!=85&&editBoxData.Type!=81">
+                            <p>清单打印份数</p>
+                            <el-input-number v-model="editBoxData.HowManyInstrumentListArePrinted" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'HowManyInstrumentListArePrinted')})"></el-input-number>
+                        </li>
+                        <li v-if="editBoxData.Type != 82">
+                            <p>灭菌类型</p>
+                            <el-select v-model="editBoxData.DeviceType" class="green24x13">
+                                <el-option label="高温蒸汽" :value="2"></el-option>
+                                <el-option label="低温等离子" :value="3"></el-option>
+                                <el-option label="环氧乙烷" :value="4"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type!=85">
+                            <p>成本价格</p>
+                            <el-input-number placeholder="成本价格" v-model="editBoxData.CostPrice" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'CostPrice')})"></el-input-number>
+                        </li>
+                        <li v-if="editBoxData.Type!=85">
+                            <p>清算价格</p>
+                            <el-input-number placeholder="清算价格" v-model="editBoxData.ClearingPrice" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ClearingPrice')})"></el-input-number>
+                        </li>
+                        <li class="textareaBox">
+                            <p>备注</p>
+                            <el-input type="textarea" placeholder="填写备注" v-model.trim="editBoxData.Remark" maxlength="20" show-word-limit></el-input>
+                        </li>
+                    </ul>
+                </el-tab-pane>
+                <el-tab-pane label="包属性" name="1">
+                    <ul class="clear_float ul_form_style">
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82">
+                            <p>通用包</p>
+                            <el-select v-model="editBoxData.IsCommonProduct" class="green24x13" @change="commonPackageChange">
+                                <el-option label="是" :value="true"></el-option>
+                                <el-option label="否" :value="false"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
+                            <p>发放生成方式</p>
+                            <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13">
+                                <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0" :disabled="editBoxData.IsCommonProduct"></el-option>
+                                <el-option label="预定生成发放" :value="1"></el-option>
+                                <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
+                                <el-option v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83" label="手动生成任务" :value="3"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type==80">
+                            <p>单网篮包</p>
+                            <el-select v-model="editBoxData.IsSingleCarrierProduct" class="green24x13" @change="singleCarrierProductChange">
+                                <el-option label="否" :value="false"></el-option>
+                                <el-option label="是" :value="true"></el-option>
+                            </el-select>
+                        </li>
+                    </ul>
+                    <ul class="clear_float ul_form_style">
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
+                            <p>计数包</p>
+                            <el-select v-model="editBoxData.IsNotPrintBarCode" @change="countPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
+                                <el-option label="是" :value="true"></el-option>
+                                <el-option label="否" :value="false"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="editBoxData.IsNotPrintBarCode">
+                            <p>打印标签</p>
+                            <el-select v-model="editBoxData.IsPrintLabel" :disabled="forbid||singleCarrierProductForbid" class="green24x13">
+                                <el-option label="是" :value="true"></el-option>
+                                <el-option label="否" :value="false"></el-option>
+                            </el-select>
+                        </li>
+                    </ul>
+                    <ul class="clear_float ul_form_style">
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
+                            <p>个数包</p>
+                            <el-select v-model="editBoxData.IsNumberProduct" @change="numberPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
+                                <el-option label="是" :value="true"></el-option>
+                                <el-option label="否" :value="false"></el-option>
+                            </el-select>
+                        </li>
+                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="editBoxData.IsNumberProduct">
+                            <p>单包总个数</p>
+                            <el-input-number v-model="editBoxData.NumberProductQuantity" :min="0" :max="999" :controls="false" :disabled="numberForbid||singleCarrierProductForbid" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'NumberProductQuantity')})"></el-input-number>
+                        </li>
+                    </ul>
+                    <ul class="clear_float ul_form_style">
+                        <li v-if="editBoxData.Type==81">
+                            <p>关联供应商</p>
+                            <el-select filterable v-model="editBoxData.SupplierId" class="green24x13" placeholder="请选择(必选)">
+                                <el-option v-for="(item,index) in suppliers" :key="index" :label="item.Name" :value="item.SupplierId"></el-option>
+                            </el-select>
+                        </li>
+                    </ul>
+                </el-tab-pane>
+            </el-tabs>
             <div class="photoOption" v-if="editBoxData.Type!=85">
                 <span>已拍照片</span>
                 <p>
@@ -592,18 +606,6 @@ export default {
 
 #editBox {
     .EditBoxContentOfProduct {
-        >ul {
-            border-bottom: 1px solid #f2f4f7;
-            display: flex;
-            flex-wrap: wrap;
-
-            li {
-                input {
-                    height: 40px !important;
-                }
-            }
-        }
-
         .photoOption {
             display: flex;
             padding: 20px 0 0 30px;
@@ -640,6 +642,13 @@ export default {
                     cursor: pointer;
                     color: #00c16b;
                 }
+            }
+        }
+
+        .el-tabs.productAttributes {
+            padding: 20px 0 20px 30px;
+            .el-tabs__content{
+                height: 241px;
             }
         }
 

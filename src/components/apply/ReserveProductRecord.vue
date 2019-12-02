@@ -189,9 +189,7 @@ export default {
         //查询
         searchRecordsData() {
             axios({
-                    url: `/api/Book/BookRecord/${this.search_date[0]}/${
-          this.search_date[1]
-        }`
+                    url: `/api/Book/BookRecord/${this.search_date[0]}/${this.search_date[1]}`
                 })
                 .then(res => {
                     let type;

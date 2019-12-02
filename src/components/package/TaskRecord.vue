@@ -189,13 +189,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(
-                this.search_date[0],
-                this.search_date[1],
-                this,
-                "/odata/PackageTaskReceiveRecords",
-                "PackageTaskReceiveDate"
-            );
+            this.GLOBAL.searchRecord(`/api/PackageTaskReceiveRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

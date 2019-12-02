@@ -23,11 +23,12 @@
                 <p>计数包回收</p>
             </li>
             <router-link :to="{
-            path:'/recovery/record',
-            query:{
-              source:`source eq '回收'`
-            }
-          }" v-if="!recoveryRecordModle" tag="li">
+                path:'/recovery/record',
+                query:{
+                    sourceRoute: `/recovery/registration`,
+                    requestUrl: `/api/RecycleRecords/Recycle`
+                }
+            }" v-if="!recoveryRecordModle" tag="li">
                 <p>回收记录</p>
             </router-link>
         </ul>

@@ -85,29 +85,17 @@ function GetNowDate() {
     let day = d < 10 ? "0" + d : d;
     return `${year}-${month}-${day}`;
 }
-//record search request        start开始日期   end结束日期   _this组件实例   apiUrl接口  fileName日期筛选字段名    callback回调  extra额外
-function searchRecord(start, end, _this, apiUrl, fileName, callback, extra) {
-    let url;
-    if (extra) {
-        url = `${apiUrl}?$filter=${fileName} ge '${start +" 00:00"}' and ${fileName} le '${end + " 23:59"}' and ${extra}`
-    } else {
-        url = `${apiUrl}?$filter=${fileName} ge '${start +" 00:00"}' and ${fileName} le '${end + " 23:59"}'`
-    }
-    axios(url)
-        .then(res => {
-            _this.recordList = res.data.value;
-            TipsMsg.$message({
-                center: true,
-                message: "查询成功",
-                duration: 2000,
-                type: "success",
-                showClose: true
-            })
-            showInformation({ type: "success", msg: "查询成功" });
-            //存在回调函数并且记录不能为空才执行
-            if (callback && _this.recordList.length > 0) {
-                callback();
+//record search request        url请求api _this组件实例this
+function searchRecord(url, _this) {
+    axios({ url: url }).then(res => {
+            let type;
+            if (res.data.Code == 200) {
+                type = "success";
+                _this.recordList = res.data.Data;
+            } else {
+                type = "error";
             }
+            showInformation({ classify: "message", type: type, msg: "查询成功" });
         })
         .catch(err => {});
 }
