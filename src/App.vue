@@ -1,7 +1,7 @@
 <template>
 <div id="app">
     <transition name="slide" :enter-active-class="`animated  faster ${transitionEnterName}`" :leave-active-class="`animated  faster ${transitionLeaveName}`">
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
     </transition>
 </div>
 </template>
@@ -14,7 +14,7 @@ import {
 export default {
     data() {
         return {
-            fullscreenLoading: false
+            isRouterAlive: true
         }
     },
     computed: mapGetters(["UId", "CssdId"]),
@@ -76,12 +76,15 @@ export default {
     },
     provide() {
         return {
-            test: this.test
+            reload: this.reload
         }
     },
     methods: {
-        test(){
-            console.log('inject test')
+        reload(){
+            this.isRouterAlive = false;
+            this.$nextTick(function(){
+                this.isRouterAlive = true;
+            });
         }
     },
 }

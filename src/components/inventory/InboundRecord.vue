@@ -62,7 +62,7 @@ export default {
     mounted() {},
     methods: {
         goBack() {
-            this.$router.go(-1);
+            this.$router.back(-1);
         },
         //二次请求
         collapseChange(index) {

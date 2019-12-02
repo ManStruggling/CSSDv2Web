@@ -52,6 +52,7 @@
 <script>
 import ManualEnter from "../common/ManualEnter";
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowManualEnter: false,
@@ -117,7 +118,7 @@ export default {
                     let type;
                     if (res.data.Code == 200) {
                         type = "success";
-                        this.$router.go(0);
+                        this.reload();
                     } else {
                         type = "error";
                     }
@@ -209,7 +210,8 @@ export default {
                         font-size: 18px;
                         color: #232e41;
                         font-weight: bold;
-                        a{
+
+                        a {
                             cursor: pointer;
                             color: #F93E3E;
                             font-weight: bold;

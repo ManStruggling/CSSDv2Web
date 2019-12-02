@@ -216,6 +216,7 @@ import PackageList from "../common/PackageList";
 import AllocatedPackages from "./AllocatedPackages";
 import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
+    inject: ['reload'],
     data() {
         return {
             BarCodeList: [], //检测是否录入重复
@@ -493,9 +494,7 @@ export default {
                                     }
                                 });
                             } else {
-                                this.$router.go({
-                                    path: `/recovery/registration`
-                                });
+                                this.reload();
                             }
                         } else {
                             type = "error";

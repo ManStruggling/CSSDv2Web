@@ -61,6 +61,7 @@
 <script>
 import PackageList from "../common/PackageList";
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowPackageList: false,
@@ -130,14 +131,18 @@ export default {
                     method: "POST",
                     data: this.submitData
                 }).then(res => {
+                    let type;
                     if (res.data.Code == 200) {
-                        this.$router.go(0);
+                        type = 'success';
+                        this.reload();
                     } else {
-                        this.showInformation({
-                            classify: "message",
-                            msg: res.data.Msg
-                        });
+                        type = 'error';
                     }
+                    this.showInformation({
+                        classify: "message",
+                        msg: res.data.Msg,
+                        type: type
+                    });
                 }).catch(err => {})
             }
         },

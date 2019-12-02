@@ -55,6 +55,7 @@
 import Sortable from "sortablejs";
 import toExcel from "@/utils/json2excel";
 export default {
+  inject: ['reload'],
   data() {
     return {
       totalData:[],//所有数据
@@ -310,7 +311,7 @@ export default {
           document.body.removeChild(iframe);
         }
       }
-      this.$router.go(0);
+      this.reload();
     },
     //导出数据
     exportData() {

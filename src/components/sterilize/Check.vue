@@ -287,6 +287,7 @@ import FailedCountPackages from "./FailedCountPackages";
 import ManualEnter from "../common/ManualEnter";
 import PhotoView from "../common/PhotoView";
 export default {
+  inject: ['reload'],
   data() {
     return {
       photoData: [],
@@ -391,7 +392,7 @@ export default {
           let type;
           if (res.data.Code == 200) {
             type = "success";
-            this.$router.go(0);
+            this.reload();
           } else {
             type = "error";
           }
@@ -560,7 +561,7 @@ export default {
                 let type;
                 if (res.data.Code == 200) {
                   type = "success";
-                  this.$router.go(0);
+                  this.reload();
                 } else {
                   type = "error";
                 }
@@ -609,7 +610,7 @@ export default {
             let type;
             if (res.data.Code == 200) {
               type = "success";
-              this.$router.go(0);
+              this.reload();
             } else {
               type = "error";
             }

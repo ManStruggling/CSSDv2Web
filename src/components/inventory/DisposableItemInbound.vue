@@ -65,6 +65,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowManualEnter: false,
@@ -169,7 +170,7 @@ export default {
                     method: "POST"
                 }).then(res => {
                     if (res.data.Code == 200) {
-                        this.$router.go(0);
+                        this.reload();
                     } else {
                         this.showInformation({
                             classify: "message",

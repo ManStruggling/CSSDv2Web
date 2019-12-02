@@ -117,6 +117,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     data() {
         return {
             hasNewTask: false,
@@ -159,7 +160,7 @@ export default {
     methods: {
         //刷新
         refresh() {
-            this.$router.go(0);
+            this.reload();
         },
         // 编辑
         editBookTask(val) {
@@ -231,7 +232,7 @@ export default {
                                         return console.error(err);
                                     });
                             }
-                            this.$router.go(0);
+                            this.reload();
                         } else {
                             type = "error";
                         }
@@ -279,7 +280,7 @@ export default {
                                         return console.error(err);
                                     });
                             }
-                            this.$router.go(0);
+                            this.reload();
                         } else {
                             type = "error";
                         }

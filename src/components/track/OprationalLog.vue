@@ -68,7 +68,7 @@ export default {
   methods: {
     //go back
     goBack() {
-      this.$router.go(-1);
+      this.$router.back(-1);
     },
     //查询
     searchData() {

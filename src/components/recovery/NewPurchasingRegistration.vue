@@ -102,6 +102,7 @@
 import PackageList from "../common/PackageList";
 import ManualEnter from "../common/ManualEnter";
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowPackageList: false,
@@ -292,7 +293,7 @@ export default {
                                 }
 
                                 if (method == "POST") {
-                                    this.$router.go(0);
+                                    this.reload();
                                 } else {
                                     this.$router.push({
                                         path: "/recovery/record",

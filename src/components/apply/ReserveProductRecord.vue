@@ -100,6 +100,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     data() {
         return {
             activeName: "0",
@@ -166,7 +167,7 @@ export default {
                                 return console.error(err);
                             });
                     }
-                    this.$router.go(0);
+                    this.reload();
                 } else {
                     type = "error";
                 }

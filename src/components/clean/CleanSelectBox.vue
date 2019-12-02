@@ -44,6 +44,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     props: ['mode', 'OriginDeviceId'],
     data() {
         return {
@@ -111,7 +112,7 @@ export default {
                     let type;
                     if (res.data.Code == 200) {
                         type = "success";
-                        this.$router.go(0);
+                        this.reload();
                     } else {
                         type = "error";
                     }

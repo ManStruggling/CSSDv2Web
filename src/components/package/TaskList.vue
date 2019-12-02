@@ -209,6 +209,7 @@ import PackageList from "../common/PackageList";
 import PhotoView from "../common/PhotoView";
 import ManualEnter from "../common/ManualEnter";
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowManualEnter: false, //控制手工录入
@@ -244,13 +245,11 @@ export default {
     },
     created() {
         CSManager.handleDataThis = this;
-        let origin = this.GLOBAL.getParams("origin");
-        let tabIndex = this.GLOBAL.getParams("tabIndex");
-        if (origin) {
-            this.selectOrigin = origin;
+        if (this.$route.query.origin) {
+            this.selectOrigin = this.$route.query.origin;
         }
-        if (tabIndex) {
-            this.tabActiveName = tabIndex;
+        if (this.$route.query.tabIndex) {
+            this.tabActiveName = this.$route.query.tabIndex;
         }
         axios({
                 url: "/api/Package/PackageTasks"
@@ -327,9 +326,7 @@ export default {
                             this.tableData[origin][i].PackageTasks[j].IsScanned = true;
                             this.tabActiveName = i + "";
                             this.activeName = j + "";
-                            this.currentlySelectedTask = this.tableData[origin][
-                                i
-                            ].PackageTasks[j];
+                            this.currentlySelectedTask = this.tableData[origin][i].PackageTasks[j];
                             this.selectOrigin = origin;
                             this.$forceUpdate();
                             return true;
@@ -354,9 +351,7 @@ export default {
                             this.tableData[origin][i].PackageTasks[j].IsScanned = true;
                             this.tabActiveName = i + "";
                             this.activeName = j + "";
-                            this.currentlySelectedTask = this.tableData[origin][
-                                i
-                            ].PackageTasks[j];
+                            this.currentlySelectedTask = this.tableData[origin][i].PackageTasks[j];
                             this.selectOrigin = origin;
                             this.$forceUpdate();
                             return true;
@@ -395,7 +390,7 @@ export default {
         },
         //刷新
         refresh() {
-            window.location.reload();
+            this.reload();
         },
         //查看产品图片
         viewProductImg(val) {
@@ -473,7 +468,9 @@ export default {
                         })
                         .then(res => {
                             if (res.data.Code == 200) {
-                                window.location.href = `/package/taskList?origin=PackageTasksFromSupportMaterialProduct&tabIndex=${this.tabActiveName}`;
+                                this.$route.query.origin = 'PackageTasksFromSupportMaterialProduct';
+                                this.$route.query.tabIndex = this.tabActiveName;
+                                this.reload();
                             } else {
                                 this.showInformation({
                                     classify: "message",
@@ -515,7 +512,9 @@ export default {
                             return console.error(err);
                         });
                 }
-                window.location.href = `/package/taskList?origin=${origin}&tabIndex=${tabIndex}`;
+                this.$route.query.origin = origin;
+                this.$route.query.tabIndex = tabIndex;
+                this.reload();
             }
         },
         //配包完成
@@ -644,7 +643,9 @@ export default {
                                     return console.error(err);
                                 });
                         }
-                        window.location.href = `/package/taskList?origin=${this.selectOrigin}&clinicId=${this.tabActiveName}`;
+                        this.$route.query.origin = this.selectOrigin;
+                        this.$route.query.tabIndex = this.tabActiveName;
+                        this.reload();
                     } else {
                         type = "error";
                     }
@@ -814,16 +815,23 @@ export default {
                                     .viewPictures {
                                         background-image: url("../../assets/images/imgLogo_white.png");
                                     }
-                                    .sterilizeType{
-                                        p{
-                                            &.H2O2,&.EO,&.SS{
+
+                                    .sterilizeType {
+                                        p {
+
+                                            &.H2O2,
+                                            &.EO,
+                                            &.SS {
                                                 border-color: #fff;
-                                                span,b{
+
+                                                span,
+                                                b {
                                                     color: #fff;
                                                 }
                                             }
                                         }
                                     }
+
                                     .numberPackageSpan,
                                     .actuallyPackageNumber {
                                         color: #fff;
@@ -885,6 +893,7 @@ export default {
                                 font-family: inherit;
                                 display: flex;
                                 align-items: center;
+
                                 .viewPictures {
                                     width: 19px;
                                     height: 16px;
@@ -894,41 +903,47 @@ export default {
                                     background-size: 100% 100%;
                                 }
 
-                                .sterilizeType{
+                                .sterilizeType {
                                     line-height: 24px;
                                     width: 40px;
                                     height: 24px;
-                                    p{
+
+                                    p {
                                         border: 2px solid;
                                         height: 100%;
                                         box-sizing: border-box;
                                         display: flex;
                                         justify-content: center;
-                                        border-radius:4px;
+                                        border-radius: 4px;
                                         margin-left: 5px;
                                         width: 100%;
-                                        &.H2O2{
+
+                                        &.H2O2 {
                                             color: #08872E;
                                             border-color: #08872E;
                                         }
-                                        &.EO{
+
+                                        &.EO {
                                             color: #333;
                                             border-color: #333;
                                         }
-                                        &.SS{
+
+                                        &.SS {
                                             color: #2553B7;
                                             border-color: #2553B7;
                                         }
-                                        span{
+
+                                        span {
                                             line-height: 20px;
-                                            font-size:12px;
+                                            font-size: 12px;
                                             font-weight: bold;
                                         }
-                                        b{
+
+                                        b {
                                             font-size: 8px;
                                             font-weight: bold;
                                             line-height: 22px;
-                                            -webkit-transform:scale(0.8);
+                                            -webkit-transform: scale(0.8);
                                         }
                                     }
                                 }

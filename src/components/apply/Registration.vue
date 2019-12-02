@@ -216,6 +216,7 @@
 <script>
 import ManualEnter from "../common/ManualEnter";
 export default {
+    inject: ['reload'],
     data() {
         return {
             forbid: true, //禁用文本框
@@ -403,7 +404,7 @@ export default {
                                     path: "/apply/record"
                                 });
                             } else {
-                                this.$router.go(0);
+                                this.reload();
                             }
                         } else {
                             type = "error";

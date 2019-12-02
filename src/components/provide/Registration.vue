@@ -180,6 +180,7 @@
 import ManualEnter from "../common/ManualEnter";
 import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
+    inject: ['reload'],
     data() {
         return {
             isShowProductList: false,
@@ -303,7 +304,7 @@ export default {
     methods: {
         //刷新
         refresh() {
-            window.location.reload();
+            this.reload();
         },
         //显示包列表
         handleShowProductList() {
@@ -313,7 +314,7 @@ export default {
         packgeList2father(data) {
             this.isShowProductList = false;
             if (data === null) {
-                this.$router.go(0);
+                this.reload();
             }
         },
         //发放子科室change
@@ -605,7 +606,7 @@ export default {
                                 res.data.Data.forEach(element => {
                                     CSManager.PrintBarcode(JSON.stringify(element));
                                 });
-                                this.$router.go(0);
+                                this.reload();
                             } else {
                                 type = "error";
                             }
@@ -643,7 +644,7 @@ export default {
                         })
                         .then(res => {
                             if (res.data.Code == 200) {
-                                this.$router.go(0);
+                                this.reload();
                             } else {
                                 this.showInformation({
                                     classify: "message",
