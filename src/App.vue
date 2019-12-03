@@ -61,13 +61,13 @@ export default {
             axios.defaults.headers.LocationId = UserInfo.ClinicId;
             axios.defaults.headers.UId = UserInfo.UId;
             if (sessionStorage.IsTestMode) {
-              if (JSON.parse(sessionStorage.IsTestMode)) {
-                  axios.defaults.headers.IsTestMode = true;
-              } else {
-                  axios.defaults.headers.IsTestMode = false;
-              }
+                if (JSON.parse(sessionStorage.IsTestMode)) {
+                    axios.defaults.headers.IsTestMode = true;
+                } else {
+                    axios.defaults.headers.IsTestMode = false;
+                }
             } else {
-                  axios.defaults.headers.IsTestMode = false;
+                axios.defaults.headers.IsTestMode = false;
             }
         }
     },
@@ -80,9 +80,9 @@ export default {
         }
     },
     methods: {
-        reload(){
+        reload() {
             this.isRouterAlive = false;
-            this.$nextTick(function(){
+            this.$nextTick(function () {
                 this.isRouterAlive = true;
             });
         }

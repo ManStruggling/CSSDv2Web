@@ -129,7 +129,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/FailedPackageRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/FailedPackage/FailedPackageRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

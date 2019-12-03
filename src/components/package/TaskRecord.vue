@@ -189,7 +189,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/PackageTaskReceiveRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/Package/PackageTaskReceiveRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

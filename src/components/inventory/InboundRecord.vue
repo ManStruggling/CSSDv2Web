@@ -85,22 +85,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            axios({
-                url: `/api/Inventory/InboundRecord/${this.search_date[0]}/${this.search_date[1]}`
-            }).then(res => {
-                let type;
-                if (res.data.Code == 200) {
-                    type = "success";
-                    this.recordList = res.data.Data;
-                } else {
-                    type = "error";
-                }
-                this.showInformation({
-                    classify: "message",
-                    msg: res.data.Msg,
-                    type: type
-                });
-            }).catch(err => {})
+            this.GLOBAL.searchRecord(`/api/Inventory/InboundRecord/${this.search_date[0]}/${this.search_date[1]}`, this);
         },
     }
 };

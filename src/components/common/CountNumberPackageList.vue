@@ -1,5 +1,5 @@
 <template>
-<div id="basic_count_number_package" class="basic_package_box" @click.self="cancelSend">
+<div id="basic_count_number_package" class="basic_package_box">
     <div class="package_box">
         <h3>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="packageSearch"></el-input>

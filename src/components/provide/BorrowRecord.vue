@@ -115,7 +115,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/BorrowedPackageRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/Provide/BorrowedPackageRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

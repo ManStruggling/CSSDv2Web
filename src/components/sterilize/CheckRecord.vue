@@ -167,7 +167,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/SterilizeReviewRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/Sterilize/SterilizeReviewRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

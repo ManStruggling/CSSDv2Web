@@ -95,7 +95,7 @@ function searchRecord(url, _this) {
             } else {
                 type = "error";
             }
-            showInformation({ classify: "message", type: type, msg: "查询成功" });
+            showInformation({ classify: "message", type: type, msg: res.data.Msg });
         })
         .catch(err => {});
 }

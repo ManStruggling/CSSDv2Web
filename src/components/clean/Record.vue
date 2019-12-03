@@ -194,7 +194,7 @@ export default {
     },
     //查询
     searchRecordsData() {
-      this.GLOBAL.searchRecord(`/api/CleanRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+      this.GLOBAL.searchRecord(`/api/Clean/CleanRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
     },
   }
 };

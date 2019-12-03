@@ -112,22 +112,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            axios({
-                url: `/api/ApplyingRecords/${this.search_date[0]}/${this.search_date[1]}`
-            }).then(res => {
-                let type;
-                if (res.data.Code == 200) {
-                    type = "success";
-                    this.recordList = res.data.Data;
-                } else {
-                    type = "error";
-                }
-                this.showInformation({
-                    classify: "message",
-                    type: type,
-                    msg: res.data.Msg
-                });
-            }).catch(err => {})
+            this.GLOBAL.searchRecord(`/api/Apply/ApplyingRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

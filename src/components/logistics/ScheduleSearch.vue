@@ -2,7 +2,7 @@
   <div class="cssd_box" id="routeSchedulesearch">
     <div class="cssd_title">
       <ul class="cssd_menu">
-        <router-link to="/logistics/driverSchedule" tag="li">
+        <router-link to="/" tag="li">
           <p>返回</p>
         </router-link>
       </ul>

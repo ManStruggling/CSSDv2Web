@@ -100,7 +100,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/SterilizeReadyRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/Sterilize/SterilizeReadyRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

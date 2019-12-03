@@ -97,7 +97,7 @@ export default {
         },
         //查询
         searchRecordsData() {
-            this.GLOBAL.searchRecord(`/api/ProvideRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+            this.GLOBAL.searchRecord(`/api/Provide/ProvideRecords/${this.search_date[0]}/${this.search_date[1]}`, this);
         }
     }
 };

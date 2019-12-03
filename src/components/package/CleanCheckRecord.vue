@@ -193,7 +193,7 @@ export default {
     },
     //查询记录数据
     searchRecordsData() {
-      this.GLOBAL.searchRecord(`/api/cleanreviewrecords/${this.search_date[0]}/${this.search_date[1]}`, this);
+      this.GLOBAL.searchRecord(`/api/Clean/cleanreviewrecords/${this.search_date[0]}/${this.search_date[1]}`, this);
     },
   }
 };
