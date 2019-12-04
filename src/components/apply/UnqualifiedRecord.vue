@@ -103,7 +103,7 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].FailedPackages == "") {
+            if (index != '' && (this.recordList[index].FailedPackages == '' || this.recordList[index].FailedPackages === null)) {
                 axios({
                     url: `/api/FailedPackage/FailedPackagesBy/${this.recordList[index].Id}`
                 }).then(res => {

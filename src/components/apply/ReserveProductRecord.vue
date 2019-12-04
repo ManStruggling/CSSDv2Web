@@ -125,11 +125,7 @@ export default {
     methods: {
         //二次请求
         collapseChange(index) {
-            if (
-                index != "" &&
-                this.recordList[index].Products == null &&
-                this.recordList[index].DisposableItems == null
-            ) {
+            if (index != '' && this.recordList[index].Products == null && this.recordList[index].DisposableItems === null) {
                 axios({
                     url: `/api/Book/BookRecord/Detail/${this.recordList[index].Id}`
                 }).then(res => {

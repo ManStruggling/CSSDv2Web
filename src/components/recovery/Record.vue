@@ -110,7 +110,7 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && (this.recordList[index].RecyclePackages == "" || this.recordList[index].RecyclePackages == null)) {
+            if (index != '' && (this.recordList[index].RecyclePackages == '' || this.recordList[index].RecyclePackages === null)) {
                 axios({
                     url: `/api/Recycle/RecycleDetailForRecord/${this.recordList[index].Id}`
                 }).then(res => {

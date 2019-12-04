@@ -143,7 +143,7 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && !this.recordList[index].PackageReceiveTasks) {
+            if (index != '' && (this.recordList[index].PackageReceiveTasks == '' || this.recordList[index].PackageReceiveTasks === null)) {
                 axios({
                     url: `/api/Package/PackageTaskReceiveDetail/${this.recordList[index].Id}`
                 }).then(res => {
@@ -161,7 +161,7 @@ export default {
         },
         //三次请求
         rowClick(row, column, event) {
-            if (row.Packages == "") {
+            if (row.Packages == '' || row.Packages === null) {
                 axios({
                         url: `/api/Package/PackageInformation/${row.Id}`
                     })

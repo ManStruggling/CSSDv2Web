@@ -125,7 +125,7 @@ export default {
                 .next()
                 .find(".recall_table_detail")
                 .slideToggle("fast");
-            if (row.Packages == "") {
+            if (row.Packages == '' || row.Packages === null) {
                 axios({
                         url: `/api/Sterilize/PackagesForBiologicalRecall/${row.SterilizeTaskId}`
                     })
@@ -144,7 +144,7 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].SterilizeTasks == "") {
+            if (index != '' && (this.recordList[index].SterilizeTasks == '' || this.recordList[index].SterilizeTasks === null)) {
                 axios({
                         url: `/api/Sterilize/BiologicalRecallSterilizeTasks/${this.recordList[index].Id}`
                     })

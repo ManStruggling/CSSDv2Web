@@ -144,7 +144,7 @@ export default {
   methods: {
     //二次请求
     collapseChange(index) {
-      if (index != "" && this.recordList[index].BookTasks == "") {
+      if (index != '' && (this.recordList[index].BookTasks == ''||this.recordList[index].BookTasks === null)) {
         axios({
           url: `/api/Book/BookReviewRecordDetail/${this.recordList[index].Id}`
         }).then(res => {

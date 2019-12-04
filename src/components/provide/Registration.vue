@@ -264,9 +264,7 @@ export default {
                             Data.unshift(commonProductItems);
                             this.provideTaskList = Data;
                             if (this.provideTaskList.length > 0) {
-                                this.handleTabClick({
-                                    index: '0'
-                                });
+                                this.getSubClinicTasks('0');
                             }
                         } else {
                             this.showInformation({
@@ -368,9 +366,13 @@ export default {
                     ThisClinicProvideNumber: 0,
                     ProvideTaskDetails: []
                 };
-                for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
-                    if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
-                        this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
+                if (this.GLOBAL.UserInfo.HospitalVersion == 'YANCHENGFUBAO' && index=='0') {
+                     this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails = this.provideTaskList[index].ProvideTasks;
+                }else{
+                    for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
+                        if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
+                            this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
+                        }
                     }
                 }
 

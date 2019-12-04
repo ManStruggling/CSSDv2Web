@@ -96,7 +96,7 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].Packages == "") {
+            if (index != '' && (this.recordList[index].Packages == ''||this.recordList[index].Packages === null)) {
                 axios({
                     url: `/api/Provide/PackagesForBorrowedTask/${
             this.recordList[index].Id

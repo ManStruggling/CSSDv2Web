@@ -84,7 +84,7 @@ export default {
     methods: {
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].Packages == "") {
+            if (index != '' && (this.recordList[index].Packages == '' || this.recordList[index].Packages === null)) {
                 axios({
                     url: `/api/Apply/PackagesBy/${
             this.recordList[index].Id

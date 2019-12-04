@@ -162,7 +162,7 @@ export default {
   methods: {
     //二次请求
     collapseChange(index) {
-      if (index != "" && !this.recordList[index].Carriers) {
+      if (index != '' && !this.recordList[index].Carriers) {
         axios({url: `/api/Clean/CleanRecordDetailBy/${this.recordList[index].Id}`}).then(res => {
           if (res.data.Code == 200) {
             this.recordList[index].Carriers = res.data.Data;

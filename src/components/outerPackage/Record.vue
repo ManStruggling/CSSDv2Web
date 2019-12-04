@@ -182,7 +182,7 @@ export default {
     methods: {
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].OuterPackages == "") {
+            if (index != '' && (this.recordList[index].OuterPackages == '' || this.recordList[index].OuterPackages === null)) {
                 axios({
                     url: `/api/Recycle/OuterProductRecordDetail/${this.recordList[index].Id}`
                 }).then(res => {

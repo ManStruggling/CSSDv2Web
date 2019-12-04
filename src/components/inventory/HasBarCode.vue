@@ -90,11 +90,7 @@ export default {
     methods: {
         //二次请求
         collapseChange(index) {
-            if (
-                index != "" &&
-                this.inventoryData.Products[index].Packages == "" &&
-                !this.inventoryData.Products[index].IsNotPrintBarCode
-            ) {
+            if (index != '' && (this.inventoryData.Products[index].Packages == '' || this.inventoryData.Products[index].Packages === null) && !this.inventoryData.Products[index].IsNotPrintBarCode) {
                 axios({
                         url: `/api/Inventory/HasBarCodePackages/${this.inventoryData.Products[index].SubClinicId}/${this.inventoryData.Products[index].ProductId}`
                     })
@@ -156,7 +152,7 @@ export default {
     computed: {
         countPackageNumber() {
             let num = 0;
-            if(this.inventoryData.Products){
+            if (this.inventoryData.Products) {
                 this.inventoryData.Products.forEach(val => {
                     num += val.InventoryQuantity;
                 });
