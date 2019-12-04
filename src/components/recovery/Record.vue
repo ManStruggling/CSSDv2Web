@@ -106,11 +106,11 @@ export default {
     methods: {
         //编程式路由返回
         recoveryRecordGoback() {
-          this.$router.push(this.$route.query.sourceRoute);
+            this.$router.push(this.$route.query.sourceRoute);
         },
         //二次请求
         collapseChange(index) {
-            if (index != "" && this.recordList[index].RecyclePackages == "") {
+            if (index != "" && (this.recordList[index].RecyclePackages == "" || this.recordList[index].RecyclePackages == null)) {
                 axios({
                     url: `/api/Recycle/RecycleDetailForRecord/${this.recordList[index].Id}`
                 }).then(res => {

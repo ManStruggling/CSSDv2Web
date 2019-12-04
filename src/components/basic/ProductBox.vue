@@ -96,14 +96,14 @@
                     <ul class="clear_float ul_form_style">
                         <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
                             <p>计数包</p>
-                            <el-select v-model="editBoxData.IsNotPrintBarCode" @change="countPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
+                            <el-select v-model="editBoxData.IsNotPrintBarCode" @change="countPackageChange" class="green24x13">
                                 <el-option label="是" :value="true"></el-option>
                                 <el-option label="否" :value="false"></el-option>
                             </el-select>
                         </li>
                         <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="editBoxData.IsNotPrintBarCode">
                             <p>打印标签</p>
-                            <el-select v-model="editBoxData.IsPrintLabel" :disabled="forbid||singleCarrierProductForbid" class="green24x13">
+                            <el-select v-model="editBoxData.IsPrintLabel" class="green24x13">
                                 <el-option label="是" :value="true"></el-option>
                                 <el-option label="否" :value="false"></el-option>
                             </el-select>
@@ -112,14 +112,14 @@
                     <ul class="clear_float ul_form_style">
                         <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
                             <p>个数包</p>
-                            <el-select v-model="editBoxData.IsNumberProduct" @change="numberPackageChange" :disabled="singleCarrierProductForbid" class="green24x13">
+                            <el-select v-model="editBoxData.IsNumberProduct" @change="numberPackageChange" class="green24x13">
                                 <el-option label="是" :value="true"></el-option>
                                 <el-option label="否" :value="false"></el-option>
                             </el-select>
                         </li>
                         <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="editBoxData.IsNumberProduct">
                             <p>单包总个数</p>
-                            <el-input-number v-model="editBoxData.NumberProductQuantity" :min="0" :max="999" :controls="false" :disabled="numberForbid||singleCarrierProductForbid" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'NumberProductQuantity')})"></el-input-number>
+                            <el-input-number v-model="editBoxData.NumberProductQuantity" :min="0" :max="999" :controls="false" @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'NumberProductQuantity')})"></el-input-number>
                         </li>
                     </ul>
                     <ul class="clear_float ul_form_style">
@@ -214,9 +214,6 @@ export default {
     props: ["data"],
     data() {
         return {
-            forbid: true, //个数包选择禁用
-            numberForbid: true, //几个打一包禁用
-            singleCarrierProductForbid: false,
             editBoxData: {
                 ProductPictures: []
             },
@@ -242,21 +239,6 @@ export default {
         this.editBoxData.DeletedPicturesId =
             this.editBoxData.DeletedPicturesId == null ? [] :
             this.editBoxData.DeletedPicturesId;
-        if (this.editBoxData.Id != 0) {
-            //修改
-            if (this.editBoxData.IsNotPrintBarCode) {
-                //是否是计数包
-                this.forbid = false;
-            }
-            if (this.editBoxData.IsNumberProduct) {
-                // 是否是个数包
-                this.numberForbid = false;
-            }
-            if (this.editBoxData.IsSingleCarrierProduct) {
-                //是单网篮包
-                this.singleCarrierProductForbid = true;
-            }
-        }
         if (this.editBoxData.Type == 83) {
             this.tabActiveName = "second";
             if (this.editBoxData.Id == 0) {
@@ -369,20 +351,13 @@ export default {
         },
         //个数包change事件
         numberPackageChange(val) {
-            if (val) {
-                this.numberForbid = false;
-            } else {
-                this.numberForbid = true;
+            if (val == false) {
                 this.editBoxData.NumberProductQuantity = 0;
             }
         },
         //计数包change事件
         countPackageChange(val) {
-            if (val) {
-                //是计数包
-                this.forbid = false;
-            } else {
-                this.forbid = true;
+            if (val == false) {
                 this.editBoxData.IsPrintLabel = false;
             }
         },
@@ -393,9 +368,6 @@ export default {
                 this.editBoxData.IsPrintLabel = false;
                 this.editBoxData.IsNumberProduct = false;
                 this.editBoxData.NumberProductQuantity = 0;
-                this.singleCarrierProductForbid = true;
-            } else {
-                this.singleCarrierProductForbid = false;
             }
         },
         getRowKeys(row) {
@@ -647,7 +619,8 @@ export default {
 
         .el-tabs.productAttributes {
             padding: 20px 0 20px 30px;
-            .el-tabs__content{
+
+            .el-tabs__content {
                 height: 241px;
             }
         }

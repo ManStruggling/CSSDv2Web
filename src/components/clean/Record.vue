@@ -169,7 +169,7 @@ export default {
     },
     //二次请求
     collapseChange(index) {
-      if (index != "" && this.recordList[index].Carriers == "") {
+      if (index != "" && (this.recordList[index].Carriers == ""||this.recordList[index].Carriers == null)) {
         axios({
           url: `/api/Clean/CleanRecordDetailBy/${this.recordList[index].Id}`
         })

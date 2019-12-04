@@ -69,71 +69,7 @@ export default {
     return {
       Type: 0, //生产商类型
       basic_search: "", //查询条件
-      // table_data: [], //表的显示数据
-      table_data: [
-        {
-          DeviceModel: [
-            {
-              ManufacturerId: 3,
-              DevicePrograms: [
-                { DeviceModelId: 3, Id: 3, Name: "程序1", Duration: 20 },
-                { DeviceModelId: 3, Id: 4, Name: "程序2", Duration: 30 },
-                { DeviceModelId: 3, Id: 5, Name: "程序3", Duration: 40 },
-                { DeviceModelId: 3, Id: 6, Name: "程序4", Duration: 50 }
-              ],
-              Id: 3,
-              Name: "设备型号1"
-            },
-            {
-              ManufacturerId: 3,
-              DevicePrograms: [
-                { DeviceModelId: 4, Id: 7, Name: "程序1", Duration: 10 },
-                { DeviceModelId: 4, Id: 8, Name: "程序2", Duration: 20 },
-                { DeviceModelId: 4, Id: 9, Name: "程序3", Duration: 30 },
-                { DeviceModelId: 4, Id: 13, Name: "程序4", Duration: 1 },
-                { DeviceModelId: 4, Id: 14, Name: "程序5", Duration: 1 },
-                { DeviceModelId: 4, Id: 15, Name: "程序6", Duration: 1 },
-                { DeviceModelId: 4, Id: 16, Name: "程序7", Duration: 1 },
-                { DeviceModelId: 4, Id: 17, Name: "程序3", Duration: 1 }
-              ],
-              Id: 4,
-              Name: "设备型号2"
-            }
-          ],
-          Id: 3,
-          Name: "生产商1",
-          FaxNumber: "",
-          PhoneNumber: "",
-          ContactPerson: "",
-          ContactNumber: "",
-          Address: "",
-          Type: 0,
-          Remark: ""
-        },
-        {
-          DeviceModel: [
-            {
-              ManufacturerId: 4,
-              DevicePrograms: [
-                { DeviceModelId: 5, Id: 10, Name: "程序1", Duration: 15 },
-                { DeviceModelId: 5, Id: 11, Name: "程序2", Duration: 25 },
-                { DeviceModelId: 5, Id: 12, Name: "程序3", Duration: 35 }
-              ],
-              Id: 5,
-              Name: "设备型号3"
-            }
-          ],
-          Id: 4,
-          Name: "生产商2",
-          FaxNumber: "",
-          PhoneNumber: "",
-          ContactPerson: "",
-          ContactNumber: "",
-          Address: "",
-          Type: 0,
-          Remark: ""
-        }
-      ],
+      table_data: [], //表的显示数据
       showEditBox: false, //是否显示编辑框
       toChildData: {}
     };
