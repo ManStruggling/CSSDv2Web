@@ -420,12 +420,10 @@ export default {
         },
         //删除包
         deletePackage(row) {
-            this.$confirm("确定要删除该包吗?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包吗?',
+                confirmCallBack: () => {
                     if (row.ProductName) {
                         this.submitData.Packages.forEach((element, index) => {
                             if (element.BarCode === row.BarCode) {
@@ -441,8 +439,9 @@ export default {
                             }
                         })
                     }
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //处理手工录入
         handleShowManualEnter() {
@@ -462,16 +461,10 @@ export default {
                 //存在住院号
                 if (data.PatientHospitalId) {
                     if (data.PatientHospitalId != this.submitData.Patient.HospitalId) {
-                        this.$confirm(
-                                "该外来器械包绑定的住院号与本次使用的病人住院号不同，您确定要使用该包吗?",
-                                "提示", {
-                                    confirmButtonText: "确定",
-                                    cancelButtonText: "取消",
-                                    type: "warning"
-                                }
-                            )
-                            .then(() => {
-                                //确定
+                        this.showInformation({
+                            classify: 'confirm',
+                            msg: '该外来器械包绑定的住院号与本次使用的病人住院号不同，您确定要使用该包吗?',
+                            confirmCallBack: () => {
                                 this.submitData.Packages.push(data);
                                 this.$alert(msg, "警告", {
                                     confirmButtonText: "确定",
@@ -483,10 +476,9 @@ export default {
                                         });
                                     }
                                 });
-                            })
-                            .catch(() => {
-                                //取消
-                            });
+                            },
+                            cancelCallBack: () => {}
+                        });
                     } else {
                         this.submitData.Packages.push(data);
                     }

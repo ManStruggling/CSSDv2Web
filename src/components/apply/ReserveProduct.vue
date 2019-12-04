@@ -250,27 +250,25 @@ export default {
         },
         //删除无菌物品
         productsDelete(index) {
-            this.$confirm("您确定要删除该物品?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该物品?',
+                confirmCallBack: () => {
                     this.submitData.Products.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //删除一次性物品
         disposableDelete(index) {
-            this.$confirm("您确定要删除该物品?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该物品?',
+                confirmCallBack: () => {
                     this.submitData.DisposableItems.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //处理无菌物品
         handleSterileProduct() {

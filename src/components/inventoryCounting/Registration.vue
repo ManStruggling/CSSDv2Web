@@ -91,13 +91,14 @@ export default {
     methods: {
         //删除包
         deletePackage(index) {
-            this.$confirm("您确定要删除该包?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                this.submitData.Packages.splice(index, 1);
-            }).catch(() => {})
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该包?',
+                confirmCallBack: () => {
+                    this.submitData.Packages.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //提交完成
         submitComplete() {

@@ -154,15 +154,14 @@ export default {
         },
         //删除包
         deleteProvidePackage(index) {
-            this.$confirm("您确定要删除该包?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该包?',
+                confirmCallBack: () => {
                     this.submitData.Packages.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //手工录入与父组件通信
         packageData2father(data) {

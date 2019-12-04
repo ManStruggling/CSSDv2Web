@@ -106,30 +106,31 @@ export default {
         },
         //确认召回
         comfirmRecall() {
-            this.$confirm("您确定要召回本本锅次所有的包?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                axios({
-                    url: `/api/Sterilize/ChemicalFailedRecall`,
-                    method: "POST",
-                    data: this.submitData
-                }).then(res => {
-                    let type;
-                    if (res.data.Code == 200) {
-                        type = "success";
-                        this.goBack();
-                    } else {
-                        type = "error";
-                    }
-                    this.showInformation({
-                        classify: "message",
-                        msg: res.data.Msg,
-                        type: type
-                    });
-                }).catch(err => {})
-            }).catch(() => {})
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要召回本本锅次所有的包?',
+                confirmCallBack: () => {
+                    axios({
+                        url: `/api/Sterilize/ChemicalFailedRecall`,
+                        method: "POST",
+                        data: this.submitData
+                    }).then(res => {
+                        let type;
+                        if (res.data.Code == 200) {
+                            type = "success";
+                            this.goBack();
+                        } else {
+                            type = "error";
+                        }
+                        this.showInformation({
+                            classify: "message",
+                            msg: res.data.Msg,
+                            type: type
+                        });
+                    }).catch(err => {})
+                },
+                cancelCallBack: () => {}
+            });
 
         }
     },

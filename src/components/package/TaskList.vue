@@ -456,12 +456,10 @@ export default {
         },
         //删除辅料包
         deleteThisTask(PackageTaskId) {
-            this.$confirm("您确定要删除该任务?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该任务?',
+                confirmCallBack: () => {
                     axios({
                             url: `/api/Package/SupportProductPackageTask/${PackageTaskId}`,
                             method: "Delete"
@@ -479,8 +477,9 @@ export default {
                             }
                         })
                         .catch(err => {});
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //PackageList组件传递的值
         packgeList2father(data) {

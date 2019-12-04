@@ -109,13 +109,14 @@ export default {
         },
         //删除加急产品
         deleteProduct(index) {
-            this.$confirm("您确定要删除该产品?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                this.submitData.ExpeditedProducts.splice(index, 1);
-            }).catch(() => {})
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该产品?',
+                confirmCallBack: () => {
+                    this.submitData.ExpeditedProducts.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //提交完成
         submitComplete() {

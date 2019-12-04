@@ -511,15 +511,14 @@ export default {
         },
         //删除this row
         deleteThisRow(index) {
-            this.$confirm("您确定要删除该包?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该包?',
+                confirmCallBack: () => {
                     this.submitData.Packages.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //addPackage与父组件的通信
         addPackage2father(data) {

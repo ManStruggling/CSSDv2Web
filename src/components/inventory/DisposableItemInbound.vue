@@ -86,7 +86,7 @@ export default {
         axios("/api/Inventory/DisposableProductInitialVm").then(res => {
             if (res.data.Code == 200) {
                 Object.assign(this.initialData, res.data.Data);
-                if(this.initialData.SubClinics.length==1){
+                if (this.initialData.SubClinics.length == 1) {
                     this.submitData.SubClinicId = this.initialData.SubClinics[0].SubClinicId;
                 }
             } else {
@@ -101,13 +101,14 @@ export default {
     methods: {
         //删除
         deleteThisItem(index) {
-            this.$confirm("确定要删除该项?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                this.submitData.Products.splice(index, 1);
-            }).catch(() => {})
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该项?',
+                confirmCallBack: () => {
+                    this.submitData.Products.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //新增
         insertItem() {
@@ -122,13 +123,17 @@ export default {
         //批号失焦事件 获取已存在库存的产品以及批号，相同则自动取得有效日期
         getValidDate(index) {
             // 在录入array里search
-            for(let i=0; i<this.submitData.Products.length;i++){
-                if(i == index){
+            for (let i = 0; i < this.submitData.Products.length; i++) {
+                if (i == index) {
                     continue;
                 }
-                if(this.submitData.Products[index].ProductId&&this.submitData.Products[index].BatchNumber&&this.submitData.Products[i].ProductId==this.submitData.Products[index].ProductId&&this.submitData.Products[i].BatchNumber==this.submitData.Products[index].BatchNumber){
+                if (this.submitData.Products[index].ProductId && this.submitData.Products[index].BatchNumber && this.submitData.Products[i].ProductId == this.submitData.Products[index].ProductId && this.submitData.Products[i].BatchNumber == this.submitData.Products[index].BatchNumber) {
                     this.submitData.Products[index].BatchNumber = "";
-                    this.showInformation({classify:"message",type:"warning",msg:"禁止录入相同产品相同批号！"});
+                    this.showInformation({
+                        classify: "message",
+                        type: "warning",
+                        msg: "禁止录入相同产品相同批号！"
+                    });
                     break;
                 }
             }

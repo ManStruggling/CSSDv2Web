@@ -34,8 +34,10 @@ export default {
     props: ['getApi'],
     methods: {
         //点击当前行选择数据
-        handleRowClick(row) {
-            this.$refs.multipleTable.toggleRowSelection(row);
+        handleRowClick(row, column, event) {
+            if (column) {
+                this.$refs.multipleTable.toggleRowSelection(row);
+            }
         },
         //el-input-number change 事件
         handleNumberChange(newValue, oldValue, index) {

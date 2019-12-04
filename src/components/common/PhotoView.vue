@@ -82,18 +82,17 @@ export default {
         },
         //删除图片
         deleteImg(index) {
-            this.$confirm("您确定要删除该照片?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该照片?',
+                confirmCallBack: () => {
                     if (this.list[index].Id != 0) {
                         this.$props.DeletedPicturesId.push(this.list[index].Id);
                     }
                     this.list.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //tab click
         tabClicked() {

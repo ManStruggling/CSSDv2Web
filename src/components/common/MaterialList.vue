@@ -33,8 +33,10 @@ export default {
     },
     methods: {
         //点击当前行选择数据
-        handleRowClick(row) {
-            this.$refs.multipleTable.toggleRowSelection(row);
+        handleRowClick(row, column, event) {
+            if (column) {
+                this.$refs.multipleTable.toggleRowSelection(row);
+            }
         },
         handleCountNumberPackage(newValue, oldValue, index) {
             if (newValue == undefined) {

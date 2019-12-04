@@ -307,32 +307,24 @@ export default {
         },
         //删除包
         handleDeletePackage($index, row, RecyclePackageIds, collapseIndex, index) {
-            this.$confirm("您确定要删除该包?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包?',
+                confirmCallBack: () => {
                     RecyclePackageIds.splice($index, 1);
-                    this.recoveryData.Clinics[index].RecycleProducts[
-                        collapseIndex
-                    ].NumberOfReturnProduct = 0;
-                    this.recoveryData.Clinics[index].RecycleProducts[
-                        collapseIndex
-                    ].NumberOfExpeditedProduct = 0;
+                    this.recoveryData.Clinics[index].RecycleProducts[collapseIndex].NumberOfReturnProduct = 0;
+                    this.recoveryData.Clinics[index].RecycleProducts[collapseIndex].NumberOfExpeditedProduct = 0;
                     //包类型的包数组为空 清除结构 改变ui
                     if (RecyclePackageIds.length == 0) {
-                        this.recoveryData.Clinics[index].RecycleProducts.splice(
-                            collapseIndex,
-                            1
-                        );
+                        this.recoveryData.Clinics[index].RecycleProducts.splice(collapseIndex, 1);
                     }
                     if (this.recoveryData.Clinics[index].RecycleProducts.length == 0) {
                         this.recoveryData.Clinics.splice(index, 1);
                     }
                     this.$forceUpdate();
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //处理手工录入
         handleShowManualEnter() {
@@ -393,21 +385,20 @@ export default {
             //do things
             RecycleProducts[collapseIndex].NumberOfExpeditedProduct = 0;
             if (newValue == 0 || newValue == undefined) {
-                this.$confirm("您确定要删除该计数包?", "提示", {
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        type: "warning"
-                    })
-                    .then(() => {
+                this.showInformation({
+                    classify: 'confirm',
+                    msg: '确定要删除该计数包?',
+                    confirmCallBack: () => {
                         RecycleProducts.splice(collapseIndex, 1);
                         if (this.recoveryData.Clinics[index].RecycleProducts.length == 0) {
                             this.recoveryData.Clinics.splice(index, 1);
                         }
                         this.$forceUpdate();
-                    })
-                    .catch(() => {
+                    },
+                    cancelCallBack: () => {
                         RecycleProducts[collapseIndex].ProductQuantity = oldValue;
-                    });
+                    }
+                });
             }
         },
         //加急包处理
@@ -539,16 +530,15 @@ export default {
                     this.recoveryData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                     this.recoveryData.CarrierName = data.CarrierBarCodeScannerVm.Name;
                 } else {
-                    this.$confirm("您已录入网篮,是否需要替换该网篮?", "提示", {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning"
-                        })
-                        .then(() => {
+                    this.showInformation({
+                        classify: 'confirm',
+                        msg: '已录入网篮,是否需要替换该网篮?',
+                        confirmCallBack: () => {
                             this.recoveryData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                             this.recoveryData.CarrierName = data.CarrierBarCodeScannerVm.Name;
-                        })
-                        .catch(() => {});
+                        },
+                        cancelCallBack: () => {}
+                    });
                 }
                 return;
             }

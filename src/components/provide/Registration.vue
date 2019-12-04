@@ -366,9 +366,9 @@ export default {
                     ThisClinicProvideNumber: 0,
                     ProvideTaskDetails: []
                 };
-                if (this.GLOBAL.UserInfo.HospitalVersion == 'YANCHENGFUBAO' && index=='0') {
-                     this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails = this.provideTaskList[index].ProvideTasks;
-                }else{
+                if (this.GLOBAL.UserInfo.HospitalVersion == 'YANCHENGFUBAO' && index == '0') {
+                    this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails = this.provideTaskList[index].ProvideTasks;
+                } else {
                     for (let k = 0; k < this.provideTaskList[index].ProvideTasks.length; k++) {
                         if (this.provideTaskList[index].SubClinics[j].SubClinicId === this.provideTaskList[index].ProvideTasks[k].ProvideSubClinicId) {
                             this.provideTaskList[index].SubClinicTasks[this.provideTaskList[index].SubClinics[j].SubClinicId].ProvideTaskDetails.push(this.provideTaskList[index].ProvideTasks[k]);
@@ -624,22 +624,21 @@ export default {
         },
         //删除包
         deleteProvideProduct(ProvideProducts, $index) {
-            this.$confirm("您确定要删除该项?", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }).then(() => {
-                ProvideProducts.splice($index, 1);
-            }).catch(() => {})
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该项?',
+                confirmCallBack: () => {
+                    ProvideProducts.splice($index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //删除任务
         deleteThisTask(ProvideTaskId) {
-            this.$confirm("您确定要删除该任务?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该任务?',
+                confirmCallBack: () => {
                     axios({
                             url: `/api/Provide/RemoveProvideTask/${ProvideTaskId}`,
                             method: "delete"
@@ -655,8 +654,9 @@ export default {
                             }
                         })
                         .catch(err => {});
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //手工录入信息传递
         packageData2father(data) {

@@ -147,12 +147,12 @@ export default {
         },
         //删除this editBox tr
         deleteThisEditBoxTr(index) {
-            //更新模式下追加删除的设备型号id
+            //更新模式下追加删除的子科室id
             if (this.editBoxData.Id > 0) {
-                this.editBoxData.DeletedSubClinics = [];
-                this.editBoxData.DeletedSubClinics.push(
-                    this.editBoxData.SubClinics[index].Id
-                );
+                if(!this.editBoxData.DeletedSubClinics){
+                    this.editBoxData.DeletedSubClinics = [];
+                }
+                this.editBoxData.DeletedSubClinics.push(this.editBoxData.SubClinics[index].Id);
             }
             this.editBoxData.SubClinics.splice(index, 1);
         },

@@ -143,8 +143,10 @@ export default {
             this.$emit("selectSubClinicOfProduct-to-father", false);
         },
         //点击当前行选择数据
-        handleRowClick(row) {
-            this.$refs.multipleTable.toggleRowSelection(row);
+        handleRowClick(row, column, event) {
+            if (column) {
+                this.$refs.multipleTable.toggleRowSelection(row);
+            }
         },
         //搜索事件
         packageSearch() {

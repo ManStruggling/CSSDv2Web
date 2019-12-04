@@ -163,15 +163,14 @@ export default {
         },
         //删除包
         deletePackage(index, row) {
-            this.$confirm("您确定要删除该包吗?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包吗?',
+                confirmCallBack: () => {
                     this.submitData.PackageBarCodes.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //灭菌准备完成
         sterilizeReadyComplete() {
@@ -241,16 +240,15 @@ export default {
                         this.submitData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                         this.submitData.CarrierName = data.CarrierBarCodeScannerVm.Name;
                     } else {
-                        this.$confirm("您已录入网篮,是否需要替换该网篮?", "提示", {
-                                confirmButtonText: "确定",
-                                cancelButtonText: "取消",
-                                type: "warning"
-                            })
-                            .then(() => {
+                        this.showInformation({
+                            classify: 'confirm',
+                            msg: '已录入网篮,是否需要替换该网篮?',
+                            confirmCallBack: () => {
                                 this.submitData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                                 this.submitData.CarrierName = data.CarrierBarCodeScannerVm.Name;
-                            })
-                            .catch(() => {});
+                            },
+                            cancelCallBack: () => {}
+                        });
                     }
                 }
             }

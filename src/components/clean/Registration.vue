@@ -87,7 +87,7 @@ export default {
             isShowCleanableCarriers: false, //显示可清洗网篮
             cleanRecordModle: false, //清洗修改模式
             submitData: {
-                OriginDeviceId:0,
+                OriginDeviceId: 0,
                 DeviceModelName: this.$route.query.deviceName,
                 DeviceModelId: this.$route.query.deviceId - 0,
                 DeviceModelProgramName: this.$route.query.programName,
@@ -265,15 +265,14 @@ export default {
         },
         //删除网篮
         deleteThisCarrier(index) {
-            this.$confirm("您确定要删除该网篮?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该网篮?',
+                confirmCallBack: () => {
                     this.submitData.Carriers.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //添加数据处理
         handleBarCode(msg) {

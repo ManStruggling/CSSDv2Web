@@ -160,20 +160,19 @@ export default {
                         }
                     });
                 } else {
-                    this.$confirm("确认生物检测不合格,并发起一键召回吗?", {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning"
-                        })
-                        .then(() => {
+                    this.showInformation({
+                        classify: 'confirm',
+                        msg: '确认生物检测不合格,并发起一键召回吗?',
+                        confirmCallBack: () => {
                             this.$router.push({
                                 path: "/sterilize/recall",
                                 query: {
                                     sterilizeTaskId: this.data.SterilizeTaskId
                                 }
                             });
-                        })
-                        .catch(() => {});
+                        },
+                        cancelCallBack: () => {}
+                    });
                 }
             }
         },

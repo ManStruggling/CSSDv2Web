@@ -333,16 +333,15 @@ export default {
                         this.submitData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                         this.submitData.CarrierName = data.CarrierBarCodeScannerVm.Name;
                     } else {
-                        this.$confirm("您已录入网篮,是否需要替换该网篮?", "提示", {
-                                confirmButtonText: "确定",
-                                cancelButtonText: "取消",
-                                type: "warning"
-                            })
-                            .then(() => {
+                        this.showInformation({
+                            classify: 'confirm',
+                            msg: '确定要删您已录入网篮,是否需要替换该网篮除该包?',
+                            confirmCallBack: () => {
                                 this.submitData.CarrierId = data.CarrierBarCodeScannerVm.Id;
                                 this.submitData.CarrierName = data.CarrierBarCodeScannerVm.Name;
-                            })
-                            .catch(() => {});
+                            },
+                            cancelCallBack: () => {}
+                        });
                     }
                 }
             }
@@ -363,20 +362,17 @@ export default {
         //包数量改变
         packageNumberChange(newValue, oldValue, index, idx) {
             if (newValue == 0 || newValue == undefined) {
-                this.$confirm("您确定要删除该包?", "提示", {
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        type: "warning"
-                    })
-                    .then(() => {
+                this.showInformation({
+                    classify: 'confirm',
+                    msg: '确定要删除该包?',
+                    confirmCallBack: () => {
                         this.deleteTheIdOfAlreadyEnteredSingleCarrierIds(this.newPurchasingData[index].Packages[idx]);
                         this.newPurchasingData[index].Packages.splice(idx, 1);
-                    })
-                    .catch(() => {
-                        this.newPurchasingData[index].Packages[
-                            idx
-                        ].ProductQuantity = oldValue;
-                    });
+                    },
+                    cancelCallBack: () => {
+                        this.newPurchasingData[index].Packages[idx].ProductQuantity = oldValue;
+                    }
+                });
             }
         },
         //处理添加数据

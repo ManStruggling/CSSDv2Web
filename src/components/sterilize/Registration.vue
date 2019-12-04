@@ -285,20 +285,17 @@ export default {
         },
         //删除包
         deletepackage(index) {
-            this.$confirm("您确定要删除该包吗?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning"
-                })
-                .then(() => {
-                    if (
-                        this.submitData.NotInCarrierPackages[index].IsSubstitution === true
-                    ) {
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包吗?',
+                confirmCallBack: () => {
+                    if (this.submitData.NotInCarrierPackages[index].IsSubstitution === true) {
                         this.submitData.IsHasSubstitution = false;
                     }
                     this.submitData.NotInCarrierPackages.splice(index, 1);
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //处理手工录入
         handleShowManualEnter() {

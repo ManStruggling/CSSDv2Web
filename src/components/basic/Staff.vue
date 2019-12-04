@@ -147,19 +147,11 @@ export default {
         },
         //删除this tr
         deleteThisTr(index) {
-            this.$confirm("您是否确定删除该项?", "提示", {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning",
-                    center: true
-                })
-                .then(() => {
-                    //删除接口
-                    //code
-                    axios
-                        .delete(
-                            `/api/Staff/${this.table_data[index].Id}`
-                        )
+            this.showInformation({
+                classify: 'confirm',
+                msg: '您确定要删除该项?',
+                confirmCallBack: () => {
+                    axios.delete(`/api/Staff/${this.table_data[index].Id}`)
                         .then(res => {
                             let type;
                             if (res.data.Code == 200) {
@@ -175,8 +167,9 @@ export default {
                             });
                         })
                         .catch(err => {});
-                })
-                .catch(() => {});
+                },
+                cancelCallBack: () => {}
+            });
         },
         //编辑this tr
         editThisTr(index) {

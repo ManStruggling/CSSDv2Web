@@ -192,6 +192,7 @@ export default {
                 }
                 this.showInformation({
                     classify: "message",
+                    type: type,
                     msg: res.data.Msg
                 });
             }).catch(err => {})

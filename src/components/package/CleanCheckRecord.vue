@@ -49,7 +49,9 @@
               <p>{{item.ReviewerName}}</p>
             </div>
             <div class="collapseTd">
-              <p>{{item.CleanReviewResult}}</p>
+              <p v-show="item.CleanReviewResult==2">合格</p>
+              <p v-show="item.CleanReviewResult==3">不合格</p>
+              <p v-show="item.CleanReviewResult==4">部分合格</p>
             </div>
           </div>
           <ul class="record_detail clear_float">

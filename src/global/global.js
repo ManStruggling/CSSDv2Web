@@ -214,11 +214,16 @@ let pickerOptions = {
 
 //消息提示
 function showInformation(option) {
-    option.duration = option.duration === undefined ? 2000 : option.duration;
-    option.center = option.center === undefined ? true : option.center;
-    option.type = option.type === undefined ? "error" : option.type;
-    option.showClose = option.showClose === undefined ? true : option.showClose;
-    option.dangerouslyUseHTMLString === undefined ? false : option.dangerouslyUseHTMLString;
+    if (option.classify === 'confirm') {
+        option.title = option.title === undefined ? '提示' : option.title;
+        option.type = option.type === undefined ? 'warning' : option.type;
+    } else {
+        option.duration = option.duration === undefined ? 2000 : option.duration;
+        option.center = option.center === undefined ? true : option.center;
+        option.type = option.type === undefined ? 'error' : option.type;
+        option.showClose = option.showClose === undefined ? true : option.showClose;
+        option.dangerouslyUseHTMLString === undefined ? false : option.dangerouslyUseHTMLString;
+    }
     switch (option.classify) {
         case "message":
             TipsMsg.$message({
@@ -238,10 +243,27 @@ function showInformation(option) {
                 duration: option.duration,
             })
             break;
+        case "confirm":
+            TipsMsg.$confirm(option.msg, option.title, {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: option.type,
+                center: true,
+                closeOnClickModal: false,
+                showClose: false,
+                dangerouslyUseHTMLString: false
+            }).then(() => {
+                option.confirmCallBack();
+            }).catch(() => {
+                option.cancelCallBack();
+            })
+            break;
         default:
+            showInformation({ classify: "message", msg: "没有找到消息类型！" });
             break;
     }
 }
+
 
 //初始化websocket
 function initWebSorcket(that, origin) {

@@ -133,17 +133,16 @@ export default {
         //input-number change事件
         handleNumberChange(newValue, oldValue, index) {
             if (newValue === 0 || newValue === undefined) {
-                this.$confirm("您确定要删除该包吗?", "提示", {
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        type: "warning"
-                    })
-                    .then(() => {
+                this.showInformation({
+                    classify: 'confirm',
+                    msg: '确定要删除该包吗?',
+                    confirmCallBack: () => {
                         this.submitData.ViewList.splice(index, 1);
-                    })
-                    .catch(() => {
+                    },
+                    cancelCallBack: () => {
                         this.submitData.ViewList[index].Quantity = oldValue;
-                    });
+                    }
+                });
             }
         }
     }
