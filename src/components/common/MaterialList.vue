@@ -4,10 +4,10 @@
         <h3>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="materialSearch"></el-input>
         </h3>
-        <el-table ref="multipleTable" :data="materialList" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @selection-change="handleSelectionChange" @row-click="handleRowClick" :row-key="getRowKeys">
+        <el-table ref="multipleTable" :data="materialList" tooltip-effect="dark" height="380" @selection-change="handleSelectionChange" @row-click="handleRowClick" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="Name" label="名称" width="120"></el-table-column>
-            <el-table-column prop="Specification" label="规格" width="80"></el-table-column>
+            <el-table-column prop="Name" label="名称" width="200" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="Specification" label="规格" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Quantity" label="数量">
                 <template slot-scope="scope">
                     <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
@@ -109,8 +109,8 @@ export default {
 
     .instrument_box {
         background: #fff;
-        width: 420px;
-        height: 441px;
+        width: 500px;
+        height: 520px;
         box-shadow: 0px 0px 10px 0px rgba(51, 62, 80, 0.2);
         border-radius: 8px;
         position: absolute;
@@ -127,9 +127,6 @@ export default {
         }
 
         .el-table {
-            height: 300px;
-            overflow-y: scroll;
-
             th {
                 .cell {
                     font-size: 14px;

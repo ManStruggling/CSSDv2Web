@@ -509,8 +509,7 @@ export default {
                 if (onOff) {
                     axios({
                             url: `/api/Scanner/Apply/${msg}`
-                        })
-                        .then(res => {
+                        }).then(res => {
                             if (res.data.Code == 200) {
                                 this.packageData2father(res.data.Data);
                             } else if (res.data.Code == 404) {

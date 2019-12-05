@@ -265,6 +265,7 @@ export default {
                             this.provideTaskList = Data;
                             if (this.provideTaskList.length > 0) {
                                 this.getSubClinicTasks('0');
+                                this.taskSortByRecycleTime(0, '0');
                             }
                         } else {
                             this.showInformation({
@@ -328,6 +329,10 @@ export default {
             );
             this.activeName = "-1";
             //按照回收时间升序排列
+            this.taskSortByRecycleTime(val, index);
+        },
+        //任务根据回收时间排序
+        taskSortByRecycleTime(val, index) {
             this.provideTaskList[index].SubClinicTasks[val].ProvideTaskDetails.sort((a, b) => {
                 return a.RecycleDateTime > b.RecycleDateTime ? 1 : -1;
             });

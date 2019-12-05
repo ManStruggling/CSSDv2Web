@@ -203,7 +203,8 @@ export default {
                 this.$router.push({
                     path: "/recovery/record",
                     query: {
-                        source: `source eq '新购入'`
+                        sourceRoute: `/recovery/newPurchasing`,
+                        requestUrl: `/api/Recycle/RecycleRecords/NewPurchasing`
                     }
                 });
             } else {
@@ -215,7 +216,8 @@ export default {
             this.$router.push({
                 path: "/recovery/record",
                 query: {
-                    source: `source eq '新购入'`
+                    sourceRoute: `/recovery/newPurchasing`,
+                    requestUrl: `/api/Recycle/RecycleRecords/NewPurchasing`
                 }
             });
         },
@@ -265,10 +267,7 @@ export default {
                     );
                 }
                 //判断是否有录入重复的单包网篮Id
-                if (
-                    testOfSingleCarrierIds.length ===
-                    Array.from(new Set(testOfSingleCarrierIds)).length
-                ) {
+                if (testOfSingleCarrierIds.length === Array.from(new Set(testOfSingleCarrierIds)).length) {
                     axios({
                             url: url,
                             method: method,
@@ -298,7 +297,8 @@ export default {
                                     this.$router.push({
                                         path: "/recovery/record",
                                         query: {
-                                            source: `source eq '新购入'`
+                                            sourceRoute: `/recovery/newPurchasing`,
+                                            requestUrl: `/api/Recycle/RecycleRecords/NewPurchasing`
                                         }
                                     });
                                 }

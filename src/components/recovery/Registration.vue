@@ -298,7 +298,8 @@ export default {
                 this.$router.push({
                     path: "/recovery/record",
                     query: {
-                        source: `source eq '回收'`
+                        sourceRoute: `/recovery/registration`,
+                        requestUrl: `/api/Recycle/RecycleRecords/Recycle`
                     }
                 });
             } else {
@@ -414,7 +415,9 @@ export default {
             this.$router.push({
                 path: "/recovery/record",
                 query: {
-                    source: `source eq '回收'`
+                    sourceRoute: `/recovery/registration`,
+                    requestUrl: `/api/Recycle/RecycleRecords/Recycle`
+
                 }
             });
         },
@@ -481,7 +484,9 @@ export default {
                                 this.$router.push({
                                     path: "/recovery/record",
                                     query: {
-                                        source: `source eq '回收'`
+                                        sourceRoute: `/recovery/registration`,
+                                        requestUrl: `/api/Recycle/RecycleRecords/Recycle`
+
                                     }
                                 });
                             } else {
@@ -580,9 +585,8 @@ export default {
                     //find 包类型
                     for (let j = 0; j < ClinicList[i].RecycleProducts.length; j++) {
                         if (
-                            ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
-                            data.IsLostPackage === false &&
-                            data.PackageBarCodeId != 0
+                            ClinicList[i].RecycleProducts[j].ProductId == data.ProductId && ClinicList[i].RecycleProducts[j].IsLostPackage === false &&
+                            data.IsLostPackage === false && data.PackageBarCodeId != 0
                         ) {
                             //条码包 finded 包类型  ##扫描枪
                             this.collapseActiveName = j + "";
@@ -592,27 +596,18 @@ export default {
                             return;
                         }
                         //计数包
-                        if (
-                            ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
-                            data.IsNotPrintBarCode && ClinicList[i].RecycleProducts[j].IsNotPrintBarCode
-                        ) {
+                        if (ClinicList[i].RecycleProducts[j].ProductId == data.ProductId && data.IsNotPrintBarCode && ClinicList[i].RecycleProducts[j].IsNotPrintBarCode) {
                             //计数包 finded 包类型
                             NoPackageClass = false;
-                            this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
-                                data.ProductQuantity;
+                            this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity += data.ProductQuantity;
                             this.recoveryData.Clinics[i].RecycleProducts[j].NumberOfExpeditedProduct = data.NumberOfExpeditedProduct;
                             return;
                         }
                         //丢失包
-                        if (
-                            ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
-                            data.IsLostPackage &&
-                            ClinicList[i].RecycleProducts[j].IsLostPackage
-                        ) {
+                        if (ClinicList[i].RecycleProducts[j].ProductId == data.ProductId && data.IsLostPackage && ClinicList[i].RecycleProducts[j].IsLostPackage) {
                             //丢失包 finded 包类型
                             NoPackageClass = false;
-                            this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity +=
-                                data.ProductQuantity;
+                            this.recoveryData.Clinics[i].RecycleProducts[j].ProductQuantity += data.ProductQuantity;
                             return;
                         }
                     }
@@ -637,11 +632,8 @@ export default {
                                 RecyclePackageIds: [data]
                             };
                         }
-                        this.recoveryData.Clinics[i].RecycleProducts.push(
-                            noPackageClassObj
-                        );
-                        this.collapseActiveName =
-                            this.recoveryData.Clinics[i].RecycleProducts.length - 1 + "";
+                        this.recoveryData.Clinics[i].RecycleProducts.push(noPackageClassObj);
+                        this.collapseActiveName = this.recoveryData.Clinics[i].RecycleProducts.length - 1 + "";
                         return;
                     }
                 }
@@ -686,10 +678,7 @@ export default {
                     if (res.data.Code == 200) {
                         if (res.data.Data.PackageBarCodeScannerVm) {
                             for (let i = 0; i < this.BarCodeList.length; i++) {
-                                if (
-                                    this.BarCodeList[i].BarCode ==
-                                    res.data.Data.PackageBarCodeScannerVm.BarCode
-                                ) {
+                                if (this.BarCodeList[i].BarCode == res.data.Data.PackageBarCodeScannerVm.BarCode) {
                                     this.showInformation({
                                         classify: "message",
                                         msg: "该条码已录入！",
@@ -723,8 +712,7 @@ export default {
             return list => {
                 let packageInstrumentTotalNumber = 0;
                 list.RecyclePackageIds.forEach(val => {
-                    packageInstrumentTotalNumber +=
-                        val.ActuallyRecycleInstrumentTotalQuantity;
+                    packageInstrumentTotalNumber += val.ActuallyRecycleInstrumentTotalQuantity;
                 });
                 return packageInstrumentTotalNumber;
             };
@@ -753,9 +741,7 @@ export default {
                 for (let i = 0; i < list.length; i++) {
                     if (list[i].RecyclePackageIds) {
                         for (let j = 0; j < list[i].RecyclePackageIds.length; j++) {
-                            num +=
-                                list[i].RecyclePackageIds[j]
-                                .ActuallyRecycleInstrumentTotalQuantity;
+                            num += list[i].RecyclePackageIds[j].ActuallyRecycleInstrumentTotalQuantity;
                         }
                     }
                 }

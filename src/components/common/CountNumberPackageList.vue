@@ -61,11 +61,8 @@ export default {
         packageSearch() {
             //code
             axios({
-                url: `${this.$props.getApi}?$filter=contains(ProductShortCode,${"'" +
-          encodeURIComponent(this.searchShortCode) +
-          "'"}) or contains(ProductName,${"'" +
-          encodeURIComponent(this.searchShortCode) +
-          "'"})`
+                url: `${this.$props.getApi}?$filter=contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) 
+                    or contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"})`
             }).then(res => {
                 this.packageList = res.data.value;
             }).catch(err => {})

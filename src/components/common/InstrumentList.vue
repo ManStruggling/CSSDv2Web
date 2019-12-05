@@ -4,10 +4,10 @@
         <h3>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="instrumentSearch"></el-input>
         </h3>
-        <el-table highlight-current-row ref="multipleTable" :data="instrumentList" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @selection-change="handleSelectionChange" @row-click="handleRowClick" :row-key="getRowKeys">
+        <el-table highlight-current-row ref="multipleTable" :data="instrumentList" tooltip-effect="dark" height="380" @selection-change="handleSelectionChange" @row-click="handleRowClick" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="Name" label="名称" width="120" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="Specification" label="规格" width="80"></el-table-column>
+            <el-table-column prop="Name" label="名称" width="200" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="Specification" label="规格" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Quantity" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope">
                     <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" class="inputNumber60x40" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
@@ -128,8 +128,8 @@ export default {
 
     .instrument_box {
         background: #fff;
-        width: 420px;
-        height: 441px;
+        width: 500px;
+        height: 520px;
         box-shadow: 0px 0px 10px 0px rgba(51, 62, 80, 0.2);
         border-radius: 8px;
         position: absolute;
@@ -146,8 +146,10 @@ export default {
         }
 
         .el-table {
-            height: 300px;
-            overflow-y: scroll;
+
+            &::before {
+                height: 0;
+            }
 
             th {
                 .cell {
@@ -155,6 +157,10 @@ export default {
                     font-family: Microsoft YaHei;
                     color: rgba(135, 141, 159, 1);
                 }
+            }
+
+            .el-table__body-wrapper::-webkit-scrollbar {
+                width: 7px;
             }
 
             td {

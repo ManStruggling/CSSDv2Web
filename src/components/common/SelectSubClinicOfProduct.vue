@@ -296,51 +296,57 @@ export default {
                 }
             }
 
-            tbody {
-                tr {
-                    height: 50px;
+            .el-table__body-wrapper {
+                &::-webkit-scrollbar {
+                    width: 7px;
+                }
 
-                    td {
-                        border: 0;
-                        padding: 0;
+                tbody {
+                    tr {
+                        height: 50px;
 
-                        .cell {
-                            font-size: 18px;
-                            font-family: Microsoft YaHei;
-                            font-weight: bold;
-                            color: rgba(35, 46, 65, 1);
-                            line-height: 40px;
+                        td {
+                            border: 0;
+                            padding: 0;
 
-                            >div {
-                                font: inherit;
+                            .cell {
+                                font-size: 18px;
+                                font-family: Microsoft YaHei;
+                                font-weight: bold;
+                                color: rgba(35, 46, 65, 1);
+                                line-height: 40px;
+
+                                >div {
+                                    font: inherit;
+                                }
                             }
                         }
                     }
-                }
 
-                .el-input-number {
-                    width: 60px;
+                    .el-input-number {
+                        width: 60px;
 
-                    .el-input--mini {
-                        width: 100%;
-                    }
+                        .el-input--mini {
+                            width: 100%;
+                        }
 
-                    input {
-                        width: 100%;
-                        height: 40px;
+                        input {
+                            width: 100%;
+                            height: 40px;
 
-                        &:focus {
-                            border-color: rgba(0, 193, 107, 1);
+                            &:focus {
+                                border-color: rgba(0, 193, 107, 1);
+                            }
                         }
                     }
-                }
 
-                .el-select {
-                    .el-input {
-                        input {
-                            font-family: "Microsoft YaHei";
-                            font-size: 16px;
-                            font-weight: bold;
+                    .el-select {
+                        .el-input {
+                            input {
+                                font-family: "Microsoft YaHei";
+                                font-size: 16px;
+                                font-weight: bold;
+                            }
                         }
                     }
                 }

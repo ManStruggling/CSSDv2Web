@@ -392,6 +392,10 @@ export default {
     box-sizing: border-box;
     padding: 30px 40px;
 
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
     .basic_main_head {
         height: 40px;
         display: flex;
@@ -624,8 +628,9 @@ export default {
 
                         &.textareaBox {
                             width: 562px;
-                            .el-textarea{
-                              width: 456px;
+
+                            .el-textarea {
+                                width: 456px;
                             }
                         }
 
