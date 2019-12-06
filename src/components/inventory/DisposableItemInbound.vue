@@ -174,6 +174,11 @@ export default {
         //提交
         submitComplete() {
             //验证是字段是否为空
+            let method = 'POST';
+            if (this.isChangeMode) {
+                method = 'PUT';
+                this.submitData.InboundRecordId = this.$route.query.recordId - 0;
+            }
             let verifyEmptyArr = [];
             this.submitData.Products.forEach(item => {
                 verifyEmptyArr.push(item.ProductId);
@@ -196,10 +201,16 @@ export default {
                 axios({
                     url: "/api/Inventory/DisposableProductInbound",
                     data: this.submitData,
-                    method: "POST"
+                    method: method
                 }).then(res => {
                     if (res.data.Code == 200) {
-                        this.reload();
+                        if (this.isChangeMode) {
+                            this.$router.push({
+                                path: `/inventory/disposableItemInboundRecord`
+                            });
+                        } else {
+                            this.reload();
+                        }
                     } else {
                         this.showInformation({
                             classify: "message",

@@ -45,7 +45,7 @@
                             <p>{{item.InventoryQuantity}}</p>
                         </div>
                     </div>
-                    <el-table v-if="!item.IsNotPrintBarCode" :data="item.Packages">
+                    <el-table v-if="!item.IsNotPrintBarCode&&!item.IsDisposableProduct" :data="item.Packages">
                         <el-table-column label="包条码" prop="BarCode" width="300">
                             <template slot-scope="props">
                                 <span>{{props.row.BarCode}}</span>
@@ -55,6 +55,18 @@
                         </el-table-column>
                         <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                         <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                        <el-table-column></el-table-column>
+                    </el-table>
+                    <el-table v-if="!item.IsNotPrintBarCode&&item.IsDisposableProduct" :data="item.Packages">
+                        <el-table-column label="批号" prop="BatchNumber" width="300">
+                            <template slot-scope="props">
+                                <span>{{props.row.BatchNumber}}</span>
+                                <b class="isExpireSoon" v-if="!props.row.IsExpired&&props.row.IsExpireSoon">即将过期</b>
+                                <b class="isExpired" v-if="props.row.IsExpired">已过期</b>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                        <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>
                 </el-collapse-item>
