@@ -466,15 +466,11 @@ export default {
                             msg: '该外来器械包绑定的住院号与本次使用的病人住院号不同，您确定要使用该包吗?',
                             confirmCallBack: () => {
                                 this.submitData.Packages.push(data);
-                                this.$alert(msg, "警告", {
-                                    confirmButtonText: "确定",
-                                    callback: action => {
-                                        this.showInformation({
-                                            classify: "message",
-                                            msg: "您使用的外来器械包和该病人的住院号不同，请重打包条码！",
-                                            type: "warning"
-                                        });
-                                    }
+                                this.showInformation({
+                                    classify: "notify",
+                                    msg: `您使用的外来器械包${data.BarCode}和该病人的住院号不同，请重打包条码！`,
+                                    type: "warning",
+                                    duration: 0
                                 });
                             },
                             cancelCallBack: () => {}

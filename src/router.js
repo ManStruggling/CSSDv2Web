@@ -106,7 +106,7 @@ const router = new Router({
                 import ('./components/recovery/Basic'),
             children: [{
                 path: '/recovery/registration',
-                name: 'registration',
+                name: 'recoveryRegistration',
                 meta: {
                     index: 1
                 },
@@ -114,7 +114,7 @@ const router = new Router({
                     import ('./components/recovery/Registration')
             }, {
                 path: '/recovery/record',
-                name: 'record',
+                name: 'recoveryRecord',
                 meta: {
                     index: 2
                 },
@@ -210,7 +210,7 @@ const router = new Router({
                 },
                 {
                     path: '/package/taskList',
-                    name: 'taskList',
+                    name: 'packageTaskList',
                     meta: {
                         index: 1
                     },
@@ -219,7 +219,7 @@ const router = new Router({
                 },
                 {
                     path: '/package/taskRecord',
-                    name: 'taskRecord',
+                    name: 'packageTaskRecord',
                     meta: {
                         index: 2
                     },
@@ -291,7 +291,7 @@ const router = new Router({
                     import ('./components/sterilize/Check')
             }, {
                 path: '/sterilize/checkRecord',
-                name: 'checkRecord',
+                name: 'sterilizeCheckRecord',
                 meta: {
                     index: 3
                 },
@@ -358,7 +358,7 @@ const router = new Router({
                 },
                 {
                     path: '/inventory/disposableItemInbound',
-                    name: '/inventoryDisposableItemInbound',
+                    name: 'inventoryDisposableItemInbound',
                     meta: {
                         index: 2
                     },

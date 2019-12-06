@@ -21,6 +21,7 @@
             <p>操作人</p>
             <p>入库类型</p>
             <p>入库科室</p>
+            <p>操作</p>
         </div>
         <el-collapse accordion @change="collapseChange">
             <el-collapse-item v-for="(item,collapseIndex) in recordList" :key="collapseIndex" :name="collapseIndex+''">
@@ -36,6 +37,9 @@
                     </div>
                     <div class="collapseTd">
                         <p>{{item.SubClinicName}}</p>
+                    </div>
+                    <div class="collapseTd">
+                        <p><el-button size="mini" @click.stop="changeRecord(collapseIndex)" :disabled="GLOBAL.UserInfo.JobAndCompetence.includes('161')||GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('100')?false:true">修改</el-button></p>
                     </div>
                 </div>
                 <el-table :data="item.Packages" :default-expand-all="true">
@@ -67,6 +71,15 @@ export default {
     },
     mounted() {},
     methods: {
+        //修改记录
+        changeRecord(index) {
+            this.$router.push({
+                path: "/inventory/disposableItemInbound",
+                query: {
+                    recordId: this.recordList[index].InboundRecordId
+                }
+            });
+        },
         //二次请求
         collapseChange(index) {
             if (index != '' && (this.recordList[index].Packages == '' || this.recordList[index].Packages === null)) {

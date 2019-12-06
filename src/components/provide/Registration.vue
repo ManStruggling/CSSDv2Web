@@ -686,12 +686,19 @@ export default {
                     this.provideTaskList[this.tabActiveName].SelectedSubClinicId
                 ].ProvideTaskDetails;
             for (let j = 0; j < currentTaskList.length; j++) {
+                //find包 有限匹配加急包 并且本次发放数小于剩余发放数才添加
+                if (currentTaskList[j].ExpeditedPackageQuantity&&currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
+                    currentTaskList[j].ProvidePackages.push(data);
+                    currentTaskList[j].ThisTimeProvideQuantity += 1;
+                    let newItem = currentTaskList.splice(j, 1)[0];
+                    currentTaskList.unshift(newItem);
+                    this.activeName = "0";
+                    return;
+                }
+            }
+            for (let j = 0; j < currentTaskList.length; j++) {
                 //find包 并且本次发放数小于剩余发放数才添加
-                if (
-                    currentTaskList[j].ProductId == data.ProductId &&
-                    currentTaskList[j].ThisTimeProvideQuantity <
-                    currentTaskList[j].RemainQuantity
-                ) {
+                if (currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
                     currentTaskList[j].ProvidePackages.push(data);
                     currentTaskList[j].ThisTimeProvideQuantity += 1;
                     let newItem = currentTaskList.splice(j, 1)[0];

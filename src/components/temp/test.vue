@@ -22,6 +22,7 @@
             <p>接收</p>
             <span>{{receiveData2}}</span>
         </li>
+        <router-link :to="{name:'index',params:{play:34}}">返回首页</router-link>
     </ul>
 </div>
 </template>

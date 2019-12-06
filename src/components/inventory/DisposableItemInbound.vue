@@ -2,9 +2,9 @@
 <div class="cssd_box" id="disposableItemInbound">
     <div class="cssd_title">
         <ul class="cssd_menu">
-            <router-link to="/inventory/hasBarCode" tag="li">
+            <li @click="goBack">
                 <p>返回</p>
-            </router-link>
+            </li>
             <router-link to="/inventory/disposableItemInboundRecord" tag="li">
                 <p>一次性物品入库记录</p>
             </router-link>
@@ -56,7 +56,8 @@
             <p>共计
                 <span>{{submitData.Products.length}}</span> 包</p>
             <p>
-                <el-button type="primary" round @click="submitComplete">入库完成</el-button>
+                <el-button @click="cancelChange" v-if="isChangeMode">取消修改</el-button>
+                <el-button type="primary" round @click="submitComplete">{{isChangeMode?'修改完成':'入库完成'}}</el-button>
             </p>
         </div>
     </div>
@@ -69,6 +70,7 @@ export default {
     data() {
         return {
             isShowManualEnter: false,
+            isChangeMode: false,
             submitData: {
                 SubClinicId: "",
                 Products: []
@@ -83,6 +85,15 @@ export default {
         };
     },
     created() {
+        if (this.$route.query.recordId) {
+            this.isChangeMode = true;
+            axios({
+                url: `/api/Inventory/PendingUpdateDisposableInboundRecord/${this.$route.query.recordId}`
+            }).then(res => {
+                this.submitData.Products = res.data.Data.Products;
+                this.submitData.SubClinicId = res.data.Data.SubClinicId;
+            }).catch(err => {})
+        }
         axios("/api/Inventory/DisposableProductInitialVm").then(res => {
             if (res.data.Code == 200) {
                 Object.assign(this.initialData, res.data.Data);
@@ -99,6 +110,19 @@ export default {
     },
     mounted() {},
     methods: {
+        goBack() {
+            if (this.isChangeMode) {
+                this.$router.push(`/inventory/disposableItemInboundRecord`);
+            } else {
+                this.$router.push(`/inventory/hasBarCode`);
+            }
+        },
+        //取消修改
+        cancelChange() {
+            this.$router.push({
+                path: `/inventory/disposableItemInboundRecord`
+            });
+        },
         //删除
         deleteThisItem(index) {
             this.showInformation({
