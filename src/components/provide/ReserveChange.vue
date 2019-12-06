@@ -143,9 +143,11 @@ export default {
             .then(res => {
                 if (res.data.Code == 200) {
                     this.cssdList = res.data.Data.Cssds;
+                    res.data.Data.SubClinics.push({
+                        BookSubClinicId: this.$route.query.SubClinicId - 0,
+                        BookSubClinicName: this.$route.query.SubClinicName
+                    });
                     this.subClinicList = res.data.Data.SubClinics;
-                    this.submitData.BookCssdId = this.cssdList[0].BookCssdId;
-                    this.submitData.BookSubClinicId = this.subClinicList[0].BookSubClinicId;
                 } else {
                     this.showInformation({
                         classify: "message",

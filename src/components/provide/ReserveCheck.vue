@@ -60,7 +60,7 @@
                                         </div>
                                         <div class="collapseTd">
                                             <p>
-                                                <a @click.stop="editBookTask(value.BookTaskId)">编辑</a>
+                                                <a @click.stop="editBookTask(value.BookTaskId,item.SubClinicId,item.SubClinicName)">编辑</a>
                                                 <a @click.stop="printBookList(value.BookTaskId)">打印</a>
                                             </p>
                                         </div>
@@ -163,12 +163,14 @@ export default {
             this.reload();
         },
         // 编辑
-        editBookTask(val) {
+        editBookTask(val, SubClinicId, SubClinicName) {
             //edit
             this.$router.replace({
                 path: "/provice/reserveChange",
                 query: {
-                    recordId: val
+                    recordId: val,
+                    SubClinicId: SubClinicId,
+                    SubClinicName: SubClinicName
                 }
             });
         },

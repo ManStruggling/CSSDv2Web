@@ -55,8 +55,6 @@ export default {
         sendToFather() {
             this.$emit('countNumber-to-father', this.multipleSelection);
         },
-        //确定
-
         //搜索事件
         packageSearch() {
             //code
