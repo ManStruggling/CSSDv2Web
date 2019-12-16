@@ -197,7 +197,7 @@
                     <el-input v-model.trim="input_str" @keyup.enter.native="SaveOption" v-focus></el-input>
                 </dt>
                 <dd>
-                    <el-button type="primary" @click="cancelOption">取消</el-button>
+                    <el-button @click="cancelOption">取消</el-button>
                     <el-button type="primary" @click="SaveOption">确定</el-button>
                 </dd>
             </dl>

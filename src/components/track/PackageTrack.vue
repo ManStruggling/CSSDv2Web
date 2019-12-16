@@ -122,9 +122,9 @@ export default {
     goBack() {
       if (this.$route.query.origin) {
         this.$router.replace({
-          path: this.route.query.origin,
+          path: this.$route.query.origin,
           query: {
-            HospitalId: this.route.query.HospitalId
+            HospitalId: this.$route.query.HospitalId
           }
         });
       } else {
