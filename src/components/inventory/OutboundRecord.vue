@@ -34,11 +34,24 @@
                         <p>{{item.Operator}}</p>
                     </div>
                 </div>
-                <el-table :data="item.Packages">
-                    <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
-                    <el-table-column label="包条码" prop="PackageBarCode" width="210"></el-table-column>
-                    <el-table-column></el-table-column>
-                </el-table>
+                <el-tabs type="card">
+                    <el-tab-pane label="无菌物品" v-if="item.Packages==''||item.Packages===null?false:true">
+                        <el-table :data="item.Packages" :default-expand-all="true">
+                            <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
+                            <el-table-column label="包条码" prop="PackageBarCode" width="210"></el-table-column>
+                            <el-table-column></el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="一次性物品" v-if="item.DisposableProducts==''||item.DisposableProducts===null?false:true">
+                        <el-table :data="item.DisposableProducts" :default-expand-all="true">
+                            <el-table-column label="名称" prop="ProductName" width="240"></el-table-column>
+                            <el-table-column label="批号" prop="BatchNumber" width="210"></el-table-column>
+                            <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                            <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>
+                            <el-table-column></el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                </el-tabs>
             </el-collapse-item>
         </el-collapse>
         <div class="recordNoData" v-show="recordList==''">暂无数据</div>
@@ -66,13 +79,15 @@ export default {
         },
         //二次请求
         collapseChange(index) {
-            if (index != '' && (this.recordList[index].Packages == '' || this.recordList[index].Packages === null)) {
+            if (index != '' && !this.recordList[index].Requested) {
                 axios({
                         url: `/api/Inventory/OutboundPackages/${this.recordList[index].OutboundRecordId}`
                     })
                     .then(res => {
                         if (res.data.Code == 200) {
-                            this.recordList[index].Packages = res.data.Data;
+                            this.recordList[index].Requested = true;
+                            this.recordList[index].Packages = res.data.Data.Packages;
+                            this.recordList[index].DisposableProducts = res.data.Data.DisposableProducts;
                         } else {
                             this.showInformation({
                                 classify: "message",
@@ -95,4 +110,34 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/cssdRecord";
 @import "../../assets/css/tableUnExpand";
+
+#outboundRecord {
+
+    .el-tabs__header {
+        border-bottom-color: #f2f4f7;
+
+        .el-tabs__nav {
+            border-radius: 0;
+            border-left: 0;
+            border-top: 0;
+            border-right-color: #f2f4f7;
+
+            .el-tabs__item {
+                height: 56px;
+                line-height: 56px;
+                font-size: 18px;
+                font-family: Microsoft YaHei;
+                color: rgba(135, 141, 159, 1);
+                border-left-color: #f2f4f7;
+
+                &.is-active {
+                    font-size: 18px;
+                    font-family: Microsoft YaHei;
+                    font-weight: bold;
+                    color: rgba(35, 46, 65, 1);
+                }
+            }
+        }
+    }
+}
 </style>

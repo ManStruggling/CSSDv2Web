@@ -38,7 +38,7 @@
                 </div>
                 <el-table :data="item.FailedPackages">
                     <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                    <el-table-column label="包名称" prop="Name" width="210"></el-table-column>
+                    <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
                     <el-table-column label="不合格原因" prop="FailedPackageCauseString" width="210"></el-table-column>
                     <el-table-column label="照片">
                         <template slot-scope="props">

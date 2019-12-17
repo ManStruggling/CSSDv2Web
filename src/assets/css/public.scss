@@ -397,23 +397,58 @@ html body .el-table th.is-leaf {
     text-overflow: ellipsis;
 }
 
-.el-switch{
-    &.is-checked{
-      .el-switch__core{
-        &::after{
-          left: 100%;
-          margin-left: -17px;
+.el-switch {
+    &.is-checked {
+        .el-switch__core {
+            &::after {
+                left: 100%;
+                margin-left: -17px;
+            }
         }
-      }
     }
-    .el-switch__core{
-      width: 36px !important;
-      &::after{
-        top: -1px;
-        left: 0px;
-        width: 20px;
-        height: 20px;
-        box-shadow: 0px 0px 4px 0px rgba(51,62,80,0.3);
-      }
+    .el-switch__core {
+        width: 36px !important;
+        &::after {
+            top: -1px;
+            left: 0px;
+            width: 20px;
+            height: 20px;
+            box-shadow: 0px 0px 4px 0px rgba(51, 62, 80, 0.3);
+        }
     }
-  }
+}
+
+body {
+    .el-dialog {
+        border-radius: 8px;
+        .el-dialog__footer {
+            display: flex;
+            justify-content: center;
+            .el-button {
+                box-sizing: border-box;
+                height: 32px;
+                width: 88px;
+                font-size: 18px;
+            }
+            .el-button--default {
+                border: 1px solid #00C16B;
+                color: #00C16B;
+                &:hover,
+                &:focus {
+                    background: #fff;
+                    color: #00C16B;
+                    border-color: #00c16b;
+                }
+            }
+            .el-button--primary {
+                color: #fff;
+                background: #00C16B;
+                border: 1px solid #00C16B;
+                &:hover,
+                &:focus {
+                    background: #00C16B;
+                }
+            }
+        }
+    }
+}

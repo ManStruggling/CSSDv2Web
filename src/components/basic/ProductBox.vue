@@ -78,7 +78,7 @@
                         </li>
                         <li v-if="editBoxData.Type==80||editBoxData.Type==82||editBoxData.Type==83">
                             <p>发放生成方式</p>
-                            <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13">
+                            <el-select v-model="editBoxData.ProvideGenerateType" class="green24x13" :disabled="editBoxData.IsDirectProvideToClinic">
                                 <el-option v-if="editBoxData.Type==80||editBoxData.Type==82" label="回收生成发放" :value="0" :disabled="editBoxData.IsCommonProduct"></el-option>
                                 <el-option label="预定生成发放" :value="1"></el-option>
                                 <el-option v-if="editBoxData.Type==83" label="配包生成发放" :value="2"></el-option>
@@ -127,6 +127,13 @@
                             <p>关联供应商</p>
                             <el-select filterable v-model="editBoxData.SupplierId" class="green24x13" placeholder="请选择(必选)">
                                 <el-option v-for="(item,index) in suppliers" :key="index" :label="item.Name" :value="item.SupplierId"></el-option>
+                            </el-select>
+                        </li>
+                        <li>
+                            <p>直接发放</p>
+                            <el-select v-model="editBoxData.IsDirectProvideToClinic" class="green24x13" @change="directProvideToClinicChange">
+                                <el-option label="否" :value="false"></el-option>
+                                <el-option label="是" :value="true"></el-option>
                             </el-select>
                         </li>
                     </ul>
@@ -343,7 +350,13 @@ export default {
                 }, 0);
             }
         },
-        //
+        //直接发放change事件
+        directProvideToClinicChange(val) {
+            if (val) {
+                this.editBoxData.ProvideGenerateType = 3;
+            }
+        },
+        //通用包change事件
         commonPackageChange(val) {
             if (val) {
                 this.editBoxData.ProvideGenerateType = 3;

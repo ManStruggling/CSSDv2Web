@@ -77,6 +77,7 @@
 <script>
 import ManualEnter from "../common/ManualEnter";
 export default {
+    inject: ['reload'],
     data() {
         return {
             activeName: '-1',
@@ -162,6 +163,7 @@ export default {
                     if (res.data.Code == 200) {
                         type = "success";
                         this.putInTask = res.data.Data;
+                        this.reload();
                     } else {
                         type = "error";
                     }

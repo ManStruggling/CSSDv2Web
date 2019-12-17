@@ -71,7 +71,7 @@
             <dl v-show="packageMessage.IsOuterProduct">
                 <dt>
                     <p>打印第</p>
-                    <el-select v-model="packageMessage.SplitCount" multiple class="green18x10">
+                    <el-select v-model="packageMessage.SplitCount" multiple class="green18x10" placeholder="'请选择(必选)'">
                         <el-option v-for="item in packageMessage.SplitPackageCount" :key="item" :label="item+''" :value="item+''"></el-option>
                     </el-select>
                     <span>张</span>
@@ -121,7 +121,7 @@ export default {
             handler: function (newValue) {
                 if (newValue.length > 0) {
                     setTimeout(() => {
-                        $("#reprint .el-select .el-input__inner").attr({
+                        $("#reprint2 .el-select .el-input__inner").attr({
                             placeholder: newValue.join()
                         });
                     }, 0);

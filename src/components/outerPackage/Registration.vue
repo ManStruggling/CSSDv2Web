@@ -547,7 +547,8 @@ export default {
                 CarrierName: "",
                 SplitPackageCount: 1,
                 InstrumentTotalCount: 1,
-                Instruments: []
+                Instruments: [],
+                BoxNumbers: []
             };
             this.index = -1; //新增
             this.mode = false;
@@ -680,6 +681,10 @@ export default {
 
                     &.el-button--default {
                         color: #f93e3e;
+                    }
+
+                    &.is-disabled {
+                        color: #ccc;
                     }
 
                     span {

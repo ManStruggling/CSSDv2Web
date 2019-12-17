@@ -187,6 +187,7 @@ export default {
                 IsNotPrintBarCode: false,
                 IsNumberProduct: false,
                 IsPrintLabel: false,
+                IsDirectProvideToClinic: false,
                 IsSingleCarrierProduct: false,
                 NumberProductQuantity: 0,
                 ProvideGenerateType: 0,

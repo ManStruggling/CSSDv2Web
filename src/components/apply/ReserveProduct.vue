@@ -16,7 +16,7 @@
                 <li>
                     <p class="font16gray">需用日期</p>
                     <div class="el_input_box font16blod">
-                        <el-date-picker class="font16blod" :editable="false" :clearable="false" v-model="submitData.BookDateTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+                        <el-date-picker class="font16blod" :editable="false" :clearable="false" v-model="submitData.BookDateTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="bookDateChange"></el-date-picker>
                     </div>
                 </li>
                 <li>
@@ -276,7 +276,24 @@ export default {
         },
         //处理一次性物品
         handleDisposable() {
+            if (this.GLOBAL.UserInfo.HospitalVersion == 'TONGJI') {
+                if (new Date(new Date().getTime() + 3600 * 24 * 1000).toJSON().split('T')[0] != this.submitData.BookDateTime) {
+                    this.showInformation({
+                        classify: 'message',
+                        msg: '只能预订隔天的一次性物品！'
+                    });
+                    return;
+                };
+            }
             this.isShowDisposableList = true;
+        },
+        //预订时间change
+        bookDateChange(val) {
+            if (this.GLOBAL.UserInfo.HospitalVersion == 'TONGJI') {
+                if (new Date(new Date().getTime() + 3600 * 24 * 1000).toJSON().split('T')[0] != val) {
+                    this.submitData.DisposableItems = [];
+                }
+            }
         },
         //无菌物品与父组件通信
         productListToFather(data) {
