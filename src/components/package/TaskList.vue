@@ -90,7 +90,7 @@
                                                 </div>
                                                 <div slot="reference">{{value.ProductName}}</div>
                                             </el-popover>
-                                            <div v-if="!value.IsOuterProduct">
+                                            <div v-if="!value.IsOuterProduct" class="taskOfProductName">
                                                 {{value.ProductName}}
                                                 <i class="viewPictures" @click.stop="viewProductImg(value.ProductId)"></i>
                                             </div>
@@ -901,7 +901,10 @@ export default {
                                     background: url("../../assets/images/imgLogo_green.png") no-repeat;
                                     background-size: 100% 100%;
                                 }
-
+                                .taskOfProductName{
+                                    display: flex;
+                                    align-items: center;
+                                }
                                 .sterilizeType {
                                     line-height: 24px;
                                     width: 40px;

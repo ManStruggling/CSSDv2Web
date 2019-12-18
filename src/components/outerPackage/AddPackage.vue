@@ -431,27 +431,28 @@ export default {
             .el-dialog__body {
                 max-height: 300px;
                 overflow-y: scroll;
-            }
 
-            .divBox {
-                .boxItem {
-                    display: flex;
-                    line-height: 40px;
-                    margin-bottom: 10px;
+                .divBox {
+                    .boxItem {
+                        display: flex;
+                        line-height: 40px;
+                        margin-bottom: 10px;
 
-                    p {
-                        width: 60px;
-                        text-align: right;
-                        margin-right: 20px;
-                    }
+                        p {
+                            width: 60px;
+                            text-align: right;
+                            margin-right: 20px;
+                        }
 
-                    .el-input {
-                        width: 160px;
-                        font-size: 18px;
-                        color: #333;
+                        .el-input {
+                            width: 160px;
+                            font-size: 18px;
+                            color: #333;
+                        }
                     }
                 }
             }
+
         }
 
         h4 {

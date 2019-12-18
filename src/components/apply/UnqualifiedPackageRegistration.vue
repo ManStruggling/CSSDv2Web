@@ -20,9 +20,8 @@
                 <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
                 <el-table-column label="不合格原因" width="210">
                     <template slot-scope="props">
-                        <el-select v-model="props.row.FailedPackageCause" class="green18x10">
-                            <el-option label="包内卡不合格" :value="0" width="210"></el-option>
-                            <el-option label="湿包" :value="1"></el-option>
+                        <el-select v-model="props.row.FailedPackageCauseId" class="green18x10">
+                            <el-option v-for="(item,index) in failedCauses" :key="index" :label="item.CauseName" :value="item.CauseId"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
@@ -73,6 +72,7 @@ export default {
             isShowPhoto: false, //照片
             isShowManualEnter: false, //手工录入
             isChangeMode: false, //修改
+            failedCauses: [],
             photoData: [],
             packages: {
                 FailedPackages: []
@@ -92,6 +92,11 @@ export default {
                 })
                 .then(res => {
                     if (res.data.Code == 200) {
+                        res.data.Data.FailedPackages.forEach(element => {
+                            if (element.DeletedPicturesId === null) {
+                                element.DeletedPicturesId = [];
+                            }
+                        });
                         this.packages = res.data.Data;
                     } else {
                         this.showInformation({
@@ -102,6 +107,18 @@ export default {
                 })
                 .catch(err => {});
         }
+        axios({
+            url: `/api/FailedPackage/InitialVm`
+        }).then(res => {
+            if (res.data.Code == 200) {
+                this.failedCauses = res.data.Data.FailedCauses;
+            } else {
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                });
+            }
+        }).catch(err => {});
     },
     mounted() {},
     beforeDestroy() {
@@ -132,7 +149,14 @@ export default {
         },
         //删除包
         deletePackage(index) {
-            this.packages.FailedPackages.splice(index, 1);
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包吗?',
+                confirmCallBack: () => {
+                    this.packages.FailedPackages.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //登记完成
         registrationComplete() {
@@ -149,30 +173,40 @@ export default {
                     msg: "您还没有录入不合格包，请至少添加一个不合格包！"
                 }])
             ) {
-                axios({
-                        url: url,
-                        method: method,
-                        data: this.packages
-                    })
-                    .then(res => {
-                        let type;
-                        if (res.data.Code == 200) {
-                            type = "success";
-                            if (this.isChangeMode) {
-                                this.$router.push("/apply/unqualifiedRecord");
+                let arr = [];
+                this.packages.FailedPackages.forEach(element => {
+                    arr.push(element.FailedPackageCauseId);
+                });
+                if (this.GLOBAL.VerificationHandle([{
+                        val: arr,
+                        type: 'StringAllNotEmpty',
+                        msg: '未选择不合格原因！'
+                    }])) {
+                    axios({
+                            url: url,
+                            method: method,
+                            data: this.packages
+                        })
+                        .then(res => {
+                            let type;
+                            if (res.data.Code == 200) {
+                                type = "success";
+                                if (this.isChangeMode) {
+                                    this.$router.push("/apply/unqualifiedRecord");
+                                } else {
+                                    this.reload();
+                                }
                             } else {
-                                this.reload();
+                                type = "error";
                             }
-                        } else {
-                            type = "error";
-                        }
-                        this.showInformation({
-                            classify: "message",
-                            msg: res.data.Msg,
-                            type: type
-                        });
-                    })
-                    .catch(err => {});
+                            this.showInformation({
+                                classify: "message",
+                                msg: res.data.Msg,
+                                type: type
+                            });
+                        })
+                        .catch(err => {});
+                }
             }
         },
         //处理手工录入
@@ -183,7 +217,7 @@ export default {
         packageData2father(data) {
             this.isShowManualEnter = false;
             if (data) {
-                data.FailedPackageCause = 0;
+                data.FailedPackageCauseId = '';
                 this.packages.FailedPackages.push(data);
             }
         },

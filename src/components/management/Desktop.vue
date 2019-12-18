@@ -8,38 +8,49 @@
                 <span>{{formatTime}}</span>
             </div>
             <div class="li_content">
+                <div class="li_content_title">
+                    <p class="p_name">岗位</p>
+                    <p>应完成数</p>
+                    <p>实际完成数</p>
+                    <p class="progress_p">完成度</p>
+                </div>
                 <ol>
                     <li>
                         <p class="p_name">回收</p>
-                        <p>{{setProgressData("RecycleTaskForConsole")}}包</p>
+                        <p>{{setProgressData("RecycleTaskForConsole","ShouldCompletedCount")}}包</p>
+                        <p>{{setProgressData("RecycleTaskForConsole","AlreadyCompleteCount")}}包</p>
                         <p class="progress_p">
                             <el-progress v-if="desktopData.TaskSchedule.RecycleTaskForConsole" :percentage="countPercentage('RecycleTaskForConsole')"></el-progress>
                         </p>
                     </li>
                     <li>
                         <p class="p_name">清洗消毒</p>
-                        <p>{{setProgressData("CleanTaskForConsole")}}包</p>
+                        <p>{{setProgressData("CleanTaskForConsole","ShouldCompletedCount")}}包</p>
+                        <p>{{setProgressData("CleanTaskForConsole","AlreadyCompleteCount")}}包</p>
                         <p class="progress_p">
                             <el-progress v-if="desktopData.TaskSchedule.RecycleTaskForConsole" :percentage="countPercentage('CleanTaskForConsole')"></el-progress>
                         </p>
                     </li>
                     <li>
                         <p class="p_name">配包</p>
-                        <p>{{setProgressData("PackageTaskForConsole")}}包</p>
+                        <p>{{setProgressData("PackageTaskForConsole","ShouldCompletedCount")}}包</p>
+                        <p>{{setProgressData("PackageTaskForConsole","AlreadyCompleteCount")}}包</p>
                         <p class="progress_p">
                             <el-progress v-if="desktopData.TaskSchedule.RecycleTaskForConsole" :percentage="countPercentage('PackageTaskForConsole')"></el-progress>
                         </p>
                     </li>
                     <li>
                         <p class="p_name">灭菌</p>
-                        <p>{{setProgressData("SterilizeTaskForConsole")}}包</p>
+                        <p>{{setProgressData("SterilizeTaskForConsole","ShouldCompletedCount")}}包</p>
+                        <p>{{setProgressData("SterilizeTaskForConsole","AlreadyCompleteCount")}}包</p>
                         <p class="progress_p">
                             <el-progress v-if="desktopData.TaskSchedule.RecycleTaskForConsole" :percentage="countPercentage('SterilizeTaskForConsole')"></el-progress>
                         </p>
                     </li>
                     <li>
                         <p class="p_name">发放</p>
-                        <p>{{setProgressData("ProvideTaskForConsole")}}包</p>
+                        <p>{{setProgressData("ProvideTaskForConsole","ShouldCompletedCount")}}包</p>
+                        <p>{{setProgressData("ProvideTaskForConsole","AlreadyCompleteCount")}}包</p>
                         <p class="progress_p">
                             <el-progress v-if="desktopData.TaskSchedule.RecycleTaskForConsole" :percentage="countPercentage('ProvideTaskForConsole')"></el-progress>
                         </p>
@@ -296,13 +307,13 @@ export default {
         },
         //找到对应供应室的数据
         setProgressData() {
-            return (origin) => {
+            return (origin,field) => {
                 if (this.desktopData.TaskSchedule[origin] && this.desktopData.TaskSchedule[origin].length != 0) {
                     let arr = this.desktopData.TaskSchedule[origin].filter(val => {
                         return val.CssdId === this.GLOBAL.UserInfo.ClinicId
                     });
                     if (arr.length != 0) {
-                        return arr[0].ShouldCompletedCount;
+                        return arr[0][field];
                     } else {
                         return 0;
                     }
@@ -378,14 +389,27 @@ export default {
 
             .li_content {
                 flex: 1;
-
                 .empty_data {
                     text-align: center;
                     font-size: 18px;
                     font-weight: normal;
                     color: #D0D4DA;
                 }
-
+                .li_content_title{
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                    color: #878d9f;
+                    p{
+                        width: 80px;
+                        &.p_name{
+                            width: 180px;
+                        }
+                        &.progress_p{
+                            width: 270px;
+                        }
+                    }
+                }
                 >ol {
                     height: 318px;
 

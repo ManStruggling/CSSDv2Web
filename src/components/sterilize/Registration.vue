@@ -17,10 +17,17 @@
             </li>
         </ul>
         <div class="cssd_title_right">
-            <b>生物检测</b>
-            <b style="margin:0 30px 0 10px;">
-                <el-switch v-model="submitData.IsBiologicalTest" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false" :disabled="BiologicalTestForbit"></el-switch>
-            </b>
+            <p>
+                <span>待灭菌包</span>:
+                <b></b>
+                <a @click="handleShowSterilizeablePackage">查看</a>
+            </p>
+            <p>
+                <b>生物检测</b>
+                <b>
+                    <el-switch v-model="submitData.IsBiologicalTest" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false" :disabled="BiologicalTestForbit"></el-switch>
+                </b>
+            </p>
             <b>{{submitData.DeviceModelName}}:{{submitData.IsDbTestProgram?`${submitData.DeviceModelProgramName}(BD测试程序)`:submitData.DeviceModelProgramName}}</b>
             <a @click="reSelect">重新选择</a>
         </div>
@@ -102,6 +109,10 @@
         <!-- 代消包 -->
         <Substitution v-if="isShowSubstitution" @substitution-to-father="substitutionToFather"></Substitution>
     </transition>
+    <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <!-- 可被灭菌的包 -->
+        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather"></SterilizeablePackages>
+    </transition>
 </div>
 </template>
 
@@ -110,6 +121,7 @@ import ManualEnter from "../common/ManualEnter";
 import SterilizeSelectBox from "./sterilizeSelectBox";
 import Substitution from "./Substitution";
 import CountNumberPackageList from "../common/CountNumberPackageList";
+import SterilizeablePackages from '../common/SterilizeablePackages';
 export default {
     data() {
         return {
@@ -119,6 +131,7 @@ export default {
             isShowCountNumberPackageList: false, //计数包登记
             isShowSterilizeSelect: false, //显示灭菌程序
             isShowSubstitution: false, //显示代消包
+            isShowSterilizeablePackage: false, //显示可被灭菌的包
             sterilizeRecordModle: false, //灭菌修改模式
             BiologicalTestForbit: false, //生物检测禁用
             submitData: {
@@ -140,7 +153,8 @@ export default {
         ManualEnter,
         SterilizeSelectBox,
         CountNumberPackageList,
-        Substitution
+        Substitution,
+        SterilizeablePackages
     },
     created() {
         CSManager.handleDataThis = this;
@@ -186,6 +200,19 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        //显示可被灭菌的包
+        handleShowSterilizeablePackage() {
+            this.isShowSterilizeablePackage = true;
+        },
+        //可被灭菌的包和父组件通信
+        sterilizeableToFather(data) {
+            this.isShowSterilizeablePackage = false;
+            if (data) {
+                data.forEach(element=>{
+                    this.handleBarCode(element.BarCode);
+                });
+            }
+        },
         //代消包处理
         substitution() {
             this.isShowSubstitution = true;
@@ -498,6 +525,10 @@ export default {
 
 #sterilizeRegistration {
     .cssd_title_right {
+        p {
+            margin-right: 30px;
+        }
+
         b {
             font-size: 18px;
             font-family: Microsoft YaHei;

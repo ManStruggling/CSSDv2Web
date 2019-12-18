@@ -223,6 +223,7 @@ export default {
             search_HospitalId: "", //搜索住院号
             isShowManualEnter: false,
             isChangeMode: false, //记录修改
+            isHasPakcageOfDifferentHospitalId: false,
             submitData: {
                 Patient: {
                     HospitalId: "",
@@ -316,14 +317,15 @@ export default {
                     })
                     .then(res => {
                         let type;
+                        this.forbid = false;
+                        this.submitData.Packages = [];
+                        this.submitData.OlderSystemPackages = [];
+                        this.isHasPakcageOfDifferentHospitalId = false;
                         if (res.data.Code == 200) {
                             type = "success";
-                            this.forbid = false;
                             this.submitData.Patient = res.data.Data.Patient;
-                            this.submitData.Packages = [];
                         } else {
                             type = "error";
-                            this.forbid = false;
                             this.submitData.Patient = {
                                 HospitalId: this.search_HospitalId,
                                 PatientName: "",
@@ -342,7 +344,6 @@ export default {
                                 SurgicalDate: "",
                                 Stage: ""
                             };
-                            this.submitData.Packages = [];
                         }
                         this.showInformation({
                             classify: "message",
@@ -390,33 +391,49 @@ export default {
                     }
                 ])
             ) {
-                axios({
-                        url: url,
-                        method: method,
-                        data: this.submitData
-                    })
-                    .then(res => {
-                        let type;
-                        if (res.data.Code == 200) {
-                            type = "success";
-                            if (this.isChangeMode) {
-                                this.$router.push({
-                                    path: "/apply/record"
-                                });
-                            } else {
-                                this.reload();
-                            }
-                        } else {
-                            type = "error";
-                        }
-                        this.showInformation({
-                            classify: "message",
-                            msg: res.data.Msg,
-                            type: type
-                        });
-                    })
-                    .catch(err => {});
+                if (this.isHasPakcageOfDifferentHospitalId) {
+                    this.showInformation({
+                        classify: 'confirm',
+                        msg: '外来器械包绑定的住院号与本次使用的病人住院号不同，确定要使用包吗？',
+                        confirmCallBack: () => {
+                            this.submitRequest(url, method);
+                        },
+                        cancelCallBack: () => {}
+                    });
+                } else {
+                    this.submitRequest(url, method);
+                }
+
             }
+        },
+        //使用提交请求
+        submitRequest(url, method) {
+            axios({
+                    url: url,
+                    method: method,
+                    data: this.submitData
+                })
+                .then(res => {
+                    let type;
+                    if (res.data.Code == 200) {
+                        type = "success";
+                        if (this.isChangeMode) {
+                            this.$router.push({
+                                path: "/apply/record"
+                            });
+                        } else {
+                            this.reload();
+                        }
+                    } else {
+                        type = "error";
+                    }
+                    this.showInformation({
+                        classify: "message",
+                        msg: res.data.Msg,
+                        type: type
+                    });
+                })
+                .catch(err => {});
         },
         //删除包
         deletePackage(row) {
@@ -466,6 +483,7 @@ export default {
                             msg: '该外来器械包绑定的住院号与本次使用的病人住院号不同，您确定要使用该包吗?',
                             confirmCallBack: () => {
                                 this.submitData.Packages.push(data);
+                                this.isHasPakcageOfDifferentHospitalId = true;
                                 this.showInformation({
                                     classify: "notify",
                                     msg: `您使用的外来器械包${data.BarCode}和该病人的住院号不同，请重打包条码！`,

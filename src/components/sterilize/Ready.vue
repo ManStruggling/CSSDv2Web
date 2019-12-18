@@ -17,6 +17,11 @@
         </ul>
         <div class="cssd_title_right">
             <p>
+                <span>待灭菌包</span>:
+                <b></b>
+                <a @click="handleShowSterilizeablePackage">查看</a>
+            </p>
+            <p>
                 <span v-show="submitData.CarrierId===0">暂无网篮</span>
                 <span class="hasCarrierData" v-show="submitData.CarrierId!=0">{{submitData.CarrierName}}</span>
             </p>
@@ -62,18 +67,24 @@
         <!-- 手工录入 -->
         <ManualEnter v-if="isShowManualEnter" @to-father="packageData2father" :ApiUrl="'/api/Scanner/SterilizeReady'" :BarCodeList="submitData.PackageBarCodes"></ManualEnter>
     </transition>
+    <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <!-- 可被灭菌的包 -->
+        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather"></SterilizeablePackages>
+    </transition>
 </div>
 </template>
 
 <script>
 import ManualEnter from "../common/ManualEnter";
 import CountNumberPackageList from "../common/CountNumberPackageList";
+import SterilizeablePackages from '../common/SterilizeablePackages';
 export default {
     inject: ['reload'],
     data() {
         return {
             sterilizeReadyChangeMode: false,
             isShowManualEnter: false,
+            isShowSterilizeablePackage: false,
             isShowCountNumberPackageList: false,
             submitData: {
                 CarrierId: 0,
@@ -84,7 +95,8 @@ export default {
     },
     components: {
         ManualEnter,
-        CountNumberPackageList
+        CountNumberPackageList,
+        SterilizeablePackages
     },
     created() {
         CSManager.handleDataThis = this;
@@ -110,6 +122,19 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        //显示可被灭菌的包
+        handleShowSterilizeablePackage() {
+            this.isShowSterilizeablePackage = true;
+        },
+        //可被灭菌的包和父组件通信
+        sterilizeableToFather(data) {
+            this.isShowSterilizeablePackage = false;
+            if (data) {
+                data.forEach(element=>{
+                    this.handleBarCode(element.BarCode);
+                });
+            }
+        },
         //el-input-number change 事件
         handleNumberChange(newValue, oldValue, index) {
             if (newValue == undefined) {
@@ -310,10 +335,17 @@ export default {
     .cssd_title_right {
         p {
             display: flex;
-
+            margin-left: 30px;
             span {
                 text-align: right;
                 width: 100px;
+            }
+            a{
+                font-size:14px;
+                color: #00C16B;
+                line-height: 24px;
+                cursor: pointer;
+                margin-left: 10px;
             }
         }
     }
