@@ -243,9 +243,11 @@ export default {
     created() {
         //个数包 没有器械
         this.editBoxData = this.$props.data;
-        this.editBoxData.DeletedPicturesId =
-            this.editBoxData.DeletedPicturesId == null ? [] :
-            this.editBoxData.DeletedPicturesId;
+        this.editBoxData.DeletedPicturesId = this.editBoxData.DeletedPicturesId == null ? [] : this.editBoxData.DeletedPicturesId;
+        //代销包手动生成发放任务
+        if (this.editBoxData.Type == 85) {
+            this.editBoxData.ProvideGenerateType = 3;
+        }
         if (this.editBoxData.Type == 83) {
             this.tabActiveName = "second";
             if (this.editBoxData.Id == 0) {

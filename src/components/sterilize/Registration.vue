@@ -19,10 +19,10 @@
         <div class="cssd_title_right">
             <p>
                 <span>待灭菌包</span>:
-                <b></b>
+                <b>{{sterilizeablePackages.length}}</b>
                 <a @click="handleShowSterilizeablePackage">查看</a>
             </p>
-            <p>
+            <p class="biologicalTest">
                 <b>生物检测</b>
                 <b>
                     <el-switch v-model="submitData.IsBiologicalTest" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false" :disabled="BiologicalTestForbit"></el-switch>
@@ -111,7 +111,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 可被灭菌的包 -->
-        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather"></SterilizeablePackages>
+        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather" :packages="sterilizeablePackages"></SterilizeablePackages>
     </transition>
 </div>
 </template>
@@ -125,6 +125,7 @@ import SterilizeablePackages from '../common/SterilizeablePackages';
 export default {
     data() {
         return {
+            sterilizeablePackages: [],
             activeName: "",
             activeNameNotCarriersPackage: "",
             isShowManualEnter: false, //显示手工录入
@@ -194,6 +195,11 @@ export default {
                 })
                 .catch(err => {});
         }
+        axios({
+            url: `/api/Sterilize/CanBeSterilizePackages`
+        }).then(res => {
+            this.sterilizeablePackages = res.data.Data;
+        }).catch(err => {})
     },
     mounted() {},
     beforeDestroy() {
@@ -527,6 +533,11 @@ export default {
     .cssd_title_right {
         p {
             margin-right: 30px;
+            &.biologicalTest{
+                b{
+                    margin-left: 10px;
+                }
+            }
         }
 
         b {

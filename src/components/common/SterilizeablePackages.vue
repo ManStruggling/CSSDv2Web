@@ -20,12 +20,20 @@
 
 <script>
 export default {
+    props: {
+        packages: Array
+    },
     data() {
         return {
             searchShortCode: "", //简码搜索字段
-            packageList: [], //显示的包列表
-            multipleSelection: []
+            multipleSelection: [],
+            packageList: [],
+            totalData: []
         };
+    },
+    created() {
+        this.totalData = JSON.parse(JSON.stringify(this.packages));
+        this.packageList = JSON.parse(JSON.stringify(this.packages));
     },
     methods: {
         //取消
@@ -42,7 +50,7 @@ export default {
         },
         //搜索事件
         packageSearch() {
-            
+            this.packageList = this.totalData.filter(element=>{return (element.BarCode.includes(this.searchShortCode.toUpperCase())||element.ProductName.includes(this.searchShortCode.toUpperCase()));})
         },
         //选择数据
         handleSelectionChange(val) {
@@ -51,13 +59,6 @@ export default {
         getRowKeys(row) {
             return row.PackageBarCodeId;
         }
-    },
-    created() {
-        axios({
-            url: `/api/Sterilize/CanBeSterilizePackages`
-        }).then(res => {
-            this.packageList = res.data.Data;
-        }).catch(err => {})
     }
 };
 </script>

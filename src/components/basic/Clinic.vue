@@ -119,12 +119,11 @@ export default {
         //请求数据
         requestData(arr, index) {
             axios({
-                url: "/api/Clinic",
+                url: "/api/Clinic/BatchImport",
                 method: "POST",
                 data: arr[index]
             }).then(res => {
                 if (res.data.Code == 200) {
-                    this.table_data = res.data.Data;
                     if (index < arr.length - 1) {
                         this.requestData(arr, index + 1);
                     }

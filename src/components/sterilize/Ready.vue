@@ -18,7 +18,7 @@
         <div class="cssd_title_right">
             <p>
                 <span>待灭菌包</span>:
-                <b></b>
+                <b>{{sterilizeablePackages.length}}</b>
                 <a @click="handleShowSterilizeablePackage">查看</a>
             </p>
             <p>
@@ -69,7 +69,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 可被灭菌的包 -->
-        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather"></SterilizeablePackages>
+        <SterilizeablePackages v-if="isShowSterilizeablePackage" @sterilizeable-to-father="sterilizeableToFather" :packages="sterilizeablePackages"></SterilizeablePackages>
     </transition>
 </div>
 </template>
@@ -82,6 +82,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            sterilizeablePackages: [],
             sterilizeReadyChangeMode: false,
             isShowManualEnter: false,
             isShowSterilizeablePackage: false,
@@ -117,6 +118,11 @@ export default {
                 })
                 .catch(err => {});
         }
+        axios({
+            url: `/api/Sterilize/CanBeSterilizePackages`
+        }).then(res => {
+            this.sterilizeablePackages = res.data.Data;
+        }).catch(err => {})
     },
     beforeDestroy() {
         CSManager.handleDataThis = null;

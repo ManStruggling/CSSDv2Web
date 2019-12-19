@@ -113,14 +113,11 @@ export default {
         //循环请求数据
         requestData(arr, index) {
             axios({
-                url: "/api/BasicInformation/Carrier",
+                url: "/api/BasicInformation/Carrier/BatchImport",
                 method: "POST",
                 data: arr[index]
             }).then(res => {
                 if (res.data.Code == 200) {
-                    if (this.Type === arr[index].Type) {
-                        this.table_data = res.data.Data;
-                    }
                     if (index < arr.length - 1) {
                         this.requestData(arr, index + 1);
                     }
