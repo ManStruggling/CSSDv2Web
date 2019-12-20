@@ -9,34 +9,122 @@
             <el-button type="primary" class="btn120x40" @click="creatReport">查询报表</el-button>
         </p>
         <p class="madeBySelfBoxRightP">
-            <el-input v-model.trim="searchField" placeholder="输入查询的产品名称" @blur="searchInputBlur"></el-input>
+            <el-input v-model.trim="searchField" placeholder="输入查询的产品名称" @input="searchInputEvent"></el-input>
             <el-button class="btn120x40empty" @click="exportData">导出报表</el-button>
-            <el-button @click="setpdf">打印</el-button>
+            <el-button @click="printView">打印预览</el-button>
         </p>
     </div>
-    <el-table :data="tableData" show-summary row-key="Id" border height="100%">
+    <el-table :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="multipleTable">
         <el-table-column v-for="(item,index) in columnList" :key="index" :label="item.DisplayName" :prop="dropCol[index].SpliceName" :filters="item.FilterArr" :filter-method="filterData" :column-key="index+''" sortable :sort-by="dropCol[index].SpliceName"></el-table-column>
     </el-table>
+    <PrintPreview v-if="isShowPrintView"></PrintPreview>
 </div>
 </template>
 
 <script>
+import '@/assets/css/hiprint/hiprint.css';
+import '@/assets/css/hiprint/print-lock.css'
+
 import Sortable from "sortablejs";
 import toExcel from "@/utils/json2excel";
+import '@/assets/css/hiprint/hiprint.css';
+import '@/assets/css/hiprint/print-lock.css';
+
+import '@/plugins/hiprint/jquery.min.js';
+import '@/plugins/hiprint/jquery.minicolors.min.js';
+import {
+    hiprint
+} from '@/plugins/hiprint/hiprint.bundle.js';
+import '@/plugins/hiprint/jquery.hiwprint.js';
+import PrintPreview from '@/components/common/PrintPreview';
 export default {
     inject: ['reload'],
     data() {
         return {
-            totalData: [], //所有数据
+            isShowPrintView: false,
+            hiprintTemplate: null, //打印实例
+            customPrintJson: {
+                "panels": [{
+                    "index": 0,
+                    "height": 297,
+                    "width": 210,
+                    "paperHeader": 40.5,
+                    "paperFooter": 780,
+                    "printElements": [{
+                        "options": {
+                            "left": 10,
+                            "top": 50,
+                            "height": 44,
+                            "width": 511.5,
+                            "field": "table",
+                            "columns": [
+                                [{
+                                    "title": "id",
+                                    "field": "id",
+                                    "width": 85.25,
+                                    "colspan": 1,
+                                    "rowspan": 1
+                                }, {
+                                    "title": "姓名",
+                                    "field": "name",
+                                    "width": 85.25,
+                                    "align": "center",
+                                    "colspan": 1,
+                                    "rowspan": 1
+                                }, {
+                                    "title": "性别",
+                                    "field": "gender",
+                                    "width": 85.25,
+                                    "colspan": 1,
+                                    "rowspan": 1
+                                }, {
+                                    "title": "账户",
+                                    "field": "count",
+                                    "width": 85.25,
+                                    "colspan": 1,
+                                    "rowspan": 1
+                                }, {
+                                    "title": "金额",
+                                    "field": "amount",
+                                    "width": 85.25,
+                                    "colspan": 1,
+                                    "rowspan": 1
+                                }]
+                            ]
+                        },
+                        "printElementType": {
+                            "title": "表格",
+                            "type": "tableCustom"
+                        }
+                    }, ],
+                    "paperNumberLeft": 565.5,
+                    "paperNumberTop": 819
+                }]
+            },
+            printData: {
+                table: []
+            },
             searchField: "", //查询的字串
             search_date: [], //查询的日期
             selectReportId: "",
             reportList: [], //报表列表
             columnList: [],
             dropCol: [],
+            totalData: [], //所有数据
             tableData: [], //报表数据
             currentReportId: 0 //当前报表的Id
         };
+    },
+    components: {
+        PrintPreview
+    },
+    provide() {
+        return {
+            closePrintView: this.closePrintView,
+            startPrinting: this.startPrinting,
+            printDesign: this.printDesign,
+            rotatePrintPaper: this.rotatePrintPaper
+        }
     },
     created() {
         axios("/api/Report")
@@ -55,13 +143,24 @@ export default {
     mounted() {
         // this.rowDrop();
         // this.columnDrop();
+        $(document).ready(() => {
+            //初始化打印插件
+            hiprint.init();
+        })
     },
     methods: {
         //过滤数据method
         filterData(value, row, column) {
             for (let i = 0; i < this.columnList.length; i++) {
                 if (this.columnList[i].DisplayName === column.label) {
-                    return row[this.columnList[i].SpliceName] == value;
+                    if(row[this.columnList[i].SpliceName] == value){
+                        row.Visiable = true;
+                        return true;
+                    }else{
+                        row.Visiable = false;
+                        return false;
+                    }
+                    
                 }
             }
         },
@@ -84,19 +183,13 @@ export default {
                 for (let i = 0; i < this.reportList.length; i++) {
                     if (this.selectReportId === this.reportList[i].ReportId) {
                         url = this.reportList[i].ReportUrl;
-                        this.columnList = JSON.parse(
-                            JSON.stringify(this.reportList[i].Parameters)
-                        );
+                        this.columnList = JSON.parse(JSON.stringify(this.reportList[i].Parameters));
                         if (this.columnList.length < 6) {}
                         this.dropCol = JSON.parse(JSON.stringify(this.columnList));
                         break;
                     }
                 }
-                axios(
-                        `${url}&$filter=CreatedTime ge ${
-            this.search_date[0]
-          } and CreatedTime le ${this.search_date[1]}`
-                    )
+                axios(`${url}&$filter=CreatedTime ge ${ this.search_date[0] } and CreatedTime le ${this.search_date[1]}`)
                     .then(res => {
                         this.currentReportId = this.selectReportId;
                         let getData = res.data.value;
@@ -147,9 +240,10 @@ export default {
                         }
                         for (let i = 0; i < data.length; i++) {
                             data[i].Id = i + 1;
+                            data[i].Visiable = true;
                         }
                         this.tableData = data;
-                        this.totalData = JSON.parse(JSON.stringify(this.tableData));
+                        this.totalData = JSON.parse(JSON.stringify(data));
                         //过滤功能数组
                         for (let i = 0; i < this.columnList.length; i++) {
                             let filterArr = [];
@@ -255,36 +349,43 @@ export default {
                 }
             });
         },
-        //打印pdf文件
-        setpdf() {
-            let jubuHtml = `<div id="viewEffect"><table class="table table-bordered table-striped text-center" cellpadding="10" cellspacing="10" width="100%"><thead><tr class="tr_th">`;
-            this.dropCol.forEach(element => {
-                jubuHtml += `<th>${element.DisplayName}</th>`;
+        //旋转打印纸张
+        rotatePrintPaper() {
+            this.hiprintTemplate.rotatePaper();
+        },
+        //打印预览
+        printView() {
+            let printTablefields = [];
+            this.columnList.forEach(element => {
+                printTablefields.push({
+                    "title": element.DisplayName,
+                    "field": element.SpliceName,
+                    "width": 85.25,
+                    "colspan": 1,
+                    "align": "center",
+                    "rowspan": 1
+                });
             });
-            jubuHtml += `</tr></thead><tbody>`;
-            jubuHtml += $(".el-table__body-wrapper tbody").html();
-            jubuHtml += "</tbody><tfoot>";
-            jubuHtml += $(".el-table__footer-wrapper tbody").html();
-            jubuHtml += "</tfoot></table></div>";
-            window.document.body.innerHTML = jubuHtml;
-
-            window.print();
-
-            function print(id_str) {
-                var el = document.getElementById(id_str);
-                var iframe = document.createElement("IFRAME");
-                var doc = null;
-                document.body.appendChild(iframe);
-                doc = iframe.contentWindow.document;
-                doc.write("<div>" + el.innerHTML + "</div>");
-                doc.close();
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-                if (navigator.userAgent.indexOf("MSIE") > 0) {
-                    document.body.removeChild(iframe);
-                }
-            }
-            this.$router.go(0);
+            this.customPrintJson.panels[0].printElements[0].options.columns[0] = printTablefields;
+            this.hiprintTemplate = new hiprint.PrintTemplate({
+                template: this.customPrintJson,
+                settingContainer: '#PrintElementOptionSetting',
+                paginationContainer: '.hiprint-printPagination'
+            });
+            this.isShowPrintView = true;
+        },
+        //打印设计
+        printDesign() {
+            this.hiprintTemplate.design('#hiprint-printTemplate');
+        },
+        //开始打印
+        startPrinting() {
+            this.printData.table = this.tableData.filter(element=>element.Visiable);
+            this.hiprintTemplate.print(this.printData);
+        },
+        //关闭预览
+        closePrintView() {
+            this.isShowPrintView = false;
         },
         //导出数据
         exportData() {
@@ -328,19 +429,28 @@ export default {
                 });
             }
         },
+        //筛选change事件
+        tableFilteredEvent(filters){
+            for (const key in filters) {
+                if(filters[key]==''){
+                    this.tableData.forEach(element=>{
+                        element.Visiable = true;
+                    });
+                    this.$refs.multipleTable.clearFilter();
+                }
+            }
+        },
         //input筛选数据
-        searchInputBlur() {
+        searchInputEvent() {
             if (this.searchField) {
-                let temporaryArr = [];
-                temporaryArr = this.totalData.filter(data => {
+                this.tableData =  this.totalData.filter(data => {
                     for (let key in data) {
                         if (/ProductName$/.test(key) && data[key].toLowerCase().includes(this.searchField.toLowerCase())) {
+                            data.Visiable = true;
                             return true;
                         }
                     }
-                    return false;
                 });
-                this.tableData = JSON.parse(JSON.stringify(temporaryArr));
             } else {
                 this.tableData = JSON.parse(JSON.stringify(this.totalData));
             }

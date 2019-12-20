@@ -137,12 +137,14 @@
                                                 <!-- 非个数包 -->
                                                 <el-input-number v-if="!value.IsNumberProduct" v-model="value.ThisTimePackageQuantity" :min="0" :max="value.CanBePackagedQuantity" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,index,collapseIndex,'ThisTimePackageQuantity')})"></el-input-number>
                                                 <!-- 个数包 -->
-                                                <div v-if="value.IsNumberProduct" class="thisTimePackageNumber">
-                                                    <el-input-number v-model="value.ThisTimePackageQuantity" :min="0" size="mini" :max="value.NumberProductQuantity==0?value.CanBePackagedQuantity:(value.CanBePackagedQuantity%value.NumberProductQuantity==0?value.CanBePackagedQuantity/value.NumberProductQuantity:(value.CanBePackagedQuantity/value.NumberProductQuantity+'').split('.')[0]-0+1)" :controls="false" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,index,collapseIndex,'ThisTimePackageQuantity')})"></el-input-number>
-                                                    <span class="numberPackageSpan">* {{value.NumberProductQuantity==0?1:value.NumberProductQuantity}}</span>
-                                                    <div class="actuallyPackageNumber" v-if="value.IsNumberProduct&&value.NumberProductQuantity!=0">{{value.ThisTimePackageQuantity*value.NumberProductQuantity>value.CanBePackagedQuantity?'本次配包数为：'+value.CanBePackagedQuantity:'本次配包数为：'+value.ThisTimePackageQuantity*value.NumberProductQuantity}}</div>
+                                                <div class="countingNumberProductPackageNumber">
+                                                    <div v-if="value.IsNumberProduct" class="thisTimePackageNumber">
+                                                        <el-input-number v-model="value.ThisTimePackageQuantity" :min="0" size="mini" :max="value.NumberProductQuantity==0?value.CanBePackagedQuantity:(value.CanBePackagedQuantity%value.NumberProductQuantity==0?value.CanBePackagedQuantity/value.NumberProductQuantity:(value.CanBePackagedQuantity/value.NumberProductQuantity+'').split('.')[0]-0+1)" :controls="false" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,index,collapseIndex,'ThisTimePackageQuantity')})"></el-input-number>
+                                                        <span class="numberPackageSpan">* {{value.NumberProductQuantity==0?1:value.NumberProductQuantity}}</span>
+                                                        <div class="actuallyPackageNumber" v-if="value.IsNumberProduct&&value.NumberProductQuantity!=0">{{value.ThisTimePackageQuantity*value.NumberProductQuantity>value.CanBePackagedQuantity?'本次配包数为：'+value.CanBePackagedQuantity:'本次配包数为：'+value.ThisTimePackageQuantity*value.NumberProductQuantity}}</div>
+                                                    </div>
+                                                    <div class="actuallyPackageNumber" v-if="value.IsNumberProduct&&value.NumberProductQuantity==0">{{'本次配包数为：'+value.ThisTimePackageQuantity}}</div>
                                                 </div>
-                                                <div class="actuallyPackageNumber" v-if="value.IsNumberProduct&&value.NumberProductQuantity==0">{{'本次配包数为：'+value.ThisTimePackageQuantity}}</div>
                                             </template>
                                         </div>
                                         <!-- 单网篮包 -->
@@ -901,10 +903,12 @@ export default {
                                     background: url("../../assets/images/imgLogo_green.png") no-repeat;
                                     background-size: 100% 100%;
                                 }
-                                .taskOfProductName{
+
+                                .taskOfProductName {
                                     display: flex;
                                     align-items: center;
                                 }
+
                                 .sterilizeType {
                                     line-height: 24px;
                                     width: 40px;

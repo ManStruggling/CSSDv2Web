@@ -396,7 +396,18 @@ export default {
                         classify: 'confirm',
                         msg: '外来器械包绑定的住院号与本次使用的病人住院号不同，确定要使用包吗？',
                         confirmCallBack: () => {
-                            this.submitRequest(url, method);
+                            if (this.GLOBAL.UserInfo.HospitalVersion == 'TONGJI') {
+                                if (this.GLOBAL.UserInfo.JobAndCompetence.includes('000') || this.GLOBAL.UserInfo.JobAndCompetence.includes('200')||this.GLOBAL.UserInfo.JobAndCompetence.includes('271')) {
+                                    this.submitRequest(url, method);
+                                } else {
+                                    this.showInformation({
+                                        classify: 'message',
+                                        msg: '暂无权限使用住院号不同的包！'
+                                    });
+                                }
+                            } else {
+                                this.submitRequest(url, method);
+                            }
                         },
                         cancelCallBack: () => {}
                     });

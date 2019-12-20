@@ -55,6 +55,7 @@
                         </el-table-column>
                         <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                         <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                        <el-table-column v-if="item.IsNumberProduct" label="包内个数" prop="Quantity" width="210"></el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>
                     <el-table v-if="!item.IsNotPrintBarCode&&item.IsDisposableProduct" :data="item.Packages">

@@ -2,7 +2,7 @@
 <div id="sterilizeablePackages" class="basic_package_box">
     <div class="package_box">
         <h3>
-            <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="packageSearch"></el-input>
+            <el-input v-model="searchShortCode" placeholder="请输入查询内容" @input="packageSearch"></el-input>
         </h3>
         <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="280" width="400" @selection-change="handleSelectionChange" :row-key="getRowKeys" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
@@ -25,7 +25,7 @@ export default {
     },
     data() {
         return {
-            searchShortCode: "", //简码搜索字段
+            searchShortCode: "", //搜索内容
             multipleSelection: [],
             packageList: [],
             totalData: []

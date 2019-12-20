@@ -36,7 +36,7 @@
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
-                    <a class="delete_this_tr" @click.stop="deleteThisTr(props.$index)">删除</a>
+                    <a class="delete_this_tr" @click.stop="prohibitThisTr(props.$index)">禁用</a>
                 </template>
             </el-table-column>
             <el-table-column></el-table-column>
@@ -196,8 +196,8 @@ export default {
             }
             this.showEditBox = true;
         },
-        //删除this tr
-        deleteThisTr(index) {
+        //禁用this package
+        prohibitThisTr(index) {
             this.showInformation({
                 classify: 'confirm',
                 msg: '您确定要删除该项?',

@@ -48,6 +48,7 @@
                         <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
                         <el-table-column label="包条码" prop="BarCode" width="210"></el-table-column>
                         <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
+                        <el-table-column v-if="value.IsNumberProduct" label="包内个数" prop="NumberProductQuantity"></el-table-column>
                         <el-table-column label="操作" width="210">
                             <template slot-scope="props">
                                 <a @click="deletePackage(value.Packages,props.$index)">删除</a>
@@ -205,10 +206,19 @@ export default {
                 }
                 for (let i = 0; i < data.length; i++) {
                     for (let j = 0; j < this.putInTask.Products.length; j++) {
-                        if (data[i].ProductId === this.putInTask.Products[j].ProductId && this.putInTask.Products[j].ThisTimeInboundCount < this.putInTask.Products[j].RemainInboundCount) {
-                            this.putInTask.Products[j].Packages.push(data[i]);
-                            this.activeName = j + '';
-                            break;
+                        if(data.IsNumberProduct){
+                            if(data[i].ProductId === this.putInTask.Products[j].ProductId && this.putInTask.Products[j].ThisTimeInboundCount+data[i].NumberProductQuantity<=this.putInTask.Products[j].RemainInboundCount){
+                                this.putInTask.Products[j].Packages.push(data[i]);
+                                this.putInTask.Products[j].ThisTimeInboundCount += data[i].NumberProductQuantity;
+                                this.activeName = j + '';
+                                break;
+                            }
+                        }else{
+                            if (data[i].ProductId === this.putInTask.Products[j].ProductId && this.putInTask.Products[j].ThisTimeInboundCount < this.putInTask.Products[j].RemainInboundCount) {
+                                this.putInTask.Products[j].Packages.push(data[i]);
+                                this.activeName = j + '';
+                                break;
+                            }
                         }
                     }
                 }
@@ -248,8 +258,17 @@ export default {
     computed: {
         countPackagesNumber() {
             return index => {
-                this.putInTask.Products[index].ThisTimeInboundCount = this.putInTask.Products[index].Packages == undefined ? 0 : this.putInTask.Products[index].Packages.length;
-                return this.putInTask.Products[index].ThisTimeInboundCount;
+                if(this.putInTask.Products[index].IsNumberProduct){
+                    let num = 0;
+                    this.putInTask.Products[index].Packages.forEach(element=>{
+                        num += element.NumberProductQuantity;
+                    });
+                    this.putInTask.Products[index].ThisTimeInboundCount = num;
+                    return num;
+                }else{
+                    this.putInTask.Products[index].ThisTimeInboundCount = this.putInTask.Products[index].Packages == undefined ? 0 : this.putInTask.Products[index].Packages.length;
+                    return this.putInTask.Products[index].ThisTimeInboundCount;
+                }
             }
         },
         countAllNumber() {

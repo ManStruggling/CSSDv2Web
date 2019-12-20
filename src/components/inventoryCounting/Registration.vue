@@ -8,6 +8,9 @@
             <li @click="handleShowManualEnter">
                 <p>手工录入</p>
             </li>
+            <router-link to="/inventoryCounting/disposableProduct" tag="li">
+                <p>一次性物品盘库</p>
+            </router-link>
             <router-link to="/inventoryCounting/record" tag="li">
                 <p>盘库记录</p>
             </router-link>

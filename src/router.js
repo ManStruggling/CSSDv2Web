@@ -398,6 +398,14 @@ const router = new Router({
                 },
                 component: () =>
                     import ('./components/inventoryCounting/Record.vue')
+            }, {
+                path: '/inventoryCounting/disposableProduct',
+                name: 'inventoryCountingDisposableProduct',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/inventoryCounting/DisposableProductCounting')
             }]
 
         },
@@ -633,8 +641,20 @@ const router = new Router({
         {
             path: '/test',
             name: 'test',
+            meta: {
+                index: 1,
+            },
             component: () =>
                 import ('./components/temp/test')
+        },
+        {
+            path: '/test2',
+            name: 'test2',
+            meta: {
+                index: 1,
+            },
+            component: () =>
+                import ('./components/temp/test2')
         },
         {
             path: '/management',

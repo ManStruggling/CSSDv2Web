@@ -99,13 +99,15 @@
                                         <!-- 本次发放数 -->
                                         <div class="collapseTd" style="width:140px;">
                                             <!-- 条码包 -->
-                                            <p v-if="!value.IsNotPrintBarCode&&!value.IsDisposableProduct">{{countThisProvideNumber(value)}}</p>
+                                            <p v-if="!value.IsNotPrintBarCode&&!value.IsDisposableProduct&&!value.IsNumberProduct">{{countThisProvideNumber(value)}}</p>
                                             <!-- 一次性物品 -->
-                                            <p v-if="!value.IsNotPrintBarCode&&value.IsDisposableProduct">{{countDisposableThisProvideNumber(value)}}</p>
+                                            <p v-if="value.IsDisposableProduct">{{countDisposableThisProvideNumber(value)}}</p>
                                             <!-- 计数包 -->
                                             <p v-if="value.IsNotPrintBarCode">
                                                 <el-input-number v-model="value.ThisTimeProvideQuantity" :min="0" :max="value.MaxLimit=value.InventoryQuantity>value.RemainQuantity?value.RemainQuantity:value.InventoryQuantity" :controls="false" size="mini" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,item.SubClinicTasks[item.SelectedSubClinicId].ProvideTaskDetails,value)})"></el-input-number>
                                             </p>
+                                            <!-- 个数包 -->
+                                            <p v-if="value.IsNumberProduct">{{countNumberProductThisProvideNumber(value)}}</p>
                                         </div>
                                         <!-- 操作 -->
                                         <div class="collapseTd" style="width:90px;">
@@ -519,9 +521,7 @@ export default {
         },
         getBarCodeArray() {
             if (this.provideTaskList.length > 0) {
-                if (
-                    this.provideTaskList[this.tabActiveName].SelectedSubClinicId === 0
-                ) {
+                if (this.provideTaskList[this.tabActiveName].SelectedSubClinicId === 0) {
                     this.showInformation({
                         classify: "message",
                         msg: "请选择发放子科室"
@@ -686,10 +686,9 @@ export default {
                     this.provideTaskList[this.tabActiveName].SelectedSubClinicId
                 ].ProvideTaskDetails;
             for (let j = 0; j < currentTaskList.length; j++) {
-                //find包 有限匹配加急包 并且本次发放数小于剩余发放数才添加
+                //find包 优先匹配加急包 并且本次发放数小于剩余发放数才添加
                 if (currentTaskList[j].ExpeditedPackageQuantity && currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
                     currentTaskList[j].ProvidePackages.push(data);
-                    currentTaskList[j].ThisTimeProvideQuantity += 1;
                     let newItem = currentTaskList.splice(j, 1)[0];
                     currentTaskList.unshift(newItem);
                     this.activeName = "0";
@@ -697,14 +696,24 @@ export default {
                 }
             }
             for (let j = 0; j < currentTaskList.length; j++) {
-                //find包 并且本次发放数小于剩余发放数才添加
-                if (currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
-                    currentTaskList[j].ProvidePackages.push(data);
-                    currentTaskList[j].ThisTimeProvideQuantity += 1;
-                    let newItem = currentTaskList.splice(j, 1)[0];
-                    currentTaskList.unshift(newItem);
-                    this.activeName = "0";
-                    return;
+                // 个数包发放
+                if (data.IsNumberProduct) {
+                    if (currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity + data.ThisTimeProvideQuantity <= currentTaskList[j].RemainQuantity) {
+                        currentTaskList[j].ProvidePackages.push(data);
+                        let newItem = currentTaskList.splice(j, 1)[0];
+                        currentTaskList.unshift(newItem);
+                        this.activeName = "0";
+                        return;
+                    }
+                } else {
+                    //find包 并且本次发放数小于剩余发放数才添加
+                    if (currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
+                        currentTaskList[j].ProvidePackages.push(data);
+                        let newItem = currentTaskList.splice(j, 1)[0];
+                        currentTaskList.unshift(newItem);
+                        this.activeName = "0";
+                        return;
+                    }
                 }
             }
             this.showInformation({
@@ -769,6 +778,17 @@ export default {
                 value.ThisTimeProvideQuantity = value.ProvidePackages.length;
                 return value.ProvidePackages.length;
             };
+        },
+        //计算个数包发放数
+        countNumberProductThisProvideNumber(){
+            return (value) => {
+                let num = 0;
+                value.ProvidePackages.forEach(element=>{
+                    num += element.ThisTimeProvideQuantity;
+                });
+                value.ThisTimeProvideQuantity = num;
+                return num;
+            }
         },
         //一次性物品本次发放数
         countDisposableThisProvideNumber() {
