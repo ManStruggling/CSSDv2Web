@@ -5,13 +5,13 @@
             <router-link to="/" tag="li">
                 <p>返回</p>
             </router-link>
-            <router-link to="/inventory/disposableItemInbound" tag="li">
+            <router-link to="/inventory/disposableItemInbound" tag="li" v-if="GLOBAL.UserInfo.ClinicType==1">
                 <p>一次性物品入库</p>
             </router-link>
-            <router-link to="/inventory/inboundRecord" tag="li">
+            <router-link to="/inventory/inboundRecord" tag="li" v-if="GLOBAL.UserInfo.ClinicType==1">
                 <p>入库记录</p>
             </router-link>
-            <router-link to="/inventory/outboundRecord" tag="li">
+            <router-link to="/inventory/outboundRecord" tag="li" v-if="GLOBAL.UserInfo.ClinicType==1">
                 <p>出库记录</p>
             </router-link>
         </ul>

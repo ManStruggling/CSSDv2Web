@@ -439,6 +439,14 @@ const router = new Router({
                 component: () =>
                     import ('./components/track/PackageTrack')
             }, {
+                path: '/track/DisposableProduct',
+                name: 'trackDisposableProduct',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/track/DisposableProduct')
+            }, {
                 path: '/track/singleRecall',
                 name: 'trackSingleRecall',
                 meta: {

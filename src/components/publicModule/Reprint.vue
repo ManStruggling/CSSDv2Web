@@ -20,7 +20,7 @@
                     <p>包条码</p>
                     <div class="el_input_box">{{packageMessage.BarCode}}</div>
                 </li>
-                <li v-if="GLOBAL.UserInfo.HospitalVersion == 'TONGJI'">
+                <li v-if="GLOBAL.UserInfo.HospitalVersion == 'TONGJI'&&packageMessage.IsOuterProduct">
                     <p>供应商</p>
                     <div class="el_input_box">
                         <el-select v-model="packageMessage.SupplierId" class="green24x13" @change="supplierChange">
@@ -30,7 +30,7 @@
                 </li>
                 <li>
                     <p>包名称</p>
-                    <div class="el_input_box" v-if="GLOBAL.UserInfo.HospitalVersion == 'TONGJI'">
+                    <div class="el_input_box" v-if="GLOBAL.UserInfo.HospitalVersion == 'TONGJI'&&packageMessage.IsOuterProduct">
                         <el-select v-model="packageMessage.ProductId" class="green24x13">
                             <el-option v-for="(item,index) in products" :key="index" :label="item.ProductName" :value="item.ProductId"></el-option>
                         </el-select>
@@ -80,6 +80,12 @@
                     <p>有效日期</p>
                     <div class="el_input_box">{{packageMessage.ValidDate}}</div>
                 </li>
+                <li v-if="packageMessage.IsNumberProduct">
+                    <p>包内个数</p>
+                    <div class="el_input_box">
+                        <el-input-number v-model="packageMessage.NumberProductQuantity" :controls="false" :min="1" :max="999" @change="inputNumberChange('NumberProductQuantity')"></el-input-number>
+                    </div>
+                </li>
             </ul>
             <dl v-show="packageMessage.IsOuterProduct">
                 <dt>
@@ -102,7 +108,7 @@
             </dl>
             <div class="print_number">
                 <p>打印份数</p>
-                <el-input-number v-model="packageMessage.PrintCount" :controls="false" :min="1" :max="999" placeholder="打印份数" @change="inputNumberChange"></el-input-number>
+                <el-input-number v-model="packageMessage.PrintCount" :controls="false" :min="1" :max="999" placeholder="打印份数" @change="inputNumberChange('PrintCount')"></el-input-number>
                 <span>共 {{countPrintNumber}} 张</span>
             </div>
             <el-dialog :visible.sync="dialogVisible" width="300px" :modal="false" :show-close="false" :close-on-click-modal="false">
@@ -234,7 +240,7 @@ export default {
                                     val: this.packageMessage.BoxNumbers,
                                     type: 'ArrayNotEmpty',
                                     msg: '筐号不能为空！'
-                                },{
+                                }, {
                                     val: this.packageMessage.BoxNumbers,
                                     type: 'StringAllNotEmpty',
                                     msg: '筐号不能为空！'
@@ -346,10 +352,10 @@ export default {
             }
         },
         //number change
-        inputNumberChange(newValue) {
+        inputNumberChange(newValue,origin) {
             if (newValue == undefined) {
                 setTimeout(() => {
-                    this.packageMessage.PrintCount = 1;
+                    this.packageMessage[origin] = 1;
                 }, 0);
             }
         },

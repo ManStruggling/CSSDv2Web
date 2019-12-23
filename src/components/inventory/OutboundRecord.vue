@@ -39,6 +39,9 @@
                         <el-table :data="item.Packages" :default-expand-all="true">
                             <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
                             <el-table-column label="包条码" prop="PackageBarCode" width="210"></el-table-column>
+                            <el-table-column label="包内个数" prop="NumberProductQuantity" width="210">
+                                <template slot-scope="props">{{props.row.NumberProductQuantity?props.row.NumberProductQuantity:'-'}}</template>
+                            </el-table-column>
                             <el-table-column></el-table-column>
                         </el-table>
                     </el-tab-pane>
