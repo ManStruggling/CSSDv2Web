@@ -35,8 +35,17 @@
               </el-menu-item>
             </el-submenu>
             <el-submenu index="2">
-              <template slot="title">系统配置</template>
+              <template slot="title">人员排班</template>
               <el-menu-item index="2-1">
+                <router-link to="/management/dailyWorkSheet" :active-class="'isActive'">日常班表</router-link>
+              </el-menu-item>
+              <el-menu-item index="2-2">
+                <router-link to="/management/schedulingWorkSheet" :active-class="'isActive'">排班</router-link>
+              </el-menu-item>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">系统配置</template>
+              <el-menu-item index="3-1">
                 <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
               </el-menu-item>
             </el-submenu>

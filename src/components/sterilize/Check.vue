@@ -24,7 +24,7 @@
             <div class="cssd_talbe_left_menu">
                 <dl class="isActive">
                     <dt class="pendingReview reviewStatus">
-                        <span>待审核</span>
+                        <span>待审核（任务数：{{sterilizeTask.PendingReview==null?0:sterilizeTask.PendingReview.length}}）</span>
                     </dt>
                     <dd class="reviewDd" style="display:block;">
                         <el-tabs :tab-position="'left'" :activeName="pendingReviewActiveName" @tab-click="tabClick">
@@ -141,7 +141,7 @@
                 </dl>
                 <dl>
                     <dt class="sterilizing reviewStatus">
-                        <span>灭菌中</span>
+                        <span>灭菌中（任务数：{{sterilizeTask.Sterilizing==null?0:sterilizeTask.Sterilizing.length}}）</span>
                     </dt>
                     <dd class="reviewDd">
                         <el-tabs :tab-position="'left'" :activeName="sterilizingActiveName">

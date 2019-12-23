@@ -154,6 +154,26 @@ export default {
                     ]
                 },
                 {
+                    label: '排班班种',
+                    isHasSubmenu: true,
+                    children: [{
+                            label: '常日班',
+                            index: '0',
+                            href: '/basic/period/0'
+                        },
+                        {
+                            label: '休假',
+                            index: '1',
+                            href: '/basic/period/1'
+                        },
+                        {
+                            label: '备班',
+                            index: '2',
+                            href: '/basic/period/2'
+                        }
+                    ]
+                },
+                {
                     label: "车辆",
                     isHasSubmenu: true,
                     children: [{
@@ -187,6 +207,11 @@ export default {
                     label: "物流人员",
                     isHasSubmenu: false,
                     href: "/basic/logisticsStaff"
+                },
+                {
+                    label: "工作区域",
+                    isHasSubmenu: false,
+                    href: "/basic/workArea"
                 },
             ]
         };

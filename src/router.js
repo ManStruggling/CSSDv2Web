@@ -64,6 +64,12 @@ const router = new Router({
                         import ('./components/basic/Car')
                 },
                 {
+                    path: '/basic/period/:Type',
+                    name: 'period',
+                    component: () =>
+                        import ('./components/basic/Period')
+                },
+                {
                     path: '/basic/externalPackage',
                     name: 'externalPackage',
                     component: () =>
@@ -96,6 +102,11 @@ const router = new Router({
                     name: 'failedCause',
                     component: () =>
                         import ('./components/basic/FailedCause')
+                }, {
+                    path: '/basic/workArea',
+                    name: 'workArea',
+                    component: () =>
+                        import ('./components/basic/WorkArea')
                 }
             ]
         },
@@ -698,6 +709,12 @@ const router = new Router({
                     name: 'managementConfigure',
                     component: () =>
                         import ('./components/management/Configure')
+                },
+                {
+                    path: '/management/schedulingWorkSheet',
+                    name: 'schedulingWorkSheet',
+                    component: () =>
+                        import ('./components/management/WorkSheetList')
                 }
             ]
         },

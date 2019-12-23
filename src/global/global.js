@@ -109,35 +109,29 @@ function Verification(obj) {
         case "ValueNotEmptyAndNotNull":
             return obj.val === "" || obj.val === null ? error : correct;
         case "StringAllNotEmpty": //string都不能为空
-            for (let i = 0; i < obj.val.length; i++) {
-                if (obj.val[i] === '') {
-                    error.msg = obj.msg[i];
-                    return error;
-                }
+            if (obj.val.every(value => { return value != ''; })) {
+                return correct;
+            } else {
+                return error;
             }
-            return correct;
         case "NumberNotZero": //number不为0
             return obj.val === 0 ? error : correct;
         case "NumberIsPositive": //number为正整数
             return obj.val > 0 ? correct : error;
         case "NumberAllCannotBeZero": //number全部不能为0
-            for (let i = 0; i < obj.val.length; i++) {
-                if (obj.val[i] === 0) {
-                    error.msg = obj.msg[i];
-                    return error;
-                }
+            if (obj.val.every(value => { return value != 0 })) {
+                return correct;
+            } else {
+                return error;
             }
-            return correct;
         case "ArrayNotEmpty": //数组不能为空
             return obj.val == "" ? error : correct;
         case "ArrayAllNotEmpty": //多个数组都不能为空
-            for (let i = 0; i < obj.val.length; i++) {
-                if (obj.val[i] == "") {
-                    error.msg = obj.msg[i];
-                    return error;
-                }
+            if (obj.val.every(value => { return value != '' })) {
+                return correct;
+            } else {
+                return error;
             }
-            return correct;
         case "AccountOrPassword": //账号密码
             if (/^\w+$/.test(obj.val)) {
                 return correct;

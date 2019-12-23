@@ -452,3 +452,7 @@ body {
         }
     }
 }
+
+html body .time-select-item.selected:not(.disabled) {
+    color: #00C16B;
+}
