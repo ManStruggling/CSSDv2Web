@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "@aspnet/signalr": "^1.1.4",
+        "@msgpack/msgpack": "^1.9.3",
         "animate.css": "^3.7.0",
         "axios": "^0.18.0",
         "core-js": "^2.6.5",

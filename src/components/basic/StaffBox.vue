@@ -20,6 +20,12 @@
                     <p>登录密码</p>
                     <el-input placeholder="登录密码(必填)" v-model.trim="editBoxData.Password"></el-input>
                 </li>
+                <li>
+                    <p>所属科室</p>
+                    <el-select v-model="editBoxData.ClinicId" class="green24x13">
+                        <el-option v-for="(item,index) in clinics" :key="index" :label="item.Name" :value="item.Id"></el-option>
+                    </el-select>
+                </li>
             </ul>
             <el-tabs v-model="tabActiveName" closable addable type="card" @edit="handleTabsEdit">
                 <el-tab-pane v-for="(item,index) in editBoxData.RolesForStaff" :key="index" :label="item.ClinicName" :name="index+''">
@@ -93,13 +99,15 @@ export default {
             isShowClinicSelect: false,
             tabActiveName: "0",
             editBoxData: {
+                ClinicId: "",
                 Id: 0,
                 Name: "",
                 JobNumber: "",
                 BarCode: "",
                 Password: "",
                 RolesForStaff: []
-            }
+            },
+            clinics: []
         };
     },
     created() {
@@ -141,6 +149,13 @@ export default {
                 }
             })
             .catch(err => {});
+        axios({url:`/api/Clinic`}).then(res=>{
+            if(res.data.Code==200){
+                this.clinics = res.data.Data;
+            }else{
+                this.showInformation({classify:'message',msg:res.data.Msg});
+            }
+        })
     },
     methods: {
         //默认权限开关
@@ -298,7 +313,12 @@ export default {
                     {
                         val: this.editBoxData.Password,
                         type: "AccountOrPassword",
-                        msg: "密码不符合规范！账号必须为字母、数字、下划线。"
+                        msg: "密码不符合规范！密码必须为字母、数字、下划线。"
+                    },
+                    {
+                        val: this.editBoxData.ClinicId,
+                        type: "StringNotEmpty",
+                        msg: "人员所属科室不能为空！"
                     },
                     {
                         val: this.editBoxData.RolesForStaff,

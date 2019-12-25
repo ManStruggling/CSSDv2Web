@@ -7,8 +7,8 @@
     </div>
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
-            <el-table-column label="班表名称" prop="ReportName" width="240"></el-table-column>
-            <el-table-column label="班表月份" prop="ReportName" width="210"></el-table-column>
+            <el-table-column label="班表名称" prop="name" width="240"></el-table-column>
+            <el-table-column label="班表月份" prop="yearMonth" width="210"></el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
@@ -40,16 +40,19 @@ export default {
     },
     created() {
         axios({
-            url: `/api/Report`
-        }).then(res => {
-            if (res.data.Code == 200) {
-                this.table_data = res.data.Data;
-            } else {
-                this.showInformation({
-                    classify: "message",
-                    msg: res.data.Msg
-                });
+            url: `/graphql`,
+            method: 'POST',
+            data: {
+                operationName: "TestQuery",
+                query: ` query TestQuery{ 
+                    schedule{
+                        id,name,yearMonth
+                    }
+                }`,
+                variables: {}
             }
+        }).then(res => {
+            this.table_data = res.data.data.schedule;
         }).catch(err => {})
     },
     mounted() {},

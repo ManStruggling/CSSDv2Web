@@ -140,6 +140,7 @@ export default {
                 JobNumber: '',
                 BarCode: '',
                 Password: '',
+                ClinicId: '',
                 RolesForStaff: []
             };
             this.showEditBox = true;
