@@ -1,6 +1,6 @@
 <template>
 <div id="test2">
-    <el-table :data="submitData.Staffs" border style="width:100%;">
+    <el-table :data="submitData.Staffs" row-key="StaffId" border style="width:100%;">
         <el-table-column label="序号" width="50" class-name="draggable">
             <template slot-scope="props">
                 <div class="cell_index draggable">{{props.$index+1}}</div>
@@ -38,8 +38,7 @@ export default {
         const tbody = document.querySelector(
             "#test2 .el-table__body-wrapper tbody"
         );
-        var sortable = new Sortable(tbody, {
-            handle: '.draggable',
+        Sortable.create(tbody, {
             animation: 180,
             delay: 0,
             onEnd: ({

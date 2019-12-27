@@ -15,7 +15,7 @@
         </p>
     </div>
     <el-table :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="multipleTable">
-        <el-table-column v-for="(item,index) in columnList" :key="index" :label="item.DisplayName" :prop="dropCol[index].SpliceName" :filters="item.FilterArr" :filter-method="filterData" :column-key="index+''" sortable :sort-by="dropCol[index].SpliceName"></el-table-column>
+        <el-table-column v-for="(item,index) in columnList" :key="index" :label="item.DisplayName" :prop="dropCol[index].SpliceName" :filters="item.FilterArr" :filter-method="filterData" :column-key="dropCol[index].SpliceName" sortable :sort-by="dropCol[index].SpliceName"></el-table-column>
     </el-table>
     <PrintPreview v-if="isShowPrintView"></PrintPreview>
 </div>

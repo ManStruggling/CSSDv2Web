@@ -29,16 +29,16 @@
                 <el-tag v-for="(item,index) in periodType[currentSelectPeriodType]" :key="index" @click="switchPeriodStatus(item)" :class="{'is-active':item.IsActive}">{{item.name}}</el-tag>
             </dd>
             <dd>
-                <el-switch v-model="isDraggableMode" @change="switchChange" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false"></el-switch>
+                <!-- <el-switch v-model="isDraggableMode" @change="switchChange" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false"></el-switch> -->
             </dd>
         </dl>
-        <el-table :data="submitData.Staffs" border :height="tableHeight" style="width:100%;" @cell-click="cellclick">
-            <el-table-column label="序号" width="50" class-name="draggable">
+        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick">
+            <el-table-column label="序号" fixed width="50" class-name="draggable">
                 <template slot-scope="props">
-                    <div class="cell_index draggable">{{props.$index+1}}</div>
+                    <div class="cell_index fixed draggable">{{props.$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column label="姓名" class-name="draggable">
+            <el-table-column label="姓名" fixed class-name="draggable">
                 <template slot-scope="props">
                     <div class="cell_name draggable">{{props.row.StaffName}}</div>
                 </template>
@@ -181,6 +181,7 @@ export default {
         }
     },
     mounted() {
+        this.rowDrop();
         $(document).keydown(event => {
             if (event.keyCode == 46 || event.keyCode == 8) {
                 this.deleteSelectedAreaPeriods();
@@ -389,11 +390,6 @@ export default {
                         IsCheckIn: false
                     });
                 }
-            }
-        },
-        switchChange(val) {
-            if (val) {
-                this.rowDrop();
             }
         },
         //行拖拽
