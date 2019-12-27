@@ -21,7 +21,7 @@
 
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 编辑弹出框 -->
-        <SchedulingWorkSheet v-if="showEditBox" @to-father="child2father"></SchedulingWorkSheet>
+        <SchedulingWorkSheet v-if="showEditBox" @to-father="child2father" :viewModule="toChildData" :scheduledWorks="table_data"></SchedulingWorkSheet>
     </transition>
 </div>
 </template>
@@ -33,6 +33,7 @@ export default {
         return {
             table_data: [], //表的显示数据
             showEditBox: false, //是否显示编辑框
+            toChildData: {}
         };
     },
     components: {
@@ -40,12 +41,12 @@ export default {
     },
     created() {
         axios({
-            url: `/graphql`,
+            url: `/schedule`,
             method: 'POST',
             data: {
-                operationName: "TestQuery",
-                query: ` query TestQuery{ 
-                    schedule{
+                operationName: "getSchedules",
+                query: ` query getSchedules{ 
+                    schedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
                         id,name,yearMonth
                     }
                 }`,
@@ -59,10 +60,27 @@ export default {
     methods: {
         //新增
         addTableTr() {
+            this.toChildData = {};
             this.showEditBox = true;
         },
+        //编辑
         editThisTr(index) {
-            this.showEditBox = true;
+            var that = this;
+            axios({
+                url: `/system`,
+                method: 'POST',
+                data: {
+                    query: ` query storedEvent{ 
+                        storedEvent(aggregateId:${this.table_data[index].id},aggregate:"Schedule",getLast:1){
+                            id,commandViewData
+                        }
+                    }`,
+                }
+            }).then(res => { 
+                that.toChildData = res.data.data.storedEvent[res.data.data.storedEvent.length - 1];
+                that.toChildData.id = this.table_data[index].id;
+                that.showEditBox = true;
+            }).catch(err => {})
         },
         deleteThisTr(index) {
             this.showInformation({

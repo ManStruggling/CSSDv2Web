@@ -58,38 +58,7 @@ export default {
                             "width": 511.5,
                             "field": "table",
                             "columns": [
-                                [{
-                                    "title": "id",
-                                    "field": "id",
-                                    "width": 85.25,
-                                    "colspan": 1,
-                                    "rowspan": 1
-                                }, {
-                                    "title": "姓名",
-                                    "field": "name",
-                                    "width": 85.25,
-                                    "align": "center",
-                                    "colspan": 1,
-                                    "rowspan": 1
-                                }, {
-                                    "title": "性别",
-                                    "field": "gender",
-                                    "width": 85.25,
-                                    "colspan": 1,
-                                    "rowspan": 1
-                                }, {
-                                    "title": "账户",
-                                    "field": "count",
-                                    "width": 85.25,
-                                    "colspan": 1,
-                                    "rowspan": 1
-                                }, {
-                                    "title": "金额",
-                                    "field": "amount",
-                                    "width": 85.25,
-                                    "colspan": 1,
-                                    "rowspan": 1
-                                }]
+                                []
                             ]
                         },
                         "printElementType": {

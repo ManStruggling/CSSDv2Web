@@ -9,10 +9,8 @@
             <li>
                 <p>班表月份</p>
                 <el-date-picker v-model="submitData.YearMonth" type="month" placeholder="请选择年月" :clearable="false" :editable="false" @change="dateChange" :picker-options="{
-                        disabledDate: (time)=>{
-                            disabledDate(time)
-                        }
-                    }"></el-date-picker>
+                        disabledDate:disabledDate
+                    }" value-format="yyyy-MM"></el-date-picker>
             </li>
         </ul>
         <div class="workSheetRemark">
@@ -30,13 +28,31 @@
             <dd>
                 <el-tag v-for="(item,index) in periodType[currentSelectPeriodType]" :key="index" @click="switchPeriodStatus(item)" :class="{'is-active':item.IsActive}">{{item.name}}</el-tag>
             </dd>
+            <dd>
+                <el-switch v-model="isDraggableMode" @change="switchChange" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false"></el-switch>
+            </dd>
         </dl>
         <el-table :data="submitData.Staffs" border :height="tableHeight" style="width:100%;" @cell-click="cellclick">
-            <el-table-column label="序号" prop="StaffId" fixed width="50"></el-table-column>
-            <el-table-column label="姓名" prop="StaffName" fixed></el-table-column>
-            <el-table-column v-for="(item,index) in visibleCalendarDays" :key="index" :label="item.day+'日'" :class-name="item.isWeekend?'is-weekend':''">
+            <el-table-column label="序号" width="50" class-name="draggable">
                 <template slot-scope="props">
-                    <div class="periodItem" :class="{'is-cell-active':props.row.Periods[item.day-1].IsCellActive}" @click="tableCellClick(props.row.Periods[item.day-1])" @mousedown="tableCellMousedown(props.row.Periods[item.day-1])" @mouseenter="tableCellMouseenter(props.row.Periods[item.day-1])" @mouseup="tableCellMouseup(props.row.Periods[item.day-1])">{{initCellData(props.row.Periods[item.day-1],props.$index,item.day-1)}}</div>
+                    <div class="cell_index draggable">{{props.$index+1}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column label="姓名" class-name="draggable">
+                <template slot-scope="props">
+                    <div class="cell_name draggable">{{props.row.StaffName}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column v-for="(item,index) in submitData.Days" :key="index" :label="item.day+'日'" :class-name="item.isWeekend?'is-weekend':''">
+                <template slot-scope="props">
+                    <el-popover placement="right" :disabled="props.row.Periods[item.day-1].PeriodId==0" trigger="hover" :open-delay="1500" @show="displayPopover(props.row.Periods[item.day-1])" popper-class="schedulePopper">
+                        <ol>
+                            <li><span>开始时间：</span><b>{{formatTime(displayedPeriodMsg.startTime)}}</b></li>
+                            <li><span>结束时间：</span><b>{{formatTime(displayedPeriodMsg.endTime)}}</b></li>
+                            <li><span>午餐：</span><b>{{displayedPeriodMsg.isIncludeLunch?'有':'无'}}</b></li>
+                        </ol>
+                        <div slot="reference" class="periodItem" :class="{'is-cell-active':props.row.Periods[item.day-1].IsCellActive}" @click="tableCellClick(props.row.Periods[item.day-1])" @mousedown="tableCellMousedown(props.row.Periods[item.day-1])" @mouseenter="tableCellMouseenter(props.row.Periods[item.day-1])" @mouseup="tableCellMouseup(props.row.Periods[item.day-1])">{{initCellData(props.row.Periods[item.day-1],props.$index,item.day-1)}}</div>
+                    </el-popover>
                 </template>
             </el-table-column>
         </el-table>
@@ -52,12 +68,23 @@
 </template>
 
 <script>
+import {
+    MessagePack
+} from 'assert';
+import {
+    decode
+} from '@msgpack/msgpack';
+import Sortable from "sortablejs";
 export default {
+    inject: ['managementReload'],
+    props: {
+        viewModule: Object,
+        scheduledWorks: Array
+    },
     data() {
         let {
             year,
-            month,
-            day
+            month
         } = this.getNewDate(new Date());
         return {
             //表格高度
@@ -71,7 +98,8 @@ export default {
                 Name: '',
                 YearMonth: '',
                 Remark: '',
-                Staffs: []
+                Staffs: [],
+                Days: []
             },
             //当前选择的年月
             currentSelectMonth: {
@@ -80,24 +108,27 @@ export default {
             },
             //当前选择的班种类别
             currentSelectPeriodType: 'Work',
-            //当月日期天数
-            visibleCalendarDays: [],
             //人员表
-            staffs: [],
             periodType: {
                 Work: [],
                 Vacation: [],
                 WorkOverTime: []
-            }
+            },
+            displayedPeriodMsg: {
+                startTime: '',
+                endTime: '',
+                isIncludeLunch: false,
+            },
+            isDraggableMode: false,
         }
     },
     created() {
         axios({
-            url: `/graphql`,
+            url: `/schedule`,
             method: 'POST',
             data: {
-                operationName: "TestQuery",
-                query: ` query TestQuery{ 
+                operationName: "getPeriods",
+                query: ` query getPeriods{ 
                     Work:period(periodType:0){
                         id,name,color,startTime,endTime,isIncludeLunch
                     }
@@ -118,22 +149,35 @@ export default {
             }
             Object.assign(this.periodType, res.data.data);
         }).catch(err => {})
-        axios({
-            url: `/odata/Staffs`
-        }).then(res => {
-            res.data.value.forEach(element => {
-                element.Periods = [];
-                element.StaffId = element.Id;
-                element.StaffName = element.Name;
-            });
-            this.staffs = res.data.value;
-            this.initData();
-        }).catch(err => {})
-        if (this.submitData.Id) {
-
+        //update
+        if (this.viewModule.id) {
+            this.submitData = JSON.parse(decode(this.viewModule.commandViewData));
+            this.submitData.Id = this.viewModule.id;
+            this.currentSelectMonth.month = this.submitData.YearMonth.split('-')[1] - 1;
+            this.currentSelectMonth.year = this.submitData.YearMonth.split('-')[0];
         } else {
-            this.submitData.YearMonth = `${this.currentSelectMonth.year}-${this.currentSelectMonth.month+1}`;
-            this.setCalendarDate();
+            //insert
+            axios({
+                url: `/basic`,
+                method: 'POST',
+                data: {
+                    query: `query getStaffs{
+                    staff(clinicId:${this.GLOBAL.UserInfo.ClinicId}){
+                        id,name,clinicId
+                    }
+                }`
+                }
+
+            }).then(res => {
+                res.data.data.staff.forEach(element => {
+                    element.Periods = [];
+                    element.StaffId = element.id;
+                    element.StaffName = element.name;
+                });
+                this.submitData.Staffs = res.data.data.staff;
+                this.submitData.YearMonth = `${this.currentSelectMonth.year}-${this.currentSelectMonth.month+1}`;
+                this.setCalendarDate();
+            }).catch(err => {})
         }
     },
     mounted() {
@@ -144,6 +188,15 @@ export default {
         })
     },
     methods: {
+        //显示popover详情
+        displayPopover(obj) {
+            if (obj.PeriodId) {
+                let periods = this.periodType.Vacation.concat(this.periodType.Work, this.periodType.WorkOverTime);
+                Object.assign(this.displayedPeriodMsg, periods.filter(element => {
+                    return element.id === obj.PeriodId
+                })[0]);
+            }
+        },
         //确认提交
         confirmSubmit() {
             if (this.GLOBAL.VerificationHandle([{
@@ -151,15 +204,19 @@ export default {
                     type: 'StringNotEmpty',
                     msg: '班表名称不能为空！'
                 }])) {
+                let method = 'POST';
+                if (this.viewModule.id) {
+                    method = 'PUT';
+                }
                 axios({
                     url: `/api/PlanDailySchedule`,
-                    method: 'POST',
+                    method: method,
                     data: this.submitData
                 }).then(res => {
                     let type;
                     if (res.data.Code == 200) {
                         type = 'success';
-                        this.cancelSubmit();
+                        this.managementReload();
                     } else {
                         type = 'error';
                     }
@@ -207,9 +264,6 @@ export default {
                 for (let i = 0; i < this.submitData.Staffs.length; i++) {
                     for (let j = 0; j < this.submitData.Staffs[i].Periods.length; j++) {
                         if (this.submitData.Staffs[i].Periods[j].RowIndex >= minRowIndex && this.submitData.Staffs[i].Periods[j].RowIndex <= maxRowIndex && this.submitData.Staffs[i].Periods[j].ColumnIndex <= maxColumnIndex && this.submitData.Staffs[i].Periods[j].ColumnIndex >= minColumnIndex) {
-                            // if (this.activePeriod.id) {
-                            //     this.submitData.Staffs[i].Periods[j].PeriodId = this.activePeriod.id;
-                            // }
                             this.submitData.Staffs[i].Periods[j].IsCellActive = true;
                         } else {
                             this.submitData.Staffs[i].Periods[j].IsCellActive = false;
@@ -270,33 +324,33 @@ export default {
                 this.activePeriod = {};
             }
         },
-        //匹配班种显示的名称
-        initCellData(periodObj, rowIndex, columnIndex) {
-            periodObj.RowIndex = rowIndex;
-            periodObj.ColumnIndex = columnIndex;
-            if (periodObj.PeriodId) {
-                for (const key in this.periodType) {
-                    for (let i = 0; i < this.periodType[key].length; i++) {
-                        if (this.periodType[key][i].id === periodObj.PeriodId) {
-                            return this.periodType[key][i].name;
-                        }
-                    }
-                }
-            }
-        },
+        // //匹配班种显示的名称
+        // initCellData(periodObj, rowIndex, columnIndex) {
+        //     periodObj.RowIndex = rowIndex;
+        //     periodObj.ColumnIndex = columnIndex;
+        //     if (periodObj.PeriodId) {
+        //         for (const key in this.periodType) {
+        //             for (let i = 0; i < this.periodType[key].length; i++) {
+        //                 if (this.periodType[key][i].id === periodObj.PeriodId) {
+        //                     return this.periodType[key][i].name;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // },
         //年月change事件
         dateChange(val) {
             let {
                 year,
                 month
-            } = this.getNewDate(val);
+            } = this.getNewDate(new Date(val + '-01'));
             this.currentSelectMonth.year = year;
             this.currentSelectMonth.month = month;
             this.setCalendarDate();
         },
         //设置日期
         setCalendarDate() {
-            this.visibleCalendarDays = [];
+            this.submitData.Days = [];
             //当月一号的时间
             let currentFirstDayStamp = new Date(
                 this.currentSelectMonth.year,
@@ -305,13 +359,13 @@ export default {
             ).getTime();
             for (let i = 1; i < 32; i++) {
                 if (i <= 28) {
-                    this.visibleCalendarDays.push({
+                    this.submitData.Days.push({
                         day: i + '',
                         isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
                     });
                 } else {
                     if (this.isCurrentMonth(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))) {
-                        this.visibleCalendarDays.push({
+                        this.submitData.Days.push({
                             day: i + '',
                             isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
                         });
@@ -324,37 +378,53 @@ export default {
         },
         //初始化数据
         initData() {
-            this.submitData.Staffs = [];
-            for (let i = 0; i < this.staffs.length; i++) {
-                this.submitData.Staffs.push(JSON.parse(JSON.stringify(this.staffs[i])));
-                for (let j = 0; j < this.visibleCalendarDays.length; j++) {
+            for (let i = 0; i < this.submitData.Staffs.length; i++) {
+                this.submitData.Staffs[i].Periods = [];
+                for (let j = 0; j < this.submitData.Days.length; j++) {
                     this.submitData.Staffs[i].Periods.push({
-                        Day: this.visibleCalendarDays[j].day,
+                        Day: this.submitData.Days[j].day,
                         PeriodId: 0,
-                        IsWeekend: this.visibleCalendarDays[j].isWeekend,
-                        IsCellActive: false
+                        IsWeekend: this.submitData.Days[j].isWeekend,
+                        IsCellActive: false,
+                        IsCheckIn: false
                     });
                 }
             }
+        },
+        switchChange(val) {
+            if (val) {
+                this.rowDrop();
+            }
+        },
+        //行拖拽
+        rowDrop() {
+            const tbody = document.querySelector(
+                ".schedulingWork .el-table__body-wrapper tbody"
+            );
+            var sortable = new Sortable(tbody, {
+                handle: '.draggable',
+                animation: 180,
+                delay: 0,
+                onEnd: ({
+                    newIndex,
+                    oldIndex
+                }) => {
+                    const currRow = this.submitData.Staffs.splice(oldIndex, 1)[0];
+                    this.submitData.Staffs.splice(newIndex, 0, currRow);
+                }
+            });
         },
         //获取年月日
         getNewDate(date) {
             let year = date.getFullYear();
             let month = date.getMonth();
-            let day = date.getDate();
             return {
                 year,
                 month,
-                day
             };
         },
         disabledDate(time) {
-            console.log(time.toJSON())
-            // if (time.toJSON().substring(0, 7) == '2019-10') {
-            //     return false;
-            // } else {
-            //     return true;
-            // }
+            // return time.getTime() < Date.now();
             return false;
         },
         // 是否是当前月
@@ -379,13 +449,60 @@ export default {
         //取消提交
         cancelSubmit() {
             this.$emit('to-father');
+        },
+        //时间格式化
+        formatTime(time) {
+            let hour = Math.floor(time / 3600);
+            let minute = (time % 3600) / 60;
+            hour = hour < 10 ? '0' + hour : hour;
+            minute = minute < 10 ? '0' + minute : minute;
+            return `${hour}:${minute}`;
         }
+    },
+    computed: {
+        initCellData() {
+            return (periodObj, rowIndex, columnIndex) => {
+                periodObj.RowIndex = rowIndex;
+                periodObj.ColumnIndex = columnIndex;
+                if (periodObj.PeriodId) {
+                    for (const key in this.periodType) {
+                        for (let i = 0; i < this.periodType[key].length; i++) {
+                            if (this.periodType[key][i].id === periodObj.PeriodId) {
+                                return this.periodType[key][i].name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     },
 }
 </script>
 
 <style lang="scss">
 @import "../../assets/css/tableTotalBottomBar";
+
+.schedulePopper {
+    ol {
+        li {
+            display: flex;
+
+            span {
+                width: 90px;
+                font-size: 16px;
+                color: #878D9F;
+                text-align: right;
+            }
+
+            b {
+                font-size: 16px;
+                font-weight: bold;
+                color: #333;
+            }
+        }
+    }
+}
 
 .schedulingWork {
     position: absolute;
@@ -536,11 +653,15 @@ export default {
                             text-align: center;
                             padding: 0;
                             user-select: none;
+                            white-space: nowrap;
 
                             .periodItem {
                                 user-select: none;
-                                height: 50px;
-                                line-height: 50px;
+                                height: 40px;
+                                line-height: 40px;
+                                color: #232E41;
+                                font-size: 18px;
+                                font-weight: bold;
 
                                 &.is-cell-active {
                                     background: rgba(153, 153, 255, .5)

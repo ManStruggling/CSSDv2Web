@@ -29,7 +29,7 @@
         </dl>
         <h5>
             <a href="\Client\CSSDv2Client.rar" download="CSSDv2Client.rar"><i class="el-icon-download"></i>下载客户端</a>
-            <b>云南软博科技有限责任公司</b>
+            <b>上海倍而纳医疗器械科技有限公司</b>
             <s>{{versionMsg.HospitalVersion+" "+versionMsg.Version}}</s>
         </h5>
     </div>
