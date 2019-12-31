@@ -19,14 +19,19 @@
             <el-table-column label="姓名" prop="StaffName" fixed></el-table-column>
             <el-table-column v-for="(item,index) in submitData.Days" :key="index" :label="item.day+'日'" :class-name="item.isWeekend?'is-weekend':''">
                 <template slot-scope="props">
-                    <el-popover placement="right" :disabled="props.row.Periods[item.day-1].PeriodId==0" trigger="hover" :open-delay="1500" @show="displayPopover(props.row.Periods[item.day-1])" popper-class="schedulePopper">
+                    <el-popover placement="right" :disabled="props.row.Periods[index].PeriodId==0" trigger="hover" :open-delay="1500" @show="displayPopover(props.row.Periods[index])" popper-class="schedulePopper">
                         <ol>
                             <li><span>开始时间：</span><b>{{formatTime(displayedPeriodMsg.startTime)}}</b></li>
                             <li><span>结束时间：</span><b>{{formatTime(displayedPeriodMsg.endTime)}}</b></li>
                             <li><span>午餐：</span><b>{{displayedPeriodMsg.isIncludeLunch?'有':'无'}}</b></li>
                         </ol>
-                        <div slot="reference" class="periodItem" :class="{'is-cell-active':props.row.Periods[item.day-1].IsCellActive,'is-checked':props.row.Periods[item.day-1].IsCheckIn}" @click="tableCellClick(props.row.Periods[item.day-1])">{{matchingPeriodName(props.row.Periods[item.day-1])}}</div>
+                        <div slot="reference" class="periodItem" :class="{'is-cell-active':props.row.Periods[index].IsCellActive,'is-checked':props.row.Periods[index].IsCheckIn}" @click="tableCellClick(props.row.Periods[index])">{{matchingPeriodName(props.row.Periods[index])}}</div>
                     </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column label="工作区域" fixed="right">
+                <template slot-scope="props">
+                    <div class="workAreaItem">{{matchingWorkAreaName(props.row.WorkAreas)}}</div>
                 </template>
             </el-table-column>
         </el-table>
@@ -61,6 +66,7 @@ export default {
                 Remark: '',
             },
             periods: [],
+            workAreas: [],
             schedules: [], //班表列表
             displayedPeriodMsg: {
                 startTime: '',
@@ -75,21 +81,25 @@ export default {
             method: 'POST',
             data: {
                 query: `
-                    query TestQuery{ 
-                        period{
+                    query getInitData{ 
+                        Periods:period{
                             id,name,color,startTime,endTime,isIncludeLunch
+                        }
+                        WorkAreas:workArea{
+                            id,name
                         }
                     }`
             }
         }).then(res => {
-            this.periods = res.data.data.period;
+            this.periods = res.data.data.Periods;
+            this.workAreas = res.data.data.WorkAreas;
         }).catch(err => {});
         axios({
             url: `/schedule`,
             method: 'POST',
             data: {
                 query: `query getSchedules{ 
-                schedule(locationId:2){
+                schedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
                     id,name,yearMonth
                 }
             }`
@@ -171,6 +181,18 @@ export default {
             hour = hour < 10 ? '0' + hour : hour;
             minute = minute < 10 ? '0' + minute : minute;
             return `${hour}:${minute}`;
+        },
+        matchingWorkAreaName(arr) {
+            let str = '';
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = 0; j < this.workAreas.length; j++) {
+                    if (arr[i] === this.workAreas[j].id) {
+                        str += this.workAreas[j].name + ',';
+                        break;
+                    }
+                }
+            }
+            return str.substring(0, str.length - 1);
         }
     },
 }
@@ -239,8 +261,11 @@ export default {
             cursor: pointer;
 
             thead {
-                th.is-weekend {
-                    background: #E0FFF1;
+                th {
+                    text-align: center;
+                    &.is-weekend{
+                        background: #E0FFF1;
+                    }
                 }
             }
 
@@ -283,6 +308,14 @@ export default {
                                     background-repeat: no-repeat;
                                     background-position: 40px center;
                                 }
+                            }
+
+                            .workAreaItem {
+                                height: 40px;
+                                line-height: 40px;
+                                color: #232E41;
+                                font-size: 18px;
+                                font-weight: bold;
                             }
                         }
                     }

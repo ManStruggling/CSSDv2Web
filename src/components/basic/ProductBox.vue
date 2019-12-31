@@ -8,7 +8,7 @@
                     <ul class="clear_float ul_form_style">
                         <li>
                             <p>包名称</p>
-                            <el-input type="text" placeholder="包名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                            <el-input type="text" placeholder="包名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                         </li>
                         <li>
                             <p>拼音简码</p>

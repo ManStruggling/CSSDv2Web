@@ -721,6 +721,18 @@ const router = new Router({
                     name: 'dailyWorkSheet',
                     component: () =>
                         import ('./components/management/DailyWorkSheet')
+                },
+                {
+                    path: '/management/vacationSchedule',
+                    name: 'vacationSchedule',
+                    component: () =>
+                        import ('./components/management/VacationSchedule')
+                },
+                {
+                    path: '/management/vacationScheduleView',
+                    name: 'vacationScheduleView',
+                    component: () =>
+                        import ('./components/management/VacationScheduleView')
                 }
             ]
         },

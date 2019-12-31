@@ -10,7 +10,7 @@
                 <p>班表月份</p>
                 <el-date-picker v-model="submitData.YearMonth" type="month" placeholder="请选择年月" :clearable="false" :editable="false" @change="dateChange" :picker-options="{
                         disabledDate:disabledDate
-                    }" value-format="yyyy-MM"></el-date-picker>
+                    }" value-format="yyyy-MM" :disabled="viewModule.id?true:false"></el-date-picker>
             </li>
         </ul>
         <div class="workSheetRemark">
@@ -23,22 +23,21 @@
                     <el-option label="常日班" :value="'Work'"></el-option>
                     <el-option label="休假" :value="'Vacation'"></el-option>
                     <el-option label="备班" :value="'WorkOverTime'"></el-option>
+                    <el-option label="工作区域" :value="'WorkArea'"></el-option>
                 </el-select>
             </dt>
             <dd>
                 <el-tag v-for="(item,index) in periodType[currentSelectPeriodType]" :key="index" @click="switchPeriodStatus(item)" :class="{'is-active':item.IsActive}">{{item.name}}</el-tag>
             </dd>
-            <dd>
-                <!-- <el-switch v-model="isDraggableMode" @change="switchChange" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false"></el-switch> -->
-            </dd>
         </dl>
-        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick">
+        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick" v-show="submitData.Days!=''">
             <el-table-column label="序号" fixed width="50" class-name="draggable">
                 <template slot-scope="props">
                     <div class="cell_index fixed draggable">{{props.$index+1}}</div>
                 </template>
             </el-table-column>
-            <el-table-column label="姓名" fixed class-name="draggable">
+            <el-table-column :fixed="isNameFixed" class-name="draggable header_name_th">
+                <div slot="header" class="header_name"><span>姓名</span><i @click="isNameFixed = !isNameFixed" :class="isNameFixed?'locked':'unclock'"></i></div>
                 <template slot-scope="props">
                     <div class="cell_name draggable">{{props.row.StaffName}}</div>
                 </template>
@@ -53,6 +52,11 @@
                         </ol>
                         <div slot="reference" class="periodItem" :class="{'is-cell-active':props.row.Periods[item.day-1].IsCellActive}" @click="tableCellClick(props.row.Periods[item.day-1])" @mousedown="tableCellMousedown(props.row.Periods[item.day-1])" @mouseenter="tableCellMouseenter(props.row.Periods[item.day-1])" @mouseup="tableCellMouseup(props.row.Periods[item.day-1])">{{initCellData(props.row.Periods[item.day-1],props.$index,item.day-1)}}</div>
                     </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column label="工作区域" fixed="right">
+                <template slot-scope="props">
+                    <div class="workAreaItem" @click="workAreaCellClick(props.row.WorkAreas)">{{matchingWorkAreaName(props.row.WorkAreas)}}</div>
                 </template>
             </el-table-column>
         </el-table>
@@ -92,6 +96,8 @@ export default {
             keyDownPosition: [],
             //当前激活的班种
             activePeriod: {},
+            //当前激活的工作区域
+            activeWorkArea: {},
             //提交数据模型
             submitData: {
                 Id: 0,
@@ -112,14 +118,16 @@ export default {
             periodType: {
                 Work: [],
                 Vacation: [],
-                WorkOverTime: []
+                WorkOverTime: [],
+                WorkArea: []
             },
+            //班种显示的数据
             displayedPeriodMsg: {
                 startTime: '',
                 endTime: '',
                 isIncludeLunch: false,
             },
-            isDraggableMode: false,
+            isNameFixed: true
         }
     },
     created() {
@@ -138,6 +146,9 @@ export default {
                     WorkOverTime:period(periodType:2){
                         id,name,color,startTime,endTime,isIncludeLunch
                     }
+                    WorkArea:workArea{
+                        id,name
+                    }
                 }`,
                 variables: {}
             }
@@ -145,6 +156,11 @@ export default {
             for (const key in res.data.data) {
                 res.data.data[key].forEach(element => {
                     element.IsActive = false;
+                    if (key == 'WorkArea') {
+                        element.IsPeriod = false;
+                    } else {
+                        element.IsPeriod = true;
+                    }
                 });
             }
             Object.assign(this.periodType, res.data.data);
@@ -162,10 +178,10 @@ export default {
                 method: 'POST',
                 data: {
                     query: `query getStaffs{
-                    staff(clinicId:${this.GLOBAL.UserInfo.ClinicId}){
-                        id,name,clinicId
-                    }
-                }`
+                        staff(clinicId:${this.GLOBAL.UserInfo.ClinicId}){
+                            id,name,clinicId
+                        }
+                    }`
                 }
 
             }).then(res => {
@@ -173,10 +189,9 @@ export default {
                     element.Periods = [];
                     element.StaffId = element.id;
                     element.StaffName = element.name;
+                    element.WorkAreas = [];
                 });
                 this.submitData.Staffs = res.data.data.staff;
-                this.submitData.YearMonth = `${this.currentSelectMonth.year}-${this.currentSelectMonth.month+1}`;
-                this.setCalendarDate();
             }).catch(err => {})
         }
     },
@@ -204,6 +219,10 @@ export default {
                     val: this.submitData.Name,
                     type: 'StringNotEmpty',
                     msg: '班表名称不能为空！'
+                }, {
+                    val: this.submitData.YearMonth,
+                    type: 'StringNotEmpty',
+                    msg: '排班月份不能为空！'
                 }])) {
                 let method = 'POST';
                 if (this.viewModule.id) {
@@ -236,16 +255,27 @@ export default {
         tableCellClick(obj) {
             if (this.activePeriod.id) {
                 obj.PeriodId = this.activePeriod.id;
+                obj.PeriodName = this.activePeriod.name;
+                obj.IsIncludeLunch = this.activePeriod.IsIncludeLunch;
             }
             this.resetCellStatus(obj.RowIndex, obj.ColumnIndex);
             obj.IsCellActive = !obj.IsCellActive;
             this.$forceUpdate();
         },
+        //工作区域点击事件
+        workAreaCellClick(arr) {
+            if (this.activeWorkArea.id && !arr.includes(this.activeWorkArea.id)) {
+                arr.push(this.activeWorkArea.id);
+            }
+        },
+        //删除选中的排班
         deleteSelectedAreaPeriods() {
             for (let i = 0; i < this.submitData.Staffs.length; i++) {
                 for (let j = 0; j < this.submitData.Staffs[i].Periods.length; j++) {
                     if (this.submitData.Staffs[i].Periods[j].IsCellActive) {
                         this.submitData.Staffs[i].Periods[j].PeriodId = 0;
+                        this.submitData.Staffs[i].Periods[j].PeriodName = '';
+                        this.submitData.Staffs[i].Periods[j].IsIncludeLunch = false;
                     }
                 }
             }
@@ -285,6 +315,8 @@ export default {
                         if (this.submitData.Staffs[i].Periods[j].RowIndex >= minRowIndex && this.submitData.Staffs[i].Periods[j].RowIndex <= maxRowIndex && this.submitData.Staffs[i].Periods[j].ColumnIndex <= maxColumnIndex && this.submitData.Staffs[i].Periods[j].ColumnIndex >= minColumnIndex) {
                             if (this.activePeriod.id) {
                                 this.submitData.Staffs[i].Periods[j].PeriodId = this.activePeriod.id;
+                                this.submitData.Staffs[i].Periods[j].PeriodName = this.activePeriod.name;
+                                this.submitData.Staffs[i].Periods[j].IsIncludeLunch = this.activePeriod.IsIncludeLunch;
                             }
                         }
                     }
@@ -294,10 +326,10 @@ export default {
             this.$forceUpdate();
         },
         //重置班种激活状态
-        resetPeriodStatus(id) {
+        resetPeriodStatus(obj) {
             for (const key in this.periodType) {
                 this.periodType[key].forEach(element => {
-                    if (element.id === id) {
+                    if (element.id === obj.id && obj.IsPeriod === element.IsPeriod) {
                         return;
                     }
                     element.IsActive = false;
@@ -317,28 +349,21 @@ export default {
         },
         //切换班种激活状态
         switchPeriodStatus(obj) {
-            this.resetPeriodStatus(obj.id);
+            this.resetPeriodStatus(obj);
             obj.IsActive = !obj.IsActive;
             if (obj.IsActive) {
-                Object.assign(this.activePeriod, obj);
+                if (obj.IsPeriod) {
+                    Object.assign(this.activePeriod, obj);
+                    this.activeWorkArea = {};
+                } else {
+                    Object.assign(this.activeWorkArea, obj);
+                    this.activePeriod = {};
+                }
             } else {
                 this.activePeriod = {};
+                this.activeWorkArea = {};
             }
         },
-        // //匹配班种显示的名称
-        // initCellData(periodObj, rowIndex, columnIndex) {
-        //     periodObj.RowIndex = rowIndex;
-        //     periodObj.ColumnIndex = columnIndex;
-        //     if (periodObj.PeriodId) {
-        //         for (const key in this.periodType) {
-        //             for (let i = 0; i < this.periodType[key].length; i++) {
-        //                 if (this.periodType[key][i].id === periodObj.PeriodId) {
-        //                     return this.periodType[key][i].name;
-        //                 }
-        //             }
-        //         }
-        //     }
-        // },
         //年月change事件
         dateChange(val) {
             let {
@@ -385,6 +410,8 @@ export default {
                     this.submitData.Staffs[i].Periods.push({
                         Day: this.submitData.Days[j].day,
                         PeriodId: 0,
+                        PeriodName: '',
+                        IsIncludeLunch: false,
                         IsWeekend: this.submitData.Days[j].isWeekend,
                         IsCellActive: false,
                         IsCheckIn: false
@@ -460,15 +487,21 @@ export default {
             return (periodObj, rowIndex, columnIndex) => {
                 periodObj.RowIndex = rowIndex;
                 periodObj.ColumnIndex = columnIndex;
-                if (periodObj.PeriodId) {
-                    for (const key in this.periodType) {
-                        for (let i = 0; i < this.periodType[key].length; i++) {
-                            if (this.periodType[key][i].id === periodObj.PeriodId) {
-                                return this.periodType[key][i].name;
-                            }
+                return periodObj.PeriodName;
+            }
+        },
+        matchingWorkAreaName() {
+            return (arr) => {
+                let str = '';
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < this.periodType.WorkArea.length; j++) {
+                        if (arr[i] === this.periodType.WorkArea[j].id) {
+                            str += this.periodType.WorkArea[j].name + ',';
+                            break;
                         }
                     }
                 }
+                return str.substring(0, str.length - 1);
             }
         }
 
@@ -621,8 +654,40 @@ export default {
             cursor: pointer;
 
             thead {
-                th.is-weekend {
-                    background: #E0FFF1;
+                th {
+                    text-align: center;
+
+                    &.is-weekend {
+                        background: #E0FFF1;
+                    }
+
+                    &.header_name_th {
+                        .cell {
+                            line-height: 23px;
+                            height: 23px;
+
+                            .header_name {
+                                display: flex;
+                                line-height: 23px;
+                                padding: 0 0 0 10px;
+
+                                i {
+                                    width: 14px;
+                                    height: 20px;
+
+                                    &.locked {
+                                        background: url(../../assets/images/locked.png) center no-repeat;
+                                        background-size: 14px 20px;
+                                    }
+
+                                    &.unclock {
+                                        background: url(../../assets/images/unclock.png) center no-repeat;
+                                        background-size: 14px 20px;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -662,6 +727,14 @@ export default {
                                 &.is-cell-active {
                                     background: rgba(153, 153, 255, .5)
                                 }
+                            }
+
+                            .workAreaItem {
+                                height: 40px;
+                                line-height: 40px;
+                                color: #232E41;
+                                font-size: 18px;
+                                font-weight: bold;
                             }
                         }
                     }

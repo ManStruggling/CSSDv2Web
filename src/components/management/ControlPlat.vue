@@ -39,8 +39,17 @@
                         </el-menu-item>
                     </el-submenu>
                     <el-submenu index="3">
-                        <template slot="title">系统配置</template>
+                        <template slot="title">节假日排班</template>
                         <el-menu-item index="3-1">
+                            <router-link to="/management/vacationScheduleView" :active-class="'isActive'">查看班表</router-link>
+                        </el-menu-item>
+                        <el-menu-item index="3-2">
+                            <router-link to="/management/vacationSchedule" :active-class="'isActive'">编辑班表</router-link>
+                        </el-menu-item>
+                    </el-submenu>
+                    <el-submenu index="4">
+                        <template slot="title">系统配置</template>
+                        <el-menu-item index="4-1">
                             <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
                         </el-menu-item>
                     </el-submenu>
@@ -56,15 +65,13 @@
 export default {
     data() {
         return {
-          isRouterAlive: true,
+            isRouterAlive: true,
         };
     },
     //路由前置守卫
     beforeRouteEnter(to, from, next) {
         if (sessionStorage.userInfo) {
-            if (
-                UserInfo.JobAndCompetence.includes("000") || UserInfo.JobAndCompetence.includes("100")
-            ) {
+            if (UserInfo.JobAndCompetence.includes("000") || UserInfo.JobAndCompetence.includes("100")) {
                 next();
             } else {
                 next(from.path);

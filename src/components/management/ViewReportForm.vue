@@ -110,8 +110,8 @@ export default {
             .catch(err => {});
     },
     mounted() {
-        // this.rowDrop();
-        // this.columnDrop();
+        this.rowDrop();
+        this.columnDrop();
         $(document).ready(() => {
             //初始化打印插件
             hiprint.init();
@@ -120,17 +120,12 @@ export default {
     methods: {
         //过滤数据method
         filterData(value, row, column) {
-            for (let i = 0; i < this.columnList.length; i++) {
-                if (this.columnList[i].DisplayName === column.label) {
-                    if(row[this.columnList[i].SpliceName] == value){
-                        row.Visiable = true;
-                        return true;
-                    }else{
-                        row.Visiable = false;
-                        return false;
-                    }
-                    
-                }
+            if (row[column.columnKey] == value) {
+                row.Visiable = true;
+                return true;
+            } else {
+                row.Visiable = false;
+                return false;
             }
         },
         //生成报表
@@ -325,7 +320,7 @@ export default {
         //打印预览
         printView() {
             let printTablefields = [];
-            this.columnList.forEach(element => {
+            this.dropCol.forEach(element => {
                 printTablefields.push({
                     "title": element.DisplayName,
                     "field": element.SpliceName,
@@ -349,7 +344,7 @@ export default {
         },
         //开始打印
         startPrinting() {
-            this.printData.table = this.tableData.filter(element=>element.Visiable);
+            this.printData.table = this.tableData.filter(element => element.Visiable);
             this.hiprintTemplate.print(this.printData);
         },
         //关闭预览
@@ -361,7 +356,7 @@ export default {
             if (this.tableData.length > 0) {
                 const th = [];
                 const filterVal = [];
-                this.columnList.forEach(element => {
+                this.dropCol.forEach(element => {
                     th.push(element.DisplayName);
                     filterVal.push(element.SpliceName);
                 });
@@ -399,10 +394,10 @@ export default {
             }
         },
         //筛选change事件
-        tableFilteredEvent(filters){
+        tableFilteredEvent(filters) {
             for (const key in filters) {
-                if(filters[key]==''){
-                    this.tableData.forEach(element=>{
+                if (filters[key] == '') {
+                    this.tableData.forEach(element => {
                         element.Visiable = true;
                     });
                     this.$refs.multipleTable.clearFilter();
@@ -412,7 +407,7 @@ export default {
         //input筛选数据
         searchInputEvent() {
             if (this.searchField) {
-                this.tableData =  this.totalData.filter(data => {
+                this.tableData = this.totalData.filter(data => {
                     for (let key in data) {
                         if (/ProductName$/.test(key) && data[key].toLowerCase().includes(this.searchField.toLowerCase())) {
                             data.Visiable = true;

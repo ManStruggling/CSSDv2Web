@@ -1,5 +1,5 @@
 <template>
-<!-- 排班列表组件 -->
+<!-- 节假日班表组件 -->
 <div class="basic_main">
     <div class="basic_main_head">
         <p></p>
@@ -8,7 +8,7 @@
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
             <el-table-column label="班表名称" prop="name" width="240"></el-table-column>
-            <el-table-column label="班表月份" prop="yearMonth" width="210"></el-table-column>
+            <el-table-column label="起止日期" prop="startEndDate" width="240"></el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>
@@ -20,13 +20,13 @@
 
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 编辑弹出框 -->
-        <SchedulingWorkSheet v-if="showEditBox" @to-father="child2father" :viewModule="toChildData" :scheduledWorks="table_data"></SchedulingWorkSheet>
+        <VacationScheduleBox v-if="showEditBox" @to-father="child2father" :viewModule="toChildData" :scheduledWorks="table_data"></VacationScheduleBox>
     </transition>
 </div>
 </template>
 
 <script>
-import SchedulingWorkSheet from "./SchedulingWorkSheet";
+import VacationScheduleBox from "./VacationScheduleBox";
 export default {
     data() {
         return {
@@ -36,23 +36,21 @@ export default {
         };
     },
     components: {
-        SchedulingWorkSheet
+        VacationScheduleBox
     },
     created() {
         axios({
             url: `/schedule`,
             method: 'POST',
             data: {
-                operationName: "getSchedules",
-                query: ` query getSchedules{ 
-                    schedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
-                        id,name,yearMonth
+                query: `query getVacationSchedules{
+                    vacationSchedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
+                        id,name,startEndDate
                     }
-                }`,
-                variables: {}
+                }`
             }
         }).then(res => {
-            this.table_data = res.data.data.schedule;
+            this.table_data = res.data.data.vacationSchedule;
         }).catch(err => {})
     },
     mounted() {},
@@ -70,12 +68,12 @@ export default {
                 method: 'POST',
                 data: {
                     query: ` query storedEvent{ 
-                        storedEvent(aggregateId:${this.table_data[index].id},aggregate:"Schedule",getLast:1){
+                        storedEvent(aggregateId:${this.table_data[index].id},aggregate:"VacationSchedule",getLast:1){
                             id,commandViewData
                         }
                     }`,
                 }
-            }).then(res => { 
+            }).then(res => {
                 that.toChildData = res.data.data.storedEvent[res.data.data.storedEvent.length - 1];
                 that.toChildData.id = this.table_data[index].id;
                 that.showEditBox = true;
