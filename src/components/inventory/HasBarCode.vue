@@ -36,7 +36,9 @@
                 <el-collapse-item v-for="(item,index) in inventoryData.Products" :key="index" :name="index+''" :class="item.IsNotPrintBarCode?'collapseUnExpand':''">
                     <div slot="title" class="collapseTh">
                         <div class="collapseTd">
-                            <p>{{item.ProductName}}</p>
+                            <el-tooltip :content="item.ProductName" placement="top-start" :disabled="item.ProductName.length<10">
+                                <p>{{item.ProductName}}</p>
+                            </el-tooltip>
                         </div>
                         <div class="collapseTd">
                             <p>{{item.BaseQuantity}}</p>

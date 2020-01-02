@@ -3,7 +3,7 @@
 <div id="cssd_table">
     <!-- 页头 -->
     <div class="head_box">
-        <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
+        <router-link to="/" tag="p">云南软博科技有限责任公司</router-link>
         <div class="head_user">
             <p>{{GLOBAL.UserInfo.ClinicName}}</p>
             <p>{{GLOBAL.UserInfo.UserName}}</p>
@@ -540,7 +540,7 @@ export default {
                         }
 
                         .cell {
-                            overflow: visible;
+                            overflow: hidden;
                             font-size: 18px;
                             font-family: Microsoft YaHei;
                             font-weight: bold;

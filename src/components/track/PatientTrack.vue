@@ -88,7 +88,7 @@
         </ul>
         <el-table :data="data.Packages.concat(data.OlderSystemPackages)">
             <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-            <el-table-column label="包名称" prop="PackageName" width="210">
+            <el-table-column label="包名称" prop="PackageName" width="210" show-overflow-tooltip>
                 <template slot-scope="props">{{props.row.PackageName?props.row.PackageName:"-"}}</template>
             </el-table-column>
             <el-table-column label="包操作" width="210">

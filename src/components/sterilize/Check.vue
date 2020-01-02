@@ -24,7 +24,7 @@
             <div class="cssd_talbe_left_menu">
                 <dl class="isActive">
                     <dt class="pendingReview reviewStatus">
-                        <span>待审核（任务数：{{sterilizeTask.PendingReview==null?0:sterilizeTask.PendingReview.length}}）</span>
+                        <span>待审核（{{sterilizeTask.PendingReview==null?0:sterilizeTask.PendingReview.length}}）</span>
                     </dt>
                     <dd class="reviewDd" style="display:block;">
                         <el-tabs :tab-position="'left'" :activeName="pendingReviewActiveName" @tab-click="tabClick">
@@ -111,7 +111,7 @@
                                     </div>
                                     <el-table :data="item.SterilizeFailedPackages" :show-header="false">
                                         <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                                        <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
+                                        <el-table-column label="包名称" prop="ProductName" width="210" show-overflow-tooltip></el-table-column>
                                         <el-table-column label="包数量" prop="ProductQuantity" width="210"></el-table-column>
                                         <el-table-column label="不合格原因" width="210">
                                             <template slot-scope="props">
@@ -141,7 +141,7 @@
                 </dl>
                 <dl>
                     <dt class="sterilizing reviewStatus">
-                        <span>灭菌中（任务数：{{sterilizeTask.Sterilizing==null?0:sterilizeTask.Sterilizing.length}}）</span>
+                        <span>灭菌中（{{sterilizeTask.Sterilizing==null?0:sterilizeTask.Sterilizing.length}}）</span>
                     </dt>
                     <dd class="reviewDd">
                         <el-tabs :tab-position="'left'" :activeName="sterilizingActiveName">

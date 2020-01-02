@@ -74,24 +74,30 @@
                                         <!-- 包名称 -->
                                         <div class="collapseTd" style="width:250px;">
                                             <el-popover v-show="value.IsOuterProduct" placement="right-start" width="200" trigger="hover" :style="'display:inline-block;'" @show="showPatientMessage(value)">
-                                                <div>
+                                                <div class="el-popover-content">
                                                     <p>
-                                                        <span>住院号：</span>
-                                                        <span>{{patienMessage.PatientHospitalId}}</span>
+                                                        <span>包名称</span>
+                                                        <b>{{value.ProductName}}</b>
                                                     </p>
                                                     <p>
-                                                        <span>床号：</span>
-                                                        <span>{{patienMessage.PatientBedId}}</span>
+                                                        <span>住院号</span>
+                                                        <b>{{patienMessage.PatientHospitalId}}</b>
                                                     </p>
                                                     <p>
-                                                        <span>病人姓名：</span>
-                                                        <span>{{patienMessage.PatientName}}</span>
+                                                        <span>床号</span>
+                                                        <b>{{patienMessage.PatientBedId}}</b>
+                                                    </p>
+                                                    <p>
+                                                        <span>病人姓名</span>
+                                                        <b>{{patienMessage.PatientName}}</b>
                                                     </p>
                                                 </div>
-                                                <div slot="reference">{{value.ProductName}}</div>
+                                                <div slot="reference" class="beyondHiding">{{value.ProductName}}</div>
                                             </el-popover>
                                             <div v-if="!value.IsOuterProduct" class="taskOfProductName">
-                                                {{value.ProductName}}
+                                                <el-tooltip class="beyondHiding" :content="value.ProductName" placement="right"  :disabled="value.ProductName.length<10">
+                                                    <span>{{value.ProductName}}</span>
+                                                </el-tooltip>
                                                 <i class="viewPictures" @click.stop="viewProductImg(value.ProductId)"></i>
                                             </div>
                                             <div class="sterilizeType">
@@ -161,12 +167,12 @@
                                     </div>
                                     <div class="InstrumentsAndMaterial" v-if="!value.IsNotBarCodeProduct&&value.PackageInstrumentList">
                                         <el-table v-if="value.PackageInstrumentList.InstrumentCounts==''?false:true" :data="value.PackageInstrumentList.InstrumentCounts">
-                                            <el-table-column label="器械名称" prop="Name" width="240"></el-table-column>
+                                            <el-table-column label="器械名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
                                             <el-table-column label="器械数/包" prop="Quantity" width="210"></el-table-column>
                                             <el-table-column></el-table-column>
                                         </el-table>
                                         <el-table v-if="value.PackageInstrumentList.MaterialCounts==''?false:true" :data="value.PackageInstrumentList.MaterialCounts">
-                                            <el-table-column label="原料名称" prop="Name" width="240"></el-table-column>
+                                            <el-table-column label="原料名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
                                             <el-table-column label="原料数/包" prop="Quantity" width="210"></el-table-column>
                                             <el-table-column></el-table-column>
                                         </el-table>
@@ -904,9 +910,22 @@ export default {
                                     background-size: 100% 100%;
                                 }
 
+                                .beyondHiding {
+                                    max-width: 160px;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                }
+
                                 .taskOfProductName {
                                     display: flex;
                                     align-items: center;
+
+                                    span {
+                                        color: inherit;
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                    }
                                 }
 
                                 .sterilizeType {

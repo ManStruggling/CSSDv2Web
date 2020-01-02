@@ -17,7 +17,7 @@
         <div class="table_box">
             <el-table :data="packages.FailedPackages">
                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
+                <el-table-column label="包名称" prop="ProductName" width="210"  show-overflow-tooltip></el-table-column>
                 <el-table-column label="不合格原因" width="210">
                     <template slot-scope="props">
                         <el-select v-model="props.row.FailedPackageCauseId" class="green18x10">

@@ -154,7 +154,7 @@
                 <el-tab-pane label="器械" name="first" v-if="editBoxData.Type==83?false:true">
                     <div class="packageDetail">
                         <el-table :data="editBoxData.InstrumentCounts" :row-key="getRowKeys" min-width="300">
-                            <el-table-column prop="Name" label="名称" width="240"></el-table-column>
+                            <el-table-column prop="Name" label="名称" width="240" show-overflow-tooltip></el-table-column>
                             <el-table-column prop="Specification" label="规格" width="210"></el-table-column>
                             <el-table-column label="数量" width="210">
                                 <template slot-scope="props">
@@ -176,7 +176,7 @@
                 <el-tab-pane label="包原料" name="second">
                     <div class="packageDetail">
                         <el-table :data="editBoxData.MaterialCounts" :row-key="getRowKeys">
-                            <el-table-column prop="Name" label="名称" width="240"></el-table-column>
+                            <el-table-column prop="Name" label="名称" width="240" show-overflow-tooltip></el-table-column>
                             <el-table-column prop="Specification" label="规格" width="210"></el-table-column>
                             <el-table-column label="数量" width="210">
                                 <template slot-scope="props">
@@ -369,7 +369,7 @@ export default {
             if (val == false) {
                 this.editBoxData.NumberProductQuantity = 0;
             }
-            if(val&&!this.editBoxData.IsNotPrintBarCode){
+            if (val && !this.editBoxData.IsNotPrintBarCode) {
                 this.editBoxData.ProvideGenerateType = 3;
             }
         },
@@ -377,7 +377,7 @@ export default {
         countPackageChange(val) {
             if (val == false) {
                 this.editBoxData.IsPrintLabel = false;
-                if(this.editBoxData.IsNumberProduct){
+                if (this.editBoxData.IsNumberProduct) {
                     this.editBoxData.ProvideGenerateType = 3;
                 }
             }
@@ -686,10 +686,16 @@ export default {
                         }
 
                         .cell {
+                            overflow: hidden;
                             font-size: 18px;
                             font-family: Microsoft YaHei;
                             font-weight: bold;
                             color: rgba(35, 46, 65, 1);
+
+                            input {
+                                height: 24px;
+                                line-height: 24px;
+                            }
 
                             a {
                                 color: #f93e3e;

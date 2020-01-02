@@ -46,7 +46,7 @@
                     <el-tab-pane label="无菌物品" v-if="item.Packages==''||item.Packages===null?false:true">
                         <el-table :data="item.Packages" :default-expand-all="true">
                             <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                            <el-table-column label="包名称" prop="Name" width="210"></el-table-column>
+                            <el-table-column label="包名称" prop="Name" width="210" show-overflow-tooltip></el-table-column>
                             <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                             <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                             <el-table-column label="包数量" prop="PackageQuantity" width="210"></el-table-column>
@@ -59,7 +59,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="一次性物品" v-if="item.DisposableProducts==''||item.DisposableProducts===null?false:true">
                         <el-table :data="item.DisposableProducts" :default-expand-all="true">
-                            <el-table-column label="名称" prop="Name" width="240"></el-table-column>
+                            <el-table-column label="名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
                             <el-table-column label="批号" prop="BatchNumber" width="210"></el-table-column>
                             <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                             <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>

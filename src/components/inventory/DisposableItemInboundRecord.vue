@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <el-table :data="item.Packages" :default-expand-all="true">
-                    <el-table-column label="名称" prop="ProductName" width="240"></el-table-column>
+                    <el-table-column label="名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="批号" prop="BatchNumber" width="210"></el-table-column>
                     <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                     <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>

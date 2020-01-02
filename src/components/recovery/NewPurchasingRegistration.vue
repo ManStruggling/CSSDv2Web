@@ -45,8 +45,32 @@
                         </p>
                     </div>
                 </div>
-                <div class="tab_content">
-                    <div class="content_title">
+                <div class="tab_content table_unExpand">
+                    <el-table :data="item.Packages">
+                        <el-table-column label="包名称" prop="ProductName" show-overflow-tooltip width="240"></el-table-column>
+                        <el-table-column label="包数量" prop="ProductName" width="210">
+                            <template slot-scope="props">
+                                <el-input-number v-model="props.row.ProductQuantity" :min="0" :max="props.row.IsSingleCarrierProduct?1:999" size="mini" :controls="false" @change="((newValue,oldValue)=>{packageNumberChange(newValue,oldValue,index,props.$index)})"></el-input-number>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="单包网篮" width="210" class-name="singleCarrierBox">
+                            <template slot-scope="props">
+                                <template v-if="props.row.IsSingleCarrierProduct">
+                                    <el-input type="text" v-model.trim="props.row.SingleCarrierBarCode" placeholder="输入单包网篮(必填)" @blur="inputBlur(props.row)" :disabled="props.row.SingleCarrierId===0?false:true"></el-input>
+                                    <i class="deleteSingleCarrier el-icon-error" @click="deleteTheIdOfAlreadyEnteredSingleCarrierIds(props.row)" v-show="props.row.SingleCarrierId!=0"></i>
+                                </template>
+                                <template v-else>{{"-"}}</template>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="单包网篮名称" width="210">
+                            <template slot-scope="props">
+                                <template v-if="props.row.IsSingleCarrierProduct">{{props.row.SingleCarrierName}}</template>
+                                <template v-else>{{"-"}}</template>
+                            </template>
+                        </el-table-column>
+                        <el-table-column></el-table-column>
+                    </el-table>
+                    <!-- <div class="content_title">
                         <p>包名称</p>
                         <p>包数量</p>
                         <p>单包网篮</p>
@@ -72,7 +96,7 @@
                                 <template v-else>{{"-"}}</template>
                             </p>
                         </li>
-                    </ol>
+                    </ol> -->
                 </div>
             </el-tab-pane>
         </el-tabs>
@@ -506,6 +530,7 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/tableTotalBottomBar";
 @import "../../assets/css/tabsTotalBar";
+@import "../../assets/css/tableUnExpand";
 
 .newPurchasingRegistration {
     font-family: Microsoft YaHei;
@@ -532,103 +557,62 @@ export default {
         display: flex;
         position: relative;
 
-        .content_title {
-            display: flex;
-            height: 60px;
-            font-size: 18px;
-            font-family: Microsoft YaHei;
-            color: rgba(135, 141, 159, 1);
-            line-height: 60px;
-            padding-left: 40px;
-            background: rgba(247, 248, 250, 1);
-
-            p {
-                width: 200px;
-                margin-right: 10px;
-            }
-        }
-
-        ol {
-            li {
-                display: flex;
-                padding-left: 40px;
-                height: 65px;
-                border: 1px solid #fff;
-                border-bottom: 1px solid #f2f4f7;
-                box-sizing: border-box;
-
-                &:hover {
-                    border-color: rgba(0, 193, 107, 1);
-                    border-radius: 4px;
-                }
-
-                p {
-                    width: 200px;
-                    margin-right: 10px;
-                    display: flex;
-                    align-items: center;
-                    font-size: 18px;
-                    font-family: Microsoft YaHei;
-                    font-weight: bold;
-                    color: rgba(35, 46, 65, 1);
-                    white-space: nowrap;
-
+        .el-table {
+            tbody {
+                td {
+                    padding: 0;
                     &.singleCarrierBox {
                         position: relative;
 
                         i {
                             position: absolute;
-                            right: 10px;
+                            right: 20px;
                             top: 24px;
                             color: rgba(0, 0, 0, 0.3);
                             cursor: pointer;
                         }
                     }
 
-                    span {
-                        display: block;
-                    }
-
-                    b {
+                    .cell {
+                        overflow: hidden;
                         font-size: 18px;
-                        font-family: Microsoft YaHei;
                         font-weight: bold;
                         color: rgba(35, 46, 65, 1);
-                        line-height: 65px;
-                    }
 
-                    .el-input-number {
-                        height: 24px;
-                        margin: 20px 0;
+                        .el-input-number {
+                            height: 24px;
+                            margin: 20px 0;
 
-                        .el-input {
-                            height: 100%;
-
-                            input {
+                            .el-input {
                                 height: 100%;
-                                padding: 0;
-                                width: 40px;
-                                font-size: 18px;
-                                font-family: Microsoft YaHei;
-                                font-weight: bold;
-                                color: rgba(35, 46, 65, 1);
 
-                                &:focus {
-                                    border-color: rgba(0, 193, 107, 1);
+                                input {
+                                    height: 100%;
+                                    padding: 0;
+                                    width: 50px;
+                                    font-size: 18px;
+                                    font-family: Microsoft YaHei;
+                                    font-weight: bold;
+                                    color: rgba(35, 46, 65, 1);
+
+                                    &:focus {
+                                        border-color: rgba(0, 193, 107, 1);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    >.el-input {
-                        input {
-                            font-size: 18px;
-                            font-family: Microsoft YaHei;
-                            font-weight: bold;
-                            color: #232e41;
+                        >.el-input {
+                            input {
+                                font-size: 18px;
+                                font-family: Microsoft YaHei;
+                                font-weight: bold;
+                                color: #232e41;
+                            }
                         }
                     }
                 }
+
             }
         }
     }

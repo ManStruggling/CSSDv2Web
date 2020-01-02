@@ -66,35 +66,20 @@
                                         </div>
                                     </div>
                                     <el-tabs type="card">
-                                        <el-tab-pane label="无菌物品" v-if="value.Products==''?false:true">
-                                            <div class="table_detail">
-                                                <div class="myTableTitle">
-                                                    <p>名称</p>
-                                                    <p>数量</p>
-                                                </div>
-                                                <ul>
-                                                    <li v-for="(selfs,myTableIndex) in value.Products" :key="myTableIndex">
-                                                        <p>{{selfs.Name}}</p>
-                                                        <p>{{selfs.Quantity}}</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <el-tab-pane label="无菌物品" v-if="value.Products==''?false:true" class="table_unExpand">
+                                            <el-table :data="value.Products">
+                                                <el-table-column label="名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
+                                                <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>
+                                                <el-table-column></el-table-column>
+                                            </el-table>
                                         </el-tab-pane>
                                         <el-tab-pane label="一次性物品" v-if="value.DisposableItems==''?false:true">
-                                            <div class="table_detail">
-                                                <div class="myTableTitle">
-                                                    <p>名称</p>
-                                                    <p>规格</p>
-                                                    <p>数量</p>
-                                                </div>
-                                                <ul>
-                                                    <li v-for="(selfs,myTableIndex) in value.DisposableItems" :key="myTableIndex">
-                                                        <p>{{selfs.Name}}</p>
-                                                        <p>{{selfs.Specification}}</p>
-                                                        <p>{{selfs.Quantity}}</p>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <el-table :data="value.DisposableItems">
+                                                <el-table-column label="名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
+                                                <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
+                                                <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>
+                                                <el-table-column></el-table-column>
+                                            </el-table>
                                         </el-tab-pane>
                                     </el-tabs>
                                 </el-collapse-item>
@@ -326,6 +311,7 @@ export default {
 @import "../../assets/css/tableTotalBottomBar";
 @import "../../assets/css/tabsTotalBar";
 @import "../../assets/css/tableCollapse";
+@import "../../assets/css/tableUnExpand";
 
 #reserveCheck {
     .cssd_title_right {
@@ -399,6 +385,7 @@ export default {
                 .el-tabs--top {
                     .el-tabs__header {
                         border-bottom-color: #f2f4f7;
+                        margin: 0;
 
                         .el-tabs__nav {
                             border-right-color: #f2f4f7;
@@ -428,32 +415,16 @@ export default {
                         position: static;
                         padding: 0;
 
-                        .myTableTitle {
-                            display: flex;
-                            padding: 0 0 0 40px;
-
-                            p {
-                                width: 160px;
-                                margin-right: 50px;
-                                font-size: 18px;
-                                font-family: Microsoft YaHei;
-                                color: rgba(135, 141, 159, 1);
-                                line-height: 24px;
+                        .el-table {
+                            thead {
+                                th {
+                                    background: transparent;
+                                }
                             }
-                        }
 
-                        ul {
-                            li {
-                                display: flex;
-                                margin: 20px 0 20px 40px;
-
-                                p {
-                                    width: 160px;
-                                    margin-right: 50px;
-                                    font-size: 18px;
-                                    font-family: Microsoft YaHei;
-                                    color: rgba(35, 46, 65, 1);
-                                    line-height: 24px;
+                            tbody {
+                                .cell {
+                                    color: #232E41;
                                 }
                             }
                         }

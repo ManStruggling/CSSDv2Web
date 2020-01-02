@@ -6,7 +6,7 @@
         </h3>
         <el-table ref="multipleTable" :data="list" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @row-click="handleRowClick" @selection-change="handleSelectionChange" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="ProductName" label="一次性物品名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProductName" label="一次性物品名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" show-overflow-tooltip></el-table-column>
             <el-table-column prop="Specification" label="规格" width="150" sortable :sort-by="'Specification'"></el-table-column>
             <el-table-column prop="ProductQuantity" label="数量" width="80" sortable :sort-by="'ProductQuantity'">
                 <template slot-scope="scope">

@@ -110,15 +110,15 @@
                         width: 200px;
                         margin-right: 10px;
                         color: inherit;
-                        // &:first-child {
-                        //     white-space: nowrap;
-                        // }
                         >p {
                             font-size: 18px;
                             font-family: Microsoft YaHei;
                             font-weight: bold;
                             color: inherit;
                             line-height: 65px;
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
                         }
                         .el-button {
                             height: 24px;

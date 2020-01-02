@@ -29,7 +29,7 @@
                 </li>
             </ul>
             <el-table :data="submitData.ExpeditedProducts">
-                <el-table-column label="名称" prop="ProductName" width="240"></el-table-column>
+                <el-table-column label="名称" prop="ProductName" width="240"  show-overflow-tooltip></el-table-column>
                 <el-table-column label="加急数量" width="210">
                     <template slot-scope="props">
                         <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>

@@ -178,7 +178,7 @@
             </ul>
             <el-table :data="submitData.Packages.concat(submitData.OlderSystemPackages)">
                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                <el-table-column label="包名称" width="210">
+                <el-table-column label="包名称" width="210"  show-overflow-tooltip>
                     <template slot-scope="props">{{props.row.ProductName?props.row.ProductName:"-"}}</template>
                 </el-table-column>
                 <el-table-column label="有效日期" width="210">

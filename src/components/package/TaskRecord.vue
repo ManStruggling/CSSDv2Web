@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <el-table :data="item.PackageReceiveTasks" :default-expand-all="true" @row-click="rowClick">
-                    <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
+                    <el-table-column label="包名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="包数量" prop="ThisTimePackageQuantity" width="210"></el-table-column>
                     <el-table-column></el-table-column>
                     <el-table-column type="expand" width="1">

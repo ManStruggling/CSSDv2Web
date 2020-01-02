@@ -12,8 +12,8 @@
         </h3>
         <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @row-click="handleRowClick" @selection-change="handleSelectionChange" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="ProductName" label="包名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="ProvideSubClinicName" label="所属科室" sortable :sort-by="'ProvideSubClinicShortCode'" width="160">
+            <el-table-column prop="ProductName" label="包名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="ProvideSubClinicName" label="所属科室" sortable :sort-by="'ProvideSubClinicShortCode'" width="160" show-overflow-tooltip>
                 <template slot-scope="scope">
                     <el-select v-if="scope.row.IsCommonProduct" v-model="scope.row.ProvideSubClinicId" filterable class="green18x10">
                         <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId"></el-option>

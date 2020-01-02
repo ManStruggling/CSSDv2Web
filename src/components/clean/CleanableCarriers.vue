@@ -36,7 +36,7 @@
               <el-table :data="value.PackageBarCodeDetailList">
                 <el-table-column width="130"></el-table-column>
                 <el-table-column label="所属科室" prop="ProvideSubClinicName" width="210"></el-table-column>
-                <el-table-column label="包名称" prop="Name" width="210"></el-table-column>
+                <el-table-column label="包名称" prop="Name" width="210" show-overflow-tooltip></el-table-column>
                 <el-table-column label="包数量" prop="Quantity" width="100"></el-table-column>
                 <el-table-column></el-table-column>
               </el-table>

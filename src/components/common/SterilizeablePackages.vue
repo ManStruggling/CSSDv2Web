@@ -6,9 +6,9 @@
         </h3>
         <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="280" width="400" @selection-change="handleSelectionChange" :row-key="getRowKeys" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="ProductName" label="包名称" width="201" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProductName" label="包名称" width="201" show-overflow-tooltip></el-table-column>
             <el-table-column prop="BarCode" label="包条码" width="160"></el-table-column>
-            <el-table-column prop="ProvideSubClinicName" label="发放科室" width="160" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProvideSubClinicName" label="发放科室" width="160" show-overflow-tooltip></el-table-column>
         </el-table>
         <h4>
             <el-button @click="cancelSend">取消</el-button>

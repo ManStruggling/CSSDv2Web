@@ -70,7 +70,9 @@
                                     <div slot="title" class="collapseTh">
                                         <!-- 包名称 -->
                                         <div class="collapseTd">
-                                            <p>{{value.ProductName}}</p>
+                                            <el-tooltip :content="value.ProductName" placement="top-start" :disabled="value.ProductName.length<10">
+                                                <p>{{value.ProductName}}</p>
+                                            </el-tooltip>
                                         </div>
                                         <!-- 回收时间 -->
                                         <div class="collapseTd">
@@ -780,10 +782,10 @@ export default {
             };
         },
         //计算个数包发放数
-        countNumberProductThisProvideNumber(){
+        countNumberProductThisProvideNumber() {
             return (value) => {
                 let num = 0;
-                value.ProvidePackages.forEach(element=>{
+                value.ProvidePackages.forEach(element => {
                     num += element.ThisTimeProvideQuantity;
                 });
                 value.ThisTimeProvideQuantity = num;

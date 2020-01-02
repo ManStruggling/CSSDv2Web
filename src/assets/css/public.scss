@@ -456,3 +456,21 @@ body {
 html body .time-select-item.selected:not(.disabled) {
     color: #00C16B;
 }
+
+html body .el-popover .el-popover-content p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+}
+
+html body .el-popover .el-popover-content p span {
+    width: 64px;
+    color: #878D9F;
+    text-align: right;
+}
+
+html body .el-popover .el-popover-content p b {
+    width: 126px;
+    font-weight: bold;
+    color: #333;
+}

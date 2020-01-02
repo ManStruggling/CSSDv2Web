@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <el-table :data="item.Packages" :default-expand-all="true">
-                    <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
+                    <el-table-column label="包名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="包条码" prop="PackageBarCode" width="210"></el-table-column>
                     <el-table-column></el-table-column>
                 </el-table>

@@ -43,7 +43,7 @@
             <el-tabs v-model="tabActiveName">
                 <el-tab-pane label="无菌物品" name="0">
                     <el-table :data="submitData.Products">
-                        <el-table-column label="名称" prop="ProductName" width="240"></el-table-column>
+                        <el-table-column label="名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                         <el-table-column label="数量" width="210">
                             <template slot-scope="props">
                                 <el-input-number v-model="props.row.ProductQuantity" :min="1" :max="999" :controls="false" @change="handleNumberChange(props.row)"></el-input-number>
@@ -60,7 +60,7 @@
                 </el-tab-pane>
                 <el-tab-pane label="一次性物品" name="1">
                     <el-table :data="submitData.DisposableItems">
-                        <el-table-column label="名称" prop="ProductName" width="240"></el-table-column>
+                        <el-table-column label="名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                         <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
                         <el-table-column label="数量" width="210">
                             <template slot-scope="props">

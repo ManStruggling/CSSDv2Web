@@ -60,35 +60,20 @@
                     </div>
                 </div>
                 <el-tabs type="card" v-model="activeName">
-                    <el-tab-pane label="无菌物品" v-if="item.Products==''?false:true">
-                        <div class="table_detail">
-                            <div class="myTableTitle">
-                                <p>名称</p>
-                                <p>数量</p>
-                            </div>
-                            <ul>
-                                <li v-for="(selfs,myTableIndex) in item.Products" :key="myTableIndex">
-                                    <p>{{selfs.ProductName}}</p>
-                                    <p>{{selfs.ProductQuantity}}</p>
-                                </li>
-                            </ul>
-                        </div>
+                    <el-tab-pane label="无菌物品" v-if="item.Products==''?false:true" class="table_unExpand">
+                        <el-table :data="item.Products">
+                            <el-table-column label="名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
+                            <el-table-column label="数量" prop="ProductQuantity" width="210"></el-table-column>
+                            <el-table-column></el-table-column>
+                        </el-table>
                     </el-tab-pane>
-                    <el-tab-pane label="一次性物品" v-if="item.DisposableItems==''?false:true">
-                        <div class="table_detail">
-                            <div class="myTableTitle">
-                                <p>名称</p>
-                                <p>规格</p>
-                                <p>数量</p>
-                            </div>
-                            <ul>
-                                <li v-for="(selfs,myTableIndex) in item.DisposableItems" :key="myTableIndex">
-                                    <p>{{selfs.ProductName}}</p>
-                                    <p>{{selfs.Specification}}</p>
-                                    <p>{{selfs.ProductQuantity}}</p>
-                                </li>
-                            </ul>
-                        </div>
+                    <el-tab-pane label="一次性物品" v-if="item.DisposableItems==''?false:true" class="table_unExpand">
+                        <el-table :data="item.DisposableItems">
+                            <el-table-column label="名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
+                            <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
+                            <el-table-column label="数量" prop="ProductQuantity" width="210"></el-table-column>
+                            <el-table-column></el-table-column>
+                        </el-table>
                     </el-tab-pane>
                 </el-tabs>
             </el-collapse-item>
@@ -211,6 +196,7 @@ export default {
 <style lang="scss">
 @import "../../assets/css/tableNav";
 @import "../../assets/css/cssdRecord";
+@import "../../assets/css/tableUnExpand";
 
 #reserveProductRecord {
     .cssd_table_center {
@@ -238,6 +224,7 @@ export default {
     .el-collapse-item__content {
         .el-tabs__header {
             border-bottom-color: #f2f4f7;
+            margin: 0;
 
             .el-tabs__nav {
                 border-radius: 0;
@@ -263,31 +250,17 @@ export default {
             }
         }
 
-        .myTableTitle {
-            display: flex;
-            padding: 0 0 0 40px;
-
-            p {
-                width: 160px;
-                margin-right: 50px;
-                font-size: 18px;
-                font-family: Microsoft YaHei;
-                color: rgba(135, 141, 159, 1);
-                line-height: 24px;
+        .el-table {
+            thead{
+                th{
+                    border: 0;
+                }
             }
-        }
-
-        ul {
-            li {
-                display: flex;
-                margin: 20px 0 20px 40px;
-
-                p {
-                    width: 160px;
-                    margin-right: 50px;
+            tbody {
+                .cell {
                     font-size: 18px;
                     font-family: Microsoft YaHei;
-                    color: rgba(35, 46, 65, 1);
+                    color: #232E41;
                     line-height: 24px;
                 }
             }

@@ -30,9 +30,9 @@
     <div class="cssd_table_center cssd_totalBar">
         <div class="table_box table_unExpand">
             <el-table :data="submitData.PackageBarCodes">
-                <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
+                <el-table-column label="包名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                 <el-table-column label="包条码" prop="BarCode" width="210"></el-table-column>
-                <el-table-column label="科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+                <el-table-column label="科室" prop="ProvideSubClinicName" width="210" show-overflow-tooltip></el-table-column>
                 <el-table-column label="包数量" width="210">
                     <template slot-scope="props">
                         <el-input-number v-if="props.row.IsNotPrintBarCode" v-model="props.row.ProductQuantity" :min="1" :max="props.row.MaximumQuantity" size="mini" :controls="false" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
@@ -364,11 +364,13 @@ export default {
             overflow-y: scroll;
 
             .el-table {
-                .cell {
-                    font-weight: bold;
-
-                    >div {
-                        font: inherit;
+                tbody{
+                    .cell {
+                        font-weight: bold;
+    
+                        >div {
+                            font: inherit;
+                        }
                     }
                 }
 

@@ -44,8 +44,8 @@
                         <div class="tab_content">
                             <el-table :data="item.PackageBarCodeDetailList">
                                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                                <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
-                                <el-table-column label="科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+                                <el-table-column label="包名称" prop="ProductName" width="210" show-overflow-tooltip></el-table-column>
+                                <el-table-column label="科室" prop="ProvideSubClinicName" width="210" show-overflow-tooltip></el-table-column>
                                 <el-table-column label="包数量" prop="ProductQuantity" width="210"></el-table-column>
                                 <el-table-column></el-table-column>
                             </el-table>
@@ -61,8 +61,8 @@
                         <div class="tab_content">
                             <el-table :data="submitData.NotInCarrierPackages" name="0">
                                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                                <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
-                                <el-table-column label="科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+                                <el-table-column label="包名称" prop="ProductName" width="210" show-overflow-tooltip></el-table-column>
+                                <el-table-column label="科室" prop="ProvideSubClinicName" width="210" show-overflow-tooltip></el-table-column>
                                 <el-table-column label="数量" width="100">
                                     <template slot-scope="props">
                                         <el-input-number v-if="props.row.IsNotPrintBarCode" v-model="props.row.ProductQuantity" size="mini" :min="1" :controls="false" :max="props.row.MaximumQuantity" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
@@ -214,7 +214,7 @@ export default {
         sterilizeableToFather(data) {
             this.isShowSterilizeablePackage = false;
             if (data) {
-                data.forEach(element=>{
+                data.forEach(element => {
                     this.handleBarCode(element.BarCode);
                 });
             }
@@ -533,8 +533,9 @@ export default {
     .cssd_title_right {
         p {
             margin-right: 30px;
-            &.biologicalTest{
-                b{
+
+            &.biologicalTest {
+                b {
                     margin-left: 10px;
                 }
             }

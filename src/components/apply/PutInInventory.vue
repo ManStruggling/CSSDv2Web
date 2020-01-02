@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <el-table v-if="!value.IsNotPrintBarCode" :data="value.Packages">
-                        <el-table-column label="包名称" prop="ProductName" width="240"></el-table-column>
+                        <el-table-column label="包名称" prop="ProductName" width="240"  show-overflow-tooltip></el-table-column>
                         <el-table-column label="包条码" prop="BarCode" width="210"></el-table-column>
                         <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                         <el-table-column v-if="value.IsNumberProduct" label="包内个数" prop="NumberProductQuantity"></el-table-column>

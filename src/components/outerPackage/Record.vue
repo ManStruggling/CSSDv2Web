@@ -129,7 +129,7 @@
                     </li>
                 </ul>
                 <el-table :data="item.OuterPackages" :default-expand-all="true">
-                    <el-table-column label="包名称" prop="PackageName" width="240"></el-table-column>
+                    <el-table-column label="包名称" prop="PackageName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="分包数" prop="SplitPackageCount" width="210"></el-table-column>
                     <el-table-column label="有无植入物" width="210">
                         <template slot-scope="props">{{props.row.HasImplants?"有":"无"}}</template>

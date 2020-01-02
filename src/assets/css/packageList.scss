@@ -68,8 +68,8 @@
                     font-weight: normal;
                 }
             }
-            .el-table__body-wrapper::-webkit-scrollbar{
-                width:7px;
+            .el-table__body-wrapper::-webkit-scrollbar {
+                width: 7px;
             }
             tbody {
                 tr {
@@ -83,6 +83,9 @@
                             font-weight: bold;
                             color: rgba(35, 46, 65, 1);
                             line-height: 40px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
                             >div {
                                 font: inherit;
                             }

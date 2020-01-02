@@ -47,7 +47,7 @@
             </ul>
             <div class="table_unExpand">
                 <el-table :data="outerPackageVm.Instruments" height="300">
-                    <el-table-column prop="Name" label="名称"></el-table-column>
+                    <el-table-column prop="Name" label="名称" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="Specification" label="规格"></el-table-column>
                     <el-table-column label="数量" width="140">
                         <template slot-scope="props">
@@ -420,10 +420,18 @@ export default {
 
                 tbody {
                     .cell {
+                        overflow: hidden;
                         font-size: 18px;
                         font-family: Microsoft YaHei;
                         font-weight: bold;
                         color: rgba(35, 46, 65, 1);
+
+                        .el-input-number {
+                            input {
+                                height: 100%;
+                                line-height: 24px;
+                            }
+                        }
                     }
                 }
             }

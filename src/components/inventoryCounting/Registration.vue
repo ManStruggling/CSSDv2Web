@@ -27,7 +27,7 @@
     <div class="cssd_table_center cssd_totalBar table_unExpand">
         <div class="table_box">
             <el-table :data="submitData.Packages">
-                <el-table-column width="240" label="包名称" prop="ProductName"></el-table-column>
+                <el-table-column width="240" label="包名称" prop="ProductName" show-overflow-tooltip></el-table-column>
                 <el-table-column width="210" label="包条码" prop="BarCode"></el-table-column>
                 <el-table-column width="210" label="操作">
                     <template slot-scope="props">

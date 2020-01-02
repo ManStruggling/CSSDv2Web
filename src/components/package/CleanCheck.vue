@@ -23,7 +23,7 @@
                     <div class="cssd_talbe_left_menu">
                         <dl class="isActive">
                             <dt class="reviewStatus">
-                                <span>待审核（任务数：{{cleanTask.CleanPendingReviewTasks==null?0:cleanTask.CleanPendingReviewTasks.length}}）</span>
+                                <span>待审核（{{cleanTask.CleanPendingReviewTasks==null?0:cleanTask.CleanPendingReviewTasks.length}}）</span>
                             </dt>
                             <dd class="reviewDd" style="display:block;">
                                 <el-tabs :tab-position="'left'" activeName="0">
@@ -100,7 +100,7 @@
                         </dl>
                         <dl>
                             <dt class="reviewStatus">
-                                <span>清洗中（任务数：{{cleanTask.CleanCleaningTasks==null?0:cleanTask.CleanCleaningTasks.length}}）</span>
+                                <span>清洗中（{{cleanTask.CleanCleaningTasks==null?0:cleanTask.CleanCleaningTasks.length}}）</span>
                             </dt>
                             <dd class="reviewDd">
                                 <el-tabs :tab-position="'left'" activeName="0">

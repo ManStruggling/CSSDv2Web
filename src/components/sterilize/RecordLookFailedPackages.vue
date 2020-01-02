@@ -3,7 +3,7 @@
     <div class="container table_unExpand">
       <el-table :data="data" height="385">
         <el-table-column label="包条码" prop="PackageBarCode" width="240"></el-table-column>
-        <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
+        <el-table-column label="包名称" prop="ProductName" width="210" show-overflow-tooltip></el-table-column>
         <el-table-column label="包数量" prop="ProductQuantity" width="210"></el-table-column>
         <el-table-column label="不合格原因" prop="Cause" width="210"></el-table-column>
         <el-table-column></el-table-column>

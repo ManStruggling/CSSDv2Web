@@ -303,6 +303,7 @@ export default {
                             font-size: 16px;
                             font-weight: bold;
                             color: #232E41;
+                            display: block;
 
                         }
                     }

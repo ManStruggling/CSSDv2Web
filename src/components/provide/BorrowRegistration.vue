@@ -34,7 +34,7 @@
         <div class="table_box">
             <el-table :data="submitData.Packages">
                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                <el-table-column label="包名称" prop="ProductName" width="210"></el-table-column>
+                <el-table-column label="包名称" prop="ProductName" width="210" show-overflow-tooltip></el-table-column>
                 <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                 <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>
                 <!-- <el-table-column label="灭菌设备名称" prop="SterilizeDevice" width="210"></el-table-column>
