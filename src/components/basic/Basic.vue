@@ -154,6 +154,21 @@ export default {
                     ]
                 },
                 {
+                    label: "车辆",
+                    isHasSubmenu: true,
+                    children: [{
+                            label: "污车",
+                            index: "0",
+                            href: "/basic/car/0"
+                        },
+                        {
+                            label: "洁车",
+                            index: "1",
+                            href: "/basic/car/1"
+                        }
+                    ]
+                },
+                 {
                     label: '排班班种',
                     isHasSubmenu: true,
                     children: [{
@@ -174,19 +189,9 @@ export default {
                     ]
                 },
                 {
-                    label: "车辆",
-                    isHasSubmenu: true,
-                    children: [{
-                            label: "污车",
-                            index: "0",
-                            href: "/basic/car/0"
-                        },
-                        {
-                            label: "洁车",
-                            index: "1",
-                            href: "/basic/car/1"
-                        }
-                    ]
+                    label: "工作区域",
+                    isHasSubmenu: false,
+                    href: "/basic/workArea"
                 },
                 {
                     label: "科室",
@@ -207,12 +212,7 @@ export default {
                     label: "物流人员",
                     isHasSubmenu: false,
                     href: "/basic/logisticsStaff"
-                },
-                {
-                    label: "工作区域",
-                    isHasSubmenu: false,
-                    href: "/basic/workArea"
-                },
+                }
             ]
         };
     },
@@ -408,7 +408,7 @@ export default {
 
 //组件的样式
 .basic_main {
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 100%;
     height: 100%;
     box-sizing: border-box;

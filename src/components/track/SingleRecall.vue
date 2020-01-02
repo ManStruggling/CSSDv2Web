@@ -41,7 +41,7 @@
             </ul>
             <el-table :data="submitData.Packages">
                 <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                <el-table-column label="包名称" prop="Name" width="210"></el-table-column>
+                <el-table-column label="包名称" prop="Name" width="210" show-overflow-tooltip></el-table-column>
                 <el-table-column label="包状态" prop="Status" width="210"></el-table-column>
                 <el-table-column label="所在科室" prop="Location" width="210"></el-table-column>
                 <el-table-column label="住院号" prop="PatientId" width="210"></el-table-column>

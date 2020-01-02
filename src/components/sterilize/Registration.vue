@@ -678,7 +678,11 @@ export default {
                                 padding: 30px 40px 90px;
                                 box-sizing: border-box;
                                 height: 100%;
-                                overflow-y: scroll;
+                                overflow-y: auto;
+
+                                &::-webkit-scrollbar {
+                                    width: 10px;
+                                }
 
                                 .el-table {
                                     tbody {

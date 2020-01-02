@@ -95,7 +95,7 @@
                                                 <div slot="reference" class="beyondHiding">{{value.ProductName}}</div>
                                             </el-popover>
                                             <div v-if="!value.IsOuterProduct" class="taskOfProductName">
-                                                <el-tooltip class="beyondHiding" :content="value.ProductName" placement="right"  :disabled="value.ProductName.length<10">
+                                                <el-tooltip class="beyondHiding" :content="value.ProductName" placement="right" :disabled="value.ProductName.length<10">
                                                     <span>{{value.ProductName}}</span>
                                                 </el-tooltip>
                                                 <i class="viewPictures" @click.stop="viewProductImg(value.ProductId)"></i>
@@ -812,6 +812,10 @@ export default {
 
                 .tab_content {
                     min-width: 1300px;
+
+                    &::-webkit-scrollbar {
+                        width: 10px;
+                    }
 
                     .el-collapse-item__header {
                         &.is-active {

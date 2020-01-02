@@ -12,8 +12,8 @@
                 <el-switch v-model="isCheckInMode" active-color="#01BF6A" inactive-color="#dbdde6" :active-value="true" :inactive-value="false"></el-switch>
             </p>
         </div>
-        <el-table :data="submitData.Staffs" border :height="tableHeight" style="width:100%;">
-            <el-table-column label="序号" fixed width="50">
+        <el-table :data="submitData.Staffs" border :height="tableHeight" style="width:100%;" v-show="submitData.Days!=''">
+            <el-table-column label="序号" fixed width="80">
                 <template slot-scope="props">{{props.$index+1}}</template>
             </el-table-column>
             <el-table-column label="姓名" prop="StaffName" fixed></el-table-column>
@@ -29,13 +29,13 @@
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column label="工作区域" fixed="right">
+            <el-table-column label="工作区域" :width="getMaxLength(submitData.Staffs)">
                 <template slot-scope="props">
-                    <div class="workAreaItem">{{matchingWorkAreaName(props.row.WorkAreas)}}</div>
+                    <div class="workAreaItem">{{props.row.WorkAreaString}}</div>
                 </template>
             </el-table-column>
         </el-table>
-        <p class="remark">注：{{submitData.Remark}}</p>
+        <p class="remark" v-show="submitData.Days!=''">注：{{submitData.Remark}}</p>
     </div>
     <div class="bottom_option">
         <p></p>
@@ -54,7 +54,6 @@ import {
     decode
 } from '@msgpack/msgpack';
 export default {
-    inject: ['managementReload'],
     data() {
         return {
             tableHeight: window.innerHeight - 240,
@@ -66,7 +65,6 @@ export default {
                 Remark: '',
             },
             periods: [],
-            workAreas: [],
             schedules: [], //班表列表
             displayedPeriodMsg: {
                 startTime: '',
@@ -85,14 +83,10 @@ export default {
                         Periods:period{
                             id,name,color,startTime,endTime,isIncludeLunch
                         }
-                        WorkAreas:workArea{
-                            id,name
-                        }
                     }`
             }
         }).then(res => {
             this.periods = res.data.data.Periods;
-            this.workAreas = res.data.data.WorkAreas;
         }).catch(err => {});
         axios({
             url: `/schedule`,
@@ -155,7 +149,6 @@ export default {
                     let type;
                     if (res.data.Code == 200) {
                         type = 'success';
-                        this.managementReload();
                     } else {
                         type = 'error';
                     }
@@ -182,17 +175,24 @@ export default {
             minute = minute < 10 ? '0' + minute : minute;
             return `${hour}:${minute}`;
         },
-        matchingWorkAreaName(arr) {
-            let str = '';
-            for (let i = 0; i < arr.length; i++) {
-                for (let j = 0; j < this.workAreas.length; j++) {
-                    if (arr[i] === this.workAreas[j].id) {
-                        str += this.workAreas[j].name + ',';
-                        break;
+        getMaxLength(arr) {
+            let maxNumber = arr.reduce((acc, item) => {
+                if (item) {
+                    const str = item.WorkAreaString.toString();
+                    const char = str.match(/[\u2E80-\u9FFF]/g)
+                    const charLen = char ? char.length : 0
+                    const num = str.match(/\d|\./g)
+                    const numLen = num ? num.length : 0
+                    const otherLen = str.length - charLen - numLen
+                    let calcLen = charLen * 1.1 + numLen * 0.65 + otherLen * 0.5
+
+                    if (acc < calcLen) {
+                        acc = calcLen
                     }
                 }
-            }
-            return str.substring(0, str.length - 1);
+                return acc;
+            }, 0);
+            return maxNumber * 18 > 100 ? maxNumber * 18 : 100;
         }
     },
 }
@@ -263,7 +263,10 @@ export default {
             thead {
                 th {
                     text-align: center;
-                    &.is-weekend{
+                    font-size: 18px;
+                    color: #878D9F;
+
+                    &.is-weekend {
                         background: #E0FFF1;
                     }
                 }

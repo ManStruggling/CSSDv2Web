@@ -852,8 +852,6 @@ export default {
             display: flex;
             align-items: center;
 
-            &.show_all_task {}
-
             &.new_task {
                 width: 115px;
 
@@ -931,6 +929,10 @@ export default {
 
             .el-tabs__content {
                 .tab_content {
+                    &::-webkit-scrollbar {
+                        width: 10px;
+                    }
+
                     .selectSubClinic {
                         display: flex;
                         color: #878d9f;

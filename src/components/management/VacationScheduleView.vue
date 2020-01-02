@@ -8,8 +8,8 @@
                 </el-select>
             </p>
         </div>
-        <el-table :data="displayData" border :height="tableHeight" style="width:100%;">
-            <el-table-column label="序号" fixed width="50">
+        <el-table :data="displayData" border :height="tableHeight" style="width:100%;" v-show="submitData.Days!=''">
+            <el-table-column label="序号" fixed width="80">
                 <template slot-scope="props">{{props.$index+1}}</template>
             </el-table-column>
             <el-table-column label="姓名" prop="StaffName" fixed></el-table-column>
@@ -26,7 +26,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <p class="remark">注：{{submitData.Remark}}</p>
+        <p class="remark" v-show="submitData.Days!=''">注：{{submitData.Remark}}</p>
     </div>
 </div>
 </template>
@@ -80,7 +80,7 @@ export default {
             data: {
                 query: `query getVacationSchedules{
                     vacationSchedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
-                        id,name,startEndDate
+                        id,name,startEndDate,remark
                     }
                 }`
             }
@@ -157,6 +157,7 @@ export default {
                         element.Periods.splice(0, startDay - 1);
                     });
                     this.submitData = viewData;
+                    this.submitData.Remark = this.vacationSchedules.filter(element => element.id == this.selectedVacationSchedule)[0].remark;
                 })
             }).catch(() => {})
         },
@@ -240,6 +241,7 @@ export default {
                         }
                     }
                     that.submitData = startDateViewData;
+                    that.submitData.Remark = that.vacationSchedules.filter(element => element.id == that.selectedVacationSchedule)[0].remark;
                 }))
             }));
         },
@@ -365,6 +367,9 @@ export default {
 
             thead {
                 th {
+                    font-size: 18px;
+                    color: #878D9F;
+
                     &.is-weekend {
                         background: #E0FFF1;
                     }

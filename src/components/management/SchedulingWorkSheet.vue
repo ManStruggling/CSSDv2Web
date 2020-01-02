@@ -30,12 +30,8 @@
                 <el-tag v-for="(item,index) in periodType[currentSelectPeriodType]" :key="index" @click="switchPeriodStatus(item)" :class="{'is-active':item.IsActive}">{{item.name}}</el-tag>
             </dd>
         </dl>
-        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick" v-show="submitData.Days!=''">
-            <el-table-column label="序号" fixed width="50" class-name="draggable">
-                <template slot-scope="props">
-                    <div class="cell_index fixed draggable">{{props.$index+1}}</div>
-                </template>
-            </el-table-column>
+        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick" v-show="submitData.Days!=''" fit>
+            <el-table-column label="序号" fixed width="80" class-name="draggable" type="index"></el-table-column>
             <el-table-column :fixed="isNameFixed" class-name="draggable header_name_th">
                 <div slot="header" class="header_name"><span>姓名</span><i @click="isNameFixed = !isNameFixed" :class="isNameFixed?'locked':'unclock'"></i></div>
                 <template slot-scope="props">
@@ -54,9 +50,9 @@
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column label="工作区域" fixed="right">
+            <el-table-column label="工作区域" :width="getMaxLength(submitData.Staffs)">
                 <template slot-scope="props">
-                    <div class="workAreaItem" @click="workAreaCellClick(props.row.WorkAreas)">{{matchingWorkAreaName(props.row.WorkAreas)}}</div>
+                    <div class="workAreaItem" @click="workAreaCellClick(props.row)">{{props.row.WorkAreaString}}</div>
                 </template>
             </el-table-column>
         </el-table>
@@ -190,6 +186,7 @@ export default {
                     element.StaffId = element.id;
                     element.StaffName = element.name;
                     element.WorkAreas = [];
+                    element.WorkAreaString = '';
                 });
                 this.submitData.Staffs = res.data.data.staff;
             }).catch(err => {})
@@ -263,9 +260,14 @@ export default {
             this.$forceUpdate();
         },
         //工作区域点击事件
-        workAreaCellClick(arr) {
-            if (this.activeWorkArea.id && !arr.includes(this.activeWorkArea.id)) {
-                arr.push(this.activeWorkArea.id);
+        workAreaCellClick(obj) {
+            if (this.activeWorkArea.id && !obj.WorkAreas.includes(this.activeWorkArea.id)) {
+                obj.WorkAreas.push(this.activeWorkArea.id);
+                if (obj.WorkAreaString) {
+                    obj.WorkAreaString += ',' + this.activeWorkArea.name;
+                } else {
+                    obj.WorkAreaString += this.activeWorkArea.name;
+                }
             }
         },
         //删除选中的排班
@@ -480,6 +482,25 @@ export default {
             hour = hour < 10 ? '0' + hour : hour;
             minute = minute < 10 ? '0' + minute : minute;
             return `${hour}:${minute}`;
+        },
+        getMaxLength(arr) {
+            let maxNumber = arr.reduce((acc, item) => {
+                if (item) {
+                    const str = item.WorkAreaString.toString();
+                    const char = str.match(/[\u2E80-\u9FFF]/g)
+                    const charLen = char ? char.length : 0
+                    const num = str.match(/\d|\./g)
+                    const numLen = num ? num.length : 0
+                    const otherLen = str.length - charLen - numLen
+                    let calcLen = charLen * 1.1 + numLen * 0.65 + otherLen * 0.5
+
+                    if (acc < calcLen) {
+                        acc = calcLen
+                    }
+                }
+                return acc;
+            }, 0);
+            return maxNumber * 18 > 100 ? maxNumber * 18 : 100;
         }
     },
     computed: {
@@ -489,22 +510,7 @@ export default {
                 periodObj.ColumnIndex = columnIndex;
                 return periodObj.PeriodName;
             }
-        },
-        matchingWorkAreaName() {
-            return (arr) => {
-                let str = '';
-                for (let i = 0; i < arr.length; i++) {
-                    for (let j = 0; j < this.periodType.WorkArea.length; j++) {
-                        if (arr[i] === this.periodType.WorkArea[j].id) {
-                            str += this.periodType.WorkArea[j].name + ',';
-                            break;
-                        }
-                    }
-                }
-                return str.substring(0, str.length - 1);
-            }
         }
-
     },
 }
 </script>
@@ -656,6 +662,8 @@ export default {
             thead {
                 th {
                     text-align: center;
+                    font-size: 18px;
+                    color: #878D9F;
 
                     &.is-weekend {
                         background: #E0FFF1;
@@ -669,12 +677,12 @@ export default {
                             .header_name {
                                 display: flex;
                                 line-height: 23px;
-                                padding: 0 0 0 10px;
+                                padding: 0;
 
                                 i {
                                     width: 14px;
                                     height: 20px;
-
+                                    margin-left: 4px;
                                     &.locked {
                                         background: url(../../assets/images/locked.png) center no-repeat;
                                         background-size: 14px 20px;
