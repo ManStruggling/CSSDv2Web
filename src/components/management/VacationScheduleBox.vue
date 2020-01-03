@@ -148,9 +148,10 @@ export default {
         disabledDate(time) {
             for (let i = 0; i < this.schedules.length; i++) {
                 if (new Date(time.getTime() + 24 * 3600 * 1000).toJSON().substring(0, 7) == this.schedules[i].yearMonth) {
-                    return true;
+                    return false;
                 }
             }
+            return true;
         },
     }
 }

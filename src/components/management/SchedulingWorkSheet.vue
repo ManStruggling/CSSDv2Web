@@ -14,7 +14,7 @@
                         }" value-format="yyyy-MM" :disabled="viewModule.id?true:false"></el-date-picker>
                 </li>
             </ul>
-            <el-button @click="printView">打印班表</el-button>
+            <el-button @click="printView">打印预览</el-button>
         </div>
         <div class="workSheetRemark">
             <p>备注</p>
@@ -152,7 +152,7 @@ export default {
                     "printElements": [{
                         "options": {
                             "left": 10,
-                            "top": 20,
+                            "top": 35,
                             "height": 44,
                             "width": 825,
                             "field": "table",
@@ -557,6 +557,23 @@ export default {
                     "rowspan": 1
                 });
                 this.customPrintJson.panels[0].printElements[0].options.columns[0] = printTablefields;
+                this.customPrintJson.panels[0].printElements.push({
+                    "options": {
+                        "left": 10,
+                        "top": 5,
+                        "height": 25,
+                        "width": 259,
+                        "title": `${this.submitData.Name}         ${this.submitData.YearMonth}`,
+                        "fontSize": 19,
+                        "fontWeight": "600",
+                        "textAlign": "center",
+                        "lineHeight": 26
+                    },
+                    "printElementType": {
+                        "title": "自定义文本",
+                        "type": "text"
+                    }
+                });
                 this.hiprintTemplate = new hiprint.PrintTemplate({
                     template: this.customPrintJson,
                     settingContainer: '#PrintElementOptionSetting',
@@ -573,7 +590,7 @@ export default {
         //打印设计
         printDesign() {
             this.hiprintTemplate.design('#hiprint-printTemplate');
-            if(this.hiprintTemplate.getOrient()===1){
+            if (this.hiprintTemplate.getOrient() === 1) {
                 this.rotatePrintPaper();
             }
         },
