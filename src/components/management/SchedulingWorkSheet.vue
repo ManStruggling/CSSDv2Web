@@ -1,18 +1,21 @@
 <template>
 <div class="schedulingWork cssd_totalBar">
     <div class="container">
-        <ul>
-            <li>
-                <p>班表名称</p>
-                <el-input v-model.trim="submitData.Name" placeholder="班表名称"></el-input>
-            </li>
-            <li>
-                <p>班表月份</p>
-                <el-date-picker v-model="submitData.YearMonth" type="month" placeholder="请选择年月" :clearable="false" :editable="false" @change="dateChange" :picker-options="{
-                        disabledDate:disabledDate
-                    }" value-format="yyyy-MM" :disabled="viewModule.id?true:false"></el-date-picker>
-            </li>
-        </ul>
+        <div class="scheduleMsg">
+            <ul>
+                <li>
+                    <p>班表名称</p>
+                    <el-input v-model.trim="submitData.Name" placeholder="班表名称"></el-input>
+                </li>
+                <li>
+                    <p>班表月份</p>
+                    <el-date-picker v-model="submitData.YearMonth" type="month" placeholder="请选择年月" :clearable="false" :editable="false" @change="dateChange" :picker-options="{
+                            disabledDate:disabledDate
+                        }" value-format="yyyy-MM" :disabled="viewModule.id?true:false"></el-date-picker>
+                </li>
+            </ul>
+            <el-button @click="printView">打印班表</el-button>
+        </div>
         <div class="workSheetRemark">
             <p>备注</p>
             <el-input type="textarea" placeholder="请填写备注" v-model.trim="submitData.Remark" resize="none"></el-input>
@@ -64,6 +67,7 @@
             <el-button type="primary" @click="confirmSubmit">保存</el-button>
         </p>
     </div>
+    <PrintPreview v-if="isShowPrintView"></PrintPreview>
 </div>
 </template>
 
@@ -75,6 +79,16 @@ import {
     decode
 } from '@msgpack/msgpack';
 import Sortable from "sortablejs";
+import '@/assets/css/hiprint/hiprint.css';
+import '@/assets/css/hiprint/print-lock.css';
+
+import '@/plugins/hiprint/jquery.min.js';
+import '@/plugins/hiprint/jquery.minicolors.min.js';
+import {
+    hiprint
+} from '@/plugins/hiprint/hiprint.bundle.js';
+import '@/plugins/hiprint/jquery.hiwprint.js';
+import PrintPreview from '@/components/common/PrintPreview';
 export default {
     inject: ['managementReload'],
     props: {
@@ -89,6 +103,7 @@ export default {
         return {
             //表格高度
             tableHeight: window.innerHeight - 180,
+            //鼠标按下位置
             keyDownPosition: [],
             //当前激活的班种
             activePeriod: {},
@@ -123,8 +138,45 @@ export default {
                 endTime: '',
                 isIncludeLunch: false,
             },
-            isNameFixed: true
+            isNameFixed: true, //name是否固定
+            isShowPrintView: false, //是否显示打印预览
+            hiprintTemplate: null, //打印实例
+            //打印模板
+            customPrintJson: {
+                "panels": [{
+                    "index": 0,
+                    "height": 297,
+                    "width": 210,
+                    "paperHeader": 40.5,
+                    "paperFooter": 780,
+                    "printElements": [{
+                        "options": {
+                            "left": 10,
+                            "top": 20,
+                            "height": 44,
+                            "width": 825,
+                            "field": "table",
+                            "columns": [
+                                []
+                            ]
+                        },
+                        "printElementType": {
+                            "title": "表格",
+                            "type": "tableCustom"
+                        }
+                    }, ],
+                    "paperNumberLeft": 565.5,
+                    "paperNumberTop": 819
+                }]
+            },
+            //打印数据
+            printData: {
+                table: []
+            },
         }
+    },
+    components: {
+        PrintPreview
     },
     created() {
         axios({
@@ -199,6 +251,14 @@ export default {
                 this.deleteSelectedAreaPeriods();
             }
         })
+    },
+    provide() {
+        return {
+            closePrintView: this.closePrintView,
+            startPrinting: this.startPrinting,
+            printDesign: this.printDesign,
+            rotatePrintPaper: this.rotatePrintPaper
+        }
     },
     methods: {
         //显示popover详情
@@ -448,9 +508,93 @@ export default {
                 month,
             };
         },
+        //禁用日期
         disabledDate(time) {
-            // return time.getTime() < Date.now();
-            return false;
+            for (let i = 0; i < this.scheduledWorks.length; i++) {
+                if (new Date(time.getTime() + 24 * 3600 * 1000).toJSON().substring(0, 7) == this.scheduledWorks[i].yearMonth) {
+                    return true;
+                }
+            }
+        },
+        //旋转打印纸张
+        rotatePrintPaper() {
+            this.hiprintTemplate.rotatePaper();
+        },
+        //打印预览
+        printView() {
+            if (this.submitData.Days != '') {
+                let printTablefields = [{
+                    "title": "序号",
+                    "field": "Index",
+                    "width": 120,
+                    "colspan": 1,
+                    "align": "center",
+                    "rowspan": 1
+                }, {
+                    "title": "姓名",
+                    "field": "StaffName",
+                    "width": 200,
+                    "colspan": 1,
+                    "align": "center",
+                    "rowspan": 1
+                }];
+                this.submitData.Days.forEach(element => {
+                    printTablefields.push({
+                        "title": element.day + '日',
+                        "field": "Day" + element.day,
+                        "width": 120,
+                        "colspan": 1,
+                        "align": "center",
+                        "rowspan": 1
+                    });
+                });
+                printTablefields.push({
+                    "title": "工作区域",
+                    "field": "WorkAreaString",
+                    "width": 400,
+                    "colspan": 1,
+                    "align": "center",
+                    "rowspan": 1
+                });
+                this.customPrintJson.panels[0].printElements[0].options.columns[0] = printTablefields;
+                this.hiprintTemplate = new hiprint.PrintTemplate({
+                    template: this.customPrintJson,
+                    settingContainer: '#PrintElementOptionSetting',
+                    paginationContainer: '.hiprint-printPagination'
+                });
+                this.isShowPrintView = true;
+            } else {
+                this.showInformation({
+                    classify: 'message',
+                    msg: '请先选择月份！'
+                });
+            }
+        },
+        //打印设计
+        printDesign() {
+            this.hiprintTemplate.design('#hiprint-printTemplate');
+            if(this.hiprintTemplate.getOrient()===1){
+                this.rotatePrintPaper();
+            }
+        },
+        //开始打印
+        startPrinting() {
+            let printArr = [];
+            for (let i = 0; i < this.submitData.Staffs.length; i++) {
+                let obj = {};
+                obj['Index'] = i + 1;
+                Object.assign(obj, this.submitData.Staffs[i]);
+                for (let j = 0; j < this.submitData.Staffs[i].Periods.length; j++) {
+                    obj['Day' + this.submitData.Staffs[i].Periods[j].Day] = this.submitData.Staffs[i].Periods[j].PeriodName;
+                }
+                printArr.push(obj);
+            }
+            this.printData.table = printArr;
+            this.hiprintTemplate.print(this.printData);
+        },
+        //关闭预览
+        closePrintView() {
+            this.isShowPrintView = false;
         },
         // 是否是当前月
         isCurrentMonth(date) {
@@ -556,32 +700,47 @@ export default {
         box-sizing: border-box;
         overflow-y: auto;
 
-        >ul {
+        .scheduleMsg {
             display: flex;
-            line-height: 40px;
+            justify-content: space-between;
 
-            li {
+            >ul {
                 display: flex;
-                justify-content: space-between;
-                width: 240px;
-                margin-right: 100px;
+                line-height: 40px;
 
-                p {
-                    width: 70px;
-                    font-size: 16px;
-                    color: #878D9F;
-                    text-align: right;
-                }
+                li {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 240px;
+                    margin-right: 100px;
 
-                .el-input {
-                    width: 160px;
-                }
+                    p {
+                        width: 70px;
+                        font-size: 16px;
+                        color: #878D9F;
+                        text-align: right;
+                    }
 
-                .el-input__inner {
-                    font-weight: bold;
-                    font-size: 16px;
-                    color: #333;
+                    .el-input {
+                        width: 160px;
+                    }
+
+                    .el-input__inner {
+                        font-weight: bold;
+                        font-size: 16px;
+                        color: #333;
+                    }
                 }
+            }
+
+            .el-button {
+                border: 1px solid #00C16B;
+                background: #fff;
+                color: #00C16B;
+                width: 120px;
+                height: 40px;
+                box-sizing: border-box;
+                font-size: 18px;
             }
         }
 
@@ -683,6 +842,7 @@ export default {
                                     width: 14px;
                                     height: 20px;
                                     margin-left: 4px;
+
                                     &.locked {
                                         background: url(../../assets/images/locked.png) center no-repeat;
                                         background-size: 14px 20px;

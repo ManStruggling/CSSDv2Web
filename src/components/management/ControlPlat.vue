@@ -5,7 +5,7 @@
 <div id="cssd_table" class="management">
     <!-- 页头 -->
     <div class="head_box">
-        <router-link to="/" tag="p">云南软博科技有限责任公司</router-link>
+        <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
         <div class="head_user">
             <p>{{GLOBAL.UserInfo.ClinicName}}</p>
             <p>{{GLOBAL.UserInfo.UserName}}</p>
@@ -271,11 +271,14 @@ export default {
 
 //组件的样式
 .basic_main {
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     padding: 30px 40px;
+    &::-webkit-scrollbar{
+        width: 10px;
+    }
 
     .basic_main_head {
         height: 40px;

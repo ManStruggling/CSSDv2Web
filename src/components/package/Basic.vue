@@ -1,7 +1,7 @@
 <template>
   <div id="cssd_table">
     <div class="head_box">
-      <router-link to="/" tag="p">云南软博科技有限责任公司</router-link>
+      <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
       <div class="head_user"><p>{{GLOBAL.UserInfo.ClinicName}}</p><p>{{GLOBAL.UserInfo.UserName}}</p><a @click="GLOBAL.logOut" class="logOut"></a></div>
     </div>
     <transition

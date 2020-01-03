@@ -779,6 +779,7 @@ export default {
 }
 
 #recoveryRegistration {
+    min-width: 1600px;
     .cssd_title_right {
         p {
             &.commonPackages {

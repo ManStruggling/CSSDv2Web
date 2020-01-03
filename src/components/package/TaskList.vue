@@ -811,7 +811,7 @@ export default {
                 overflow-x: auto;
 
                 .tab_content {
-                    min-width: 1300px;
+                    min-width: 1400px;
 
                     &::-webkit-scrollbar {
                         width: 10px;
@@ -1053,7 +1053,8 @@ export default {
                     }
 
                     .tab_content_bottom {
-                        min-width: 1300px;
+                        min-width: 1400px;
+                        box-sizing: border-box;
 
                         .el-button {
                             &.is-disabled {

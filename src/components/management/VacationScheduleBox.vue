@@ -13,7 +13,9 @@
                 </li>
             </ul>
             <div class="selectedDate">
-                <el-date-picker v-model="submitData.StartEndDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :clearable="false" @change="startEndDateChange">
+                <el-date-picker v-model="submitData.StartEndDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd" :clearable="false" @change="startEndDateChange" :picker-options="{
+                        disabledDate:disabledDate
+                    }">
                 </el-date-picker>
             </div>
             <el-transfer v-model="submitData.Filters" :props="{
@@ -52,7 +54,8 @@ export default {
                 Remark: '',
                 Filters: []
             },
-            vacationPeriods: []
+            vacationPeriods: [],
+            schedules: []
         }
     },
     created() {
@@ -64,10 +67,14 @@ export default {
                     period(periodType:1){
                         id,name,color,startTime,endTime,isIncludeLunch
                     }
+                    schedule(locationId:${this.GLOBAL.UserInfo.ClinicId}){
+                        id,name,yearMonth
+                    }
                 }`
             }
         }).then(res => {
             this.vacationPeriods = res.data.data.period;
+            this.schedules = res.data.data.schedule;
         }).catch(err => {})
         //update
         if (this.viewModule.id) {
@@ -137,7 +144,14 @@ export default {
                     msg: '起止日期最多跨一个月份！'
                 })
             }
-        }
+        },
+        disabledDate(time) {
+            for (let i = 0; i < this.schedules.length; i++) {
+                if (new Date(time.getTime() + 24 * 3600 * 1000).toJSON().substring(0, 7) == this.schedules[i].yearMonth) {
+                    return true;
+                }
+            }
+        },
     }
 }
 </script>
