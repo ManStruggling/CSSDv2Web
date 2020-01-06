@@ -16,13 +16,13 @@
                 <li>
                     <p class="font16gray">需用日期</p>
                     <div class="el_input_box font16blod">
-                        <el-date-picker class="font16blod" :editable="false" :clearable="false" v-model="submitData.BookDateTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="bookDateChange"></el-date-picker>
+                        <el-date-picker class="font16blod" :editable="false" :clearable="false" v-model="submitData.BookDateTime" type="date" placeholder="选择日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" @change="bookDateChange" :disabled="isChangeMode"></el-date-picker>
                     </div>
                 </li>
                 <li>
                     <p class="font16gray">供应室</p>
                     <div class="el_input_box font16blod">
-                        <el-select v-model="submitData.BookCssdId" class="green24x13" @change="cssdChange">
+                        <el-select v-model="submitData.BookCssdId" class="green24x13" @change="cssdChange" :disabled="isChangeMode">
                             <el-option v-for="(item,index) in cssdList" :key="index" :label="item.BookCssdName" :value="item.BookCssdId"></el-option>
                         </el-select>
                     </div>
@@ -30,7 +30,7 @@
                 <li>
                     <p class="font16gray">预定科室</p>
                     <div class="el_input_box font16blod">
-                        <el-select v-model="submitData.BookSubClinicId" class="green24x13">
+                        <el-select v-model="submitData.BookSubClinicId" class="green24x13" :disabled="isChangeMode">
                             <el-option v-for="(item,index) in subClinicList" :key="index" :label="item.BookSubClinicName" :value="item.BookSubClinicId"></el-option>
                         </el-select>
                     </div>
@@ -59,7 +59,7 @@
                         </el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>
-                    <el-button class="btn88x32" @click="handleSterileProduct">新增</el-button>
+                    <el-button class="btn88x32" @click="handleSterileProductInsert">新增</el-button>
                 </el-tab-pane>
                 <el-tab-pane label="一次性物品" name="1">
                     <el-table :data="submitData.DisposableItems">
@@ -77,7 +77,7 @@
                         </el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>
-                    <el-button class="btn88x32" @click="handleDisposable">新增</el-button>
+                    <el-button class="btn88x32" @click="handleDisposableProductInsert">新增</el-button>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -151,6 +151,12 @@ export default {
             .then(res => {
                 if (res.data.Code == 200) {
                     this.cssdList = res.data.Data.Cssds;
+                    if (this.$route.query.originRoute) {
+                        res.data.Data.SubClinics = [{
+                            BookSubClinicId: this.$route.query.subClinicId - 0,
+                            BookSubClinicName: this.$route.query.subClinicName
+                        }];
+                    }
                     this.subClinicList = res.data.Data.SubClinics;
                     this.submitData.BookCssdId = this.cssdList[0].BookCssdId;
                     this.submitData.BookSubClinicId = this.subClinicList[0].BookSubClinicId;
@@ -190,7 +196,11 @@ export default {
         },
         goBack() {
             if (this.isChangeMode) {
-                this.$router.push(`/apply/reserveRecord`);
+                if (this.$route.query.originRoute) {
+                    this.$router.replace(this.$route.query.originRoute);
+                } else {
+                    this.$router.push(`/apply/reserveRecord`);
+                }
             } else {
                 this.$router.push(`/`);
             }
@@ -232,7 +242,11 @@ export default {
                                     });
                             }
                             if (this.isChangeMode) {
-                                this.$router.push(`/apply/reserveRecord`);
+                                if (this.$route.query.originRoute) {
+                                    this.$router.replace(this.$route.query.originRoute);
+                                } else {
+                                    this.$router.push(`/apply/reserveRecord`);
+                                }
                             } else {
                                 this.reload();
                             }
@@ -271,11 +285,11 @@ export default {
             });
         },
         //处理无菌物品
-        handleSterileProduct() {
+        handleSterileProductInsert() {
             this.isShowProductList = true;
         },
         //处理一次性物品
-        handleDisposable() {
+        handleDisposableProductInsert() {
             if (this.GLOBAL.UserInfo.HospitalVersion == 'TONGJI') {
                 if (new Date(new Date().getTime() + 3600 * 24 * 1000).toJSON().split('T')[0] != this.submitData.BookDateTime) {
                     this.showInformation({
@@ -466,20 +480,21 @@ export default {
                 .el-tabs__content {
                     .el-table {
                         tbody {
-                            .cell{
+                            .cell {
                                 color: #232E41;
                                 font-weight: bold;
+
                                 .el-input-number {
                                     width: 50px;
                                     margin-bottom: 16px;
-    
+
                                     .el-input {
                                         input {
                                             height: 24px;
                                         }
                                     }
                                 }
-    
+
                                 a {
                                     cursor: pointer;
                                     color: #f93e3e;

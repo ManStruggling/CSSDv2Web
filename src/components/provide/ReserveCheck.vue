@@ -73,7 +73,7 @@
                                                 <el-table-column></el-table-column>
                                             </el-table>
                                         </el-tab-pane>
-                                        <el-tab-pane label="一次性物品" v-if="value.DisposableItems==''?false:true">
+                                        <el-tab-pane label="一次性物品" v-if="value.DisposableItems==''?false:true" class="table_unExpand">
                                             <el-table :data="value.DisposableItems">
                                                 <el-table-column label="名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
                                                 <el-table-column label="规格" prop="Specification" width="210"></el-table-column>
@@ -151,11 +151,12 @@ export default {
         editBookTask(val, SubClinicId, SubClinicName) {
             //edit
             this.$router.replace({
-                path: "/provice/reserveChange",
+                path: "/provide/reserveChange",
                 query: {
                     recordId: val,
-                    SubClinicId: SubClinicId,
-                    SubClinicName: SubClinicName
+                    subClinicId: SubClinicId,
+                    subClinicName: SubClinicName,
+                    originRoute: '/provide/reserveCheck'
                 }
             });
         },

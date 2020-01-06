@@ -521,13 +521,13 @@ const router = new Router({
                 component: () =>
                     import ('./components/provide/ReserveCheckRecord')
             }, {
-                path: '/provice/reserveChange',
+                path: '/provide/reserveChange',
                 name: 'provideReserveChange',
                 meta: {
                     index: 3
                 },
                 component: () =>
-                    import ('./components/provide/ReserveChange')
+                    import ('./components/apply/ReserveProduct')
             }]
         },
         {
