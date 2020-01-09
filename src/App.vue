@@ -58,6 +58,12 @@ export default {
         if (sessionStorage.userInfo) {
             window.UserInfo = JSON.parse(sessionStorage.userInfo);
             this.GLOBAL.UserInfo = UserInfo;
+            if (UserInfo.Configuration) {
+                $('title').html(UserInfo.Configuration.Company.Name);
+                $('link.logo_icon').attr({
+                    href: UserInfo.Configuration.Company.Logo
+                });
+            }
             axios.defaults.headers.LocationId = UserInfo.ClinicId;
             axios.defaults.headers.UId = UserInfo.UId;
             if (sessionStorage.IsTestMode) {

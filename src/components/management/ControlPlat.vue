@@ -5,7 +5,7 @@
 <div id="cssd_table" class="management">
     <!-- 页头 -->
     <div class="head_box">
-        <router-link to="/" tag="p">上海倍而纳医疗器械科技有限公司</router-link>
+        <router-link to="/" tag="p">{{GLOBAL.UserInfo.Configuration?GLOBAL.UserInfo.Configuration.Company.Name:'上海倍而纳医疗器械科技有限公司'}}</router-link>
         <div class="head_user">
             <p>{{GLOBAL.UserInfo.ClinicName}}</p>
             <p>{{GLOBAL.UserInfo.UserName}}</p>
@@ -169,7 +169,7 @@ export default {
             top: 0;
             width: 250px;
             height: 100%;
-            z-index: 5;
+            z-index: 6;
 
             .basic_menu_box {
                 background: url("../../assets/images/background.png") repeat-y;

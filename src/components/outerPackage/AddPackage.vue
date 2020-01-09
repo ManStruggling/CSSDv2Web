@@ -42,6 +42,7 @@
                 </li>
                 <li v-if="GLOBAL.UserInfo.HospitalVersion=='TONGJI'">
                     <p class="font16gray">筐号</p>
+                    <span>{{countBoxNumber}}</span>
                     <a @click="editBoxNumbers">编辑</a>
                 </li>
             </ul>
@@ -164,7 +165,7 @@ export default {
         },
         //编辑筐号
         editBoxNumbers() {
-            if (this.outerPackageVm.BoxNumbers == '') {
+            if (this.outerPackageVm.BoxNumbers.length == 0) {
                 for (let i = 0; i < this.outerPackageVm.SplitPackageCount; i++) {
                     this.outerPackageVm.BoxNumbers.push('');
                 }
@@ -325,7 +326,12 @@ export default {
         handleBarCode(msg) {
             this.getCarrierData(msg);
         }
-    }
+    },
+    computed: {
+        countBoxNumber(){
+            return this.outerPackageVm.BoxNumbers.filter(element=>{return element!='';}).length;
+        }
+    },
 };
 </script>
 
@@ -372,11 +378,16 @@ export default {
 
                     li {
                         margin-right: 20px;
-
+                        span{
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #333;
+                            line-height: 40px;
+                        }
                         a {
                             display: block;
                             line-height: 40px;
-                            width: 160px;
+                            width: 140px;
                             font-weight: bold;
                             color: #00C16B;
                             cursor: pointer;

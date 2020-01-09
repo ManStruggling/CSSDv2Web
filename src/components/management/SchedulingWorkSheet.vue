@@ -1,5 +1,5 @@
 <template>
-<div class="schedulingWork cssd_totalBar">
+<div class="cssd_totalBar" id="schedulingWork">
     <div class="container">
         <div class="scheduleMsg">
             <ul>
@@ -14,7 +14,10 @@
                         }" value-format="yyyy-MM" :disabled="viewModule.id?true:false"></el-date-picker>
                 </li>
             </ul>
-            <el-button @click="printView">打印预览</el-button>
+            <p>
+                <el-button @click="statisticalTableView">查看统计表</el-button>
+                <el-button type="primary" @click="printView">打印预览</el-button>
+            </p>
         </div>
         <div class="workSheetRemark">
             <p>备注</p>
@@ -33,7 +36,7 @@
                 <el-tag v-for="(item,index) in periodType[currentSelectPeriodType]" :key="index" @click="switchPeriodStatus(item)" :class="{'is-active':item.IsActive}">{{item.name}}</el-tag>
             </dd>
         </dl>
-        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" @cell-click="cellclick" v-show="submitData.Days!=''" fit>
+        <el-table :data="submitData.Staffs" border row-key="StaffId" :height="tableHeight" style="width:100%;" v-show="submitData.Days!=''" fit>
             <el-table-column label="序号" fixed width="80" class-name="draggable" type="index"></el-table-column>
             <el-table-column :fixed="isNameFixed" class-name="draggable header_name_th">
                 <div slot="header" class="header_name"><span>姓名</span><i @click="isNameFixed = !isNameFixed" :class="isNameFixed?'locked':'unclock'"></i></div>
@@ -43,7 +46,7 @@
             </el-table-column>
             <el-table-column v-for="(item,index) in submitData.Days" :key="index" :label="item.day+'日'" :class-name="item.isWeekend?'is-weekend':''">
                 <template slot-scope="props">
-                    <el-popover placement="right" :disabled="props.row.Periods[item.day-1].PeriodId==0" trigger="hover" :open-delay="1500" @show="displayPopover(props.row.Periods[item.day-1])" popper-class="schedulePopper">
+                    <el-popover placement="right" :disabled="props.row.Periods[item.day-1].PeriodId==0" trigger="hover" :open-delay="1000" @show="displayPopover(props.row.Periods[item.day-1])" popper-class="schedulePopper">
                         <ol>
                             <li><span>开始时间：</span><b>{{formatTime(displayedPeriodMsg.startTime)}}</b></li>
                             <li><span>结束时间：</span><b>{{formatTime(displayedPeriodMsg.endTime)}}</b></li>
@@ -58,6 +61,33 @@
                     <div class="workAreaItem" @click="workAreaCellClick(props.row)">{{props.row.WorkAreaString}}</div>
                 </template>
             </el-table-column>
+            <el-table-column label="午餐">
+                <template slot-scope="props">
+                    <div class="computedCell">{{countTotalIncludeLunchNumber(props.$index)}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column class-name="filterHeader filterHeaderByPeriodType" width="150">
+                <template slot="header">
+                    <el-select v-model="filteredByPeriodType" class="green24x13" @change="filterHeadChange" placeholder="选择班类型">
+                        <el-option label="常日班" :value="0"></el-option>
+                        <el-option label="休假" :value="1"></el-option>
+                        <el-option label="备班" :value="2"></el-option>
+                    </el-select>
+                </template>
+                <template slot-scope="props">
+                    <div class="computedCell">{{countTotalByPeriodType(props.$index)}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column class-name="filterHeader filterHeaderByPeriodId" width="150">
+                <template slot="header">
+                    <el-select v-model="filteredByPeriodId" class="green24x13" @change="filterHeadByPeriodIdChange" placeholder="选择班种">
+                        <el-option v-for="(item,index) in submitData.PeriodArray" :key="index" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </template>
+                <template slot-scope="props">
+                    <div class="computedCell">{{countTotalByPeriodId(props.$index)}}</div>
+                </template>
+            </el-table-column>
         </el-table>
     </div>
     <div class="cssd_table_bottom">
@@ -67,7 +97,12 @@
             <el-button type="primary" @click="confirmSubmit">保存</el-button>
         </p>
     </div>
-    <PrintPreview v-if="isShowPrintView"></PrintPreview>
+    <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <PrintPreview v-if="isShowPrintView"></PrintPreview>
+    </transition>
+    <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <StatisticalTable v-if="isShowStatisticalTable" :tableData="submitData"></StatisticalTable>
+    </transition>
 </div>
 </template>
 
@@ -89,6 +124,7 @@ import {
 } from '@/plugins/hiprint/hiprint.bundle.js';
 import '@/plugins/hiprint/jquery.hiwprint.js';
 import PrintPreview from '@/components/common/PrintPreview';
+import StatisticalTable from '@/components/management/StatisticalTable';
 export default {
     inject: ['managementReload'],
     props: {
@@ -101,6 +137,7 @@ export default {
             month
         } = this.getNewDate(new Date());
         return {
+            isShowStatisticalTable: false,
             //表格高度
             tableHeight: window.innerHeight - 180,
             //鼠标按下位置
@@ -116,16 +153,19 @@ export default {
                 YearMonth: '',
                 Remark: '',
                 Staffs: [],
-                Days: []
+                Days: [],
+                PeriodArray: []
             },
             //当前选择的年月
             currentSelectMonth: {
                 year,
                 month
             },
+            filteredByPeriodType: null,
+            filteredByPeriodId: null,
             //当前选择的班种类别
             currentSelectPeriodType: 'Work',
-            //人员表
+            //班种
             periodType: {
                 Work: [],
                 Vacation: [],
@@ -176,7 +216,8 @@ export default {
         }
     },
     components: {
-        PrintPreview
+        PrintPreview,
+        StatisticalTable
     },
     created() {
         axios({
@@ -206,12 +247,21 @@ export default {
                     element.IsActive = false;
                     if (key == 'WorkArea') {
                         element.IsPeriod = false;
+                        element.PeriodType = 0;
                     } else {
                         element.IsPeriod = true;
+                        if (key == 'Work') {
+                            element.PeriodType = 0;
+                        } else if (key == 'Vacation') {
+                            element.PeriodType = 1;
+                        } else if (key == 'WorkOverTime') {
+                            element.PeriodType = 2;
+                        }
                     }
                 });
             }
             Object.assign(this.periodType, res.data.data);
+            this.submitData.PeriodArray = this.periodType.Vacation.concat(this.periodType.Work, this.periodType.WorkOverTime);
         }).catch(err => {})
         //update
         if (this.viewModule.id) {
@@ -257,15 +307,40 @@ export default {
             closePrintView: this.closePrintView,
             startPrinting: this.startPrinting,
             printDesign: this.printDesign,
-            rotatePrintPaper: this.rotatePrintPaper
+            rotatePrintPaper: this.rotatePrintPaper,
+            closeStatisticalTable: this.closeStatisticalTable
         }
     },
     methods: {
+        closeStatisticalTable() {
+            this.isShowStatisticalTable = false;
+        },
+        //统计表展现
+        statisticalTableView() {
+            this.isShowStatisticalTable = true;
+        },
+        //过滤表头change (by PeriodType)
+        filterHeadChange(val) {
+            let str = '';
+            if (val == 0) {
+                str = '常日班';
+            } else if (val == 1) {
+                str = '休假';
+            } else if (val == 2) {
+                str = '备班';
+            }
+            $('.filterHeaderByPeriodType input').val(str);
+        },
+        //过滤表头change (by PeriodId)
+        filterHeadByPeriodIdChange(val) {
+            $('.filterHeaderByPeriodId input').val(this.submitData.PeriodArray.filter(element => {
+                return element.id === val
+            })[0].name)
+        },
         //显示popover详情
         displayPopover(obj) {
             if (obj.PeriodId) {
-                let periods = this.periodType.Vacation.concat(this.periodType.Work, this.periodType.WorkOverTime);
-                Object.assign(this.displayedPeriodMsg, periods.filter(element => {
+                Object.assign(this.displayedPeriodMsg, this.submitData.PeriodArray.filter(element => {
                     return element.id === obj.PeriodId
                 })[0]);
             }
@@ -305,15 +380,13 @@ export default {
                 })
             }
         },
-        cellclick(row, column, cell, event) {
-            // console.log(row, column, cell, event)
-        },
         //cell 点击事件
         tableCellClick(obj) {
             if (this.activePeriod.id) {
                 obj.PeriodId = this.activePeriod.id;
                 obj.PeriodName = this.activePeriod.name;
-                obj.IsIncludeLunch = this.activePeriod.IsIncludeLunch;
+                obj.IsIncludeLunch = this.activePeriod.isIncludeLunch;
+                obj.PeriodType = this.activePeriod.PeriodType;
             }
             this.resetCellStatus(obj.RowIndex, obj.ColumnIndex);
             obj.IsCellActive = !obj.IsCellActive;
@@ -338,6 +411,7 @@ export default {
                         this.submitData.Staffs[i].Periods[j].PeriodId = 0;
                         this.submitData.Staffs[i].Periods[j].PeriodName = '';
                         this.submitData.Staffs[i].Periods[j].IsIncludeLunch = false;
+                        this.submitData.Staffs[i].Periods[j].PeriodType = null;
                     }
                 }
             }
@@ -378,7 +452,8 @@ export default {
                             if (this.activePeriod.id) {
                                 this.submitData.Staffs[i].Periods[j].PeriodId = this.activePeriod.id;
                                 this.submitData.Staffs[i].Periods[j].PeriodName = this.activePeriod.name;
-                                this.submitData.Staffs[i].Periods[j].IsIncludeLunch = this.activePeriod.IsIncludeLunch;
+                                this.submitData.Staffs[i].Periods[j].IsIncludeLunch = this.activePeriod.isIncludeLunch;
+                                this.submitData.Staffs[i].Periods[j].PeriodType = this.activePeriod.PeriodType;
                             }
                         }
                     }
@@ -448,7 +523,7 @@ export default {
             for (let i = 1; i < 32; i++) {
                 if (i <= 28) {
                     this.submitData.Days.push({
-                        day: i + '',
+                        day: i < 10 ? '0' + i : i + '',
                         isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
                     });
                 } else {
@@ -476,7 +551,8 @@ export default {
                         IsIncludeLunch: false,
                         IsWeekend: this.submitData.Days[j].isWeekend,
                         IsCellActive: false,
-                        IsCheckIn: false
+                        IsCheckIn: false,
+                        PeriodType: null
                     });
                 }
             }
@@ -484,7 +560,7 @@ export default {
         //行拖拽
         rowDrop() {
             const tbody = document.querySelector(
-                ".schedulingWork .el-table__body-wrapper tbody"
+                "#schedulingWork .el-table__body-wrapper tbody"
             );
             var sortable = new Sortable(tbody, {
                 handle: '.draggable',
@@ -644,6 +720,7 @@ export default {
             minute = minute < 10 ? '0' + minute : minute;
             return `${hour}:${minute}`;
         },
+        //获取最大长度
         getMaxLength(arr) {
             let maxNumber = arr.reduce((acc, item) => {
                 if (item) {
@@ -671,6 +748,38 @@ export default {
                 periodObj.ColumnIndex = columnIndex;
                 return periodObj.PeriodName;
             }
+        },
+        //计算午餐数
+        countTotalIncludeLunchNumber() {
+            return index => {
+                return this.submitData.Staffs[index].Periods.filter(element => {
+                    return element.IsIncludeLunch == true
+                }).length;
+            }
+        },
+        //按班类计算
+        countTotalByPeriodType() {
+            return index => {
+                if (this.filteredByPeriodType === null) {
+                    return 0;
+                } else {
+                    return this.submitData.Staffs[index].Periods.filter(element => {
+                        return element.PeriodType == this.filteredByPeriodType
+                    }).length;
+                }
+            }
+        },
+        //按班种计算
+        countTotalByPeriodId() {
+            return index => {
+                if (this.filteredByPeriodId === null) {
+                    return 0;
+                } else {
+                    return this.submitData.Staffs[index].Periods.filter(element => {
+                        return element.PeriodId == this.filteredByPeriodId
+                    }).length;
+                }
+            }
         }
     },
 }
@@ -689,6 +798,10 @@ export default {
                 font-size: 16px;
                 color: #878D9F;
                 text-align: right;
+
+                &.popover_day {
+                    width: 70px;
+                }
             }
 
             b {
@@ -700,7 +813,7 @@ export default {
     }
 }
 
-.schedulingWork {
+#schedulingWork {
     position: absolute;
     left: 0;
     right: 0;
@@ -750,14 +863,21 @@ export default {
                 }
             }
 
-            .el-button {
-                border: 1px solid #00C16B;
-                background: #fff;
-                color: #00C16B;
-                width: 120px;
-                height: 40px;
-                box-sizing: border-box;
-                font-size: 18px;
+            p {
+                .el-button {
+                    border: 1px solid #00C16B;
+                    background: #fff;
+                    color: #00C16B;
+                    width: 120px;
+                    height: 40px;
+                    box-sizing: border-box;
+                    font-size: 18px;
+
+                    &.el-button--primary {
+                        background: #00C16B;
+                        color: #fff;
+                    }
+                }
             }
         }
 
@@ -873,6 +993,22 @@ export default {
                             }
                         }
                     }
+
+                    &.filterHeader {
+                        padding: 0;
+
+                        div {
+                            height: 40px;
+                            padding: 0;
+
+                            input {
+                                border: 0;
+                                padding: 0 20px 0 5px;
+                                font-size: 18px;
+                                color: #878D9F;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -901,7 +1037,8 @@ export default {
                             user-select: none;
                             white-space: nowrap;
 
-                            .periodItem {
+                            .periodItem,
+                            .computedCell {
                                 user-select: none;
                                 height: 40px;
                                 line-height: 40px;

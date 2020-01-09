@@ -6,7 +6,9 @@
     <div class="cssd_login_right">
         <dl>
             <dt>
-                <p></p>
+                <p>
+                    <img :src="versionMsg.Configuration?versionMsg.Configuration.Company.Logo:'/images/login_logo.png'" alt="">
+                </p>
                 <h4>医院消毒供应追溯管理软件</h4>
             </dt>
             <dd>
@@ -29,7 +31,7 @@
         </dl>
         <h5>
             <a href="\Client\CSSDv2Client.rar" download="CSSDv2Client.rar"><i class="el-icon-download"></i>下载客户端</a>
-            <b>上海倍而纳医疗器械科技有限公司</b>
+            <b>{{versionMsg.Configuration?versionMsg.Configuration.Company.Name:'上海倍而纳医疗器械科技有限公司'}}</b>
             <s>{{versionMsg.HospitalVersion+" "+versionMsg.Version}}</s>
         </h5>
     </div>
@@ -47,6 +49,12 @@ export default {
             loginPassword: "",
             clinics: [],
             versionMsg: {
+                Configuration: {
+                    Company: {
+                        Name: '',
+                        Logo: ''
+                    }
+                },
                 HospitalVersion: "",
                 Version: ""
             }
@@ -59,6 +67,10 @@ export default {
         }).then(res => {
             if (res.data.Code == 200) {
                 this.versionMsg = res.data.Data;
+                if(this.versionMsg.Configuration){
+                    $('title').html(this.versionMsg.Configuration.Company.Name);
+                    $('link.logo_icon').attr({href:this.versionMsg.Configuration.Company.Logo});
+                }
             } else {
                 this.showInformation({
                     classify: "message",
@@ -228,9 +240,13 @@ export default {
                 p {
                     width: 140px;
                     height: 140px;
-                    background-image: url("/images/login_logo.png");
-                    background-size: 100% 100%;
                     margin: 0 auto;
+
+                    img {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                    }
                 }
 
                 h4 {

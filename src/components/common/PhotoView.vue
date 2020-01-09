@@ -13,7 +13,9 @@
                     </div>
                     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
                         <div class="tab_content" v-show="mode==0">
-                            <img :src="item.Path||item.Base64String" alt />
+                            <div class="img_box">
+                                <img :src="item.Path||item.Base64String" alt />
+                            </div>
                             <el-input v-if="!$props.viewMode" type="textarea" v-model.trim="item.Remark" placeholder="备注" resize="none"></el-input>
                             <p v-if="$props.viewMode">{{item.Remark}}</p>
                         </div>
@@ -25,7 +27,10 @@
             <div class="view_content" v-show="mode===1">
                 <img :src="image" alt />
                 <h5>
-                    <el-button class="btn120x40" @click="takePhoto">拍照</el-button>
+                    <el-upload action="" :auto-upload="false" :on-change="handleFileChange" :multiple="false" :limit="1" accept=".jpg, .jpeg, .png" :on-exceed="handleFileExceed">
+                        <el-button slot="trigger">上传</el-button>
+                    </el-upload>
+                    <el-button type="primary" class="btn120x40" @click="takePhoto">拍照</el-button>
                 </h5>
             </div>
         </transition>
@@ -77,8 +82,26 @@ export default {
                 Base64String: this.image,
                 Remark: ""
             });
+            this.image = '';
             this.mode = 0;
             this.activeName = this.list.length - 1 + "";
+        },
+        //文件状态change
+        handleFileChange(file, fileList) {
+            this.handleFileReader(file.raw);
+        },
+        //文件超过限制
+        handleFileExceed(files, fileList) {
+            this.handleFileReader(files[0]);
+        },
+        //读取文件
+        handleFileReader(file) {
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                this.image = fileReader.result;
+                this.takePhoto();
+            }
         },
         //删除图片
         deleteImg(index) {
@@ -252,10 +275,14 @@ export default {
                     border-radius: 0 0 8px 0;
 
                     .el-tab-pane {
-                        img {
-                            display: block;
+                        .img_box{
                             width: 100%;
                             height: 450px;
+                            overflow: auto;
+                            img {
+                                display: block;
+                                width: 100%;
+                            }
                         }
 
                         .el-textarea {
@@ -313,11 +340,31 @@ export default {
             h5 {
                 margin-top: 50px;
                 text-align: center;
+                display: flex;
+                justify-content: center;
+
+                .el-upload-list {
+                    display: none;
+                }
 
                 .el-button {
                     font-size: 18px;
                     font-family: Microsoft YaHei;
                     color: rgba(255, 255, 255, 1);
+                    width: 120px;
+                    height: 40px;
+                    background: #fff;
+                    color: #00c16b;
+                    border-color: #00c16b;
+
+                    &.el-button--primary {
+                        background: rgba(0, 193, 107, 1);
+                        border: 1px solid #00c16b;
+                        font-size: 18px;
+                        color: #fff;
+                        margin-left: 10px;
+                    }
+
                 }
             }
         }

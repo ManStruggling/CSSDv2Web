@@ -11,6 +11,18 @@
                 <div class="cell_name draggable">{{props.row.StaffName}}</div>
             </template>
         </el-table-column>
+        <el-table-column class-name="filterHeader" width="150">
+            <template slot="header">
+                <el-select v-model="filteredByPeriodType" class="green24x13" @change="$forceUpdate()" placeholder="选择班类型">
+                    <el-option label="常日班" :value="0"></el-option>
+                    <el-option label="休假" :value="1"></el-option>
+                    <el-option label="备班" :value="2"></el-option>
+                </el-select>
+            </template>
+            <template slot-scope="props">
+                <div class="computedCell">{{props.$index}}</div>
+            </template>
+        </el-table-column>
     </el-table>
 </div>
 </template>
@@ -28,7 +40,8 @@ export default {
                     StaffId: 2,
                     StaffName: '张三'
                 }]
-            }
+            },
+            filteredByPeriodType: null
         };
     },
     created() {

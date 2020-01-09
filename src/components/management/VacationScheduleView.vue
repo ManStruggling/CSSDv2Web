@@ -13,7 +13,7 @@
                 <template slot-scope="props">{{props.$index+1}}</template>
             </el-table-column>
             <el-table-column label="姓名" prop="StaffName" fixed></el-table-column>
-            <el-table-column v-for="(item,index) in submitData.Days" :key="index" :label="item.day+'日'" :class-name="item.isWeekend?'is-weekend':''">
+            <el-table-column v-for="(item,index) in submitData.Days" :key="index" :label="item.day" :class-name="item.isWeekend?'is-weekend':''">
                 <template slot-scope="props">
                     <el-popover placement="right" :disabled="!props.row.Periods[index]||props.row.Periods[index].PeriodId==0?true:false" trigger="hover" :open-delay="1500" @show="displayPopover(props.row.Periods[index])" popper-class="schedulePopper">
                         <ol>

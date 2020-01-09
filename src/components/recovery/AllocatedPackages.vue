@@ -50,7 +50,7 @@ export default {
             .catch(err => {});
     },
     methods: {
-      //删除包
+        //删除包
         deletePackage(index) {
             this.showInformation({
                 classify: 'confirm',

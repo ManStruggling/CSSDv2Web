@@ -158,8 +158,10 @@ export default {
                         }];
                     }
                     this.subClinicList = res.data.Data.SubClinics;
-                    this.submitData.BookCssdId = this.cssdList[0].BookCssdId;
-                    this.submitData.BookSubClinicId = this.subClinicList[0].BookSubClinicId;
+                    if (!this.isChangeMode) {
+                        this.submitData.BookCssdId = this.cssdList[0].BookCssdId;
+                        this.submitData.BookSubClinicId = this.subClinicList[0].BookSubClinicId;
+                    }
                 } else {
                     this.showInformation({
                         classify: "message",

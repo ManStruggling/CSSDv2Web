@@ -35,8 +35,8 @@
                 </li>
             </ol>
             <!-- 同济版本 -->
-            <template v-if="GLOBAL.UserInfo.HospitalVersion=='TONGJI'">
-                <ul v-if="!submitData.IsBackupPackage">
+            <template v-if="GLOBAL.UserInfo.HospitalVersion=='TONGJI'&&!submitData.IsBackupPackage">
+                <ul>
                     <li>
                         <p class="font16gray">住院号</p>
                         <div class="el_input_box font16blod">
@@ -71,13 +71,13 @@
                         </div>
                     </li>
                 </ul>
-                <ul v-if="!submitData.IsBackupPackage">
-                    <li>
+                <ul>
+                    <!-- <li>
                         <p class="font16gray">手术名称</p>
                         <div class="el_input_box">
                             <el-input v-model.trim="submitData.Patient.SurgicalName" :disabled="!submitData.Patient.HospitalId" class="font16blod"></el-input>
                         </div>
-                    </li>
+                    </li> -->
                     <li>
                         <p class="font16gray">手术时间</p>
                         <div class="el_input_box">
@@ -85,6 +85,12 @@
                         </div>
                     </li>
                     <li>
+                        <p class="font16gray">医生姓名</p>
+                        <div class="el_input_box">
+                            <el-input v-model.trim="submitData.Patient.SurgicalDoctor" :disabled="!submitData.Patient.HospitalId" class="font16blod"></el-input>
+                        </div>
+                    </li>
+                    <!-- <li>
                         <p class="font16gray">手术间</p>
                         <div class="el_input_box">
                             <el-input v-model.trim="submitData.Patient.SurgicalRoom" :disabled="!submitData.Patient.HospitalId" class="font16blod"></el-input>
@@ -95,12 +101,12 @@
                         <div class="el_input_box">
                             <el-input v-model.trim="submitData.Patient.Stage" :disabled="!submitData.Patient.HospitalId" class="font16blod"></el-input>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </template>
             <!-- 非同济版本 -->
-            <template v-if="GLOBAL.UserInfo.HospitalVersion!='TONGJI'">
-                <ul v-if="!submitData.IsBackupPackage">
+            <template v-if="GLOBAL.UserInfo.HospitalVersion!='TONGJI'&&!submitData.IsBackupPackage">
+                <ul>
                     <li>
                         <p class="font16gray">住院号</p>
                         <div class="el_input_box font16blod">
@@ -171,7 +177,7 @@
                         </div>
                     </li>
                 </ul>
-                <ul v-if="!submitData.IsBackupPackage">
+                <ul>
                     <li>
                         <p class="font16gray">手术名称</p>
                         <div class="el_input_box">

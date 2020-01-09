@@ -52,12 +52,12 @@
                         <el-input v-model.trim="submitData.Patient.SubClinic" :disabled="forbid"></el-input>
                     </div>
                 </li>
-                <li>
+                <!-- <li>
                     <p class="font16gray">手术名称</p>
                     <div class="el_input_box font16blod">
                         <el-input v-model.trim="submitData.Patient.SurgicalName" :disabled="forbid"></el-input>
                     </div>
-                </li>
+                </li> -->
                 <li>
                     <p class="font16gray">手术时间</p>
                     <div class="el_input_box font16blod">
@@ -65,6 +65,12 @@
                     </div>
                 </li>
                 <li>
+                    <p class="font16gray">手术医生</p>
+                    <div class="el_input_box font16blod">
+                        <el-input v-model.trim="submitData.Patient.SurgicalDoctor" :disabled="forbid"></el-input>
+                    </div>
+                </li>
+                <!-- <li>
                     <p class="font16gray">手术间</p>
                     <div class="el_input_box font16blod">
                         <el-input v-model.trim="submitData.Patient.SurgicalRoom" :disabled="forbid"></el-input>
@@ -75,7 +81,7 @@
                     <div class="el_input_box font16blod">
                         <el-input v-model.trim="submitData.Patient.Stage" :disabled="forbid"></el-input>
                     </div>
-                </li>
+                </li> -->
             </ul>
             <!-- 非同济版本 -->
             <ul v-if="GLOBAL.UserInfo.HospitalVersion!='TONGJI'">
