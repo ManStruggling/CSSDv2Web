@@ -98,10 +98,12 @@
         </p>
     </div>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
+        <!-- 打印预览 -->
         <PrintPreview v-if="isShowPrintView"></PrintPreview>
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
-        <StatisticalTable v-if="isShowStatisticalTable" :tableData="submitData"></StatisticalTable>
+        <!-- 查看统计表 -->
+        <StatisticalTable v-if="isShowStatisticalTable" :tableData="toChildData"></StatisticalTable>
     </transition>
 </div>
 </template>
@@ -178,6 +180,7 @@ export default {
                 endTime: '',
                 isIncludeLunch: false,
             },
+            toChildData: {}, //传递给子组件统计表的数据
             isNameFixed: true, //name是否固定
             isShowPrintView: false, //是否显示打印预览
             hiprintTemplate: null, //打印实例
@@ -317,6 +320,7 @@ export default {
         },
         //统计表展现
         statisticalTableView() {
+            this.toChildData = JSON.parse(JSON.stringify(this.submitData));
             this.isShowStatisticalTable = true;
         },
         //过滤表头change (by PeriodType)
@@ -388,8 +392,9 @@ export default {
                 obj.IsIncludeLunch = this.activePeriod.isIncludeLunch;
                 obj.PeriodType = this.activePeriod.PeriodType;
             }
-            this.resetCellStatus(obj.RowIndex, obj.ColumnIndex);
-            obj.IsCellActive = !obj.IsCellActive;
+            let cellState = this.submitData.Staffs[obj.RowIndex].Periods[obj.ColumnIndex].IsCellActive;
+            this.resetCellStatus();
+            obj.IsCellActive = !cellState;
             this.$forceUpdate();
         },
         //工作区域点击事件
@@ -463,31 +468,25 @@ export default {
             this.$forceUpdate();
         },
         //重置班种激活状态
-        resetPeriodStatus(obj) {
-            for (const key in this.periodType) {
-                this.periodType[key].forEach(element => {
-                    if (element.id === obj.id && obj.IsPeriod === element.IsPeriod) {
-                        return;
-                    }
-                    element.IsActive = false;
-                });
-            }
+        resetPeriodStatus() {
+            this.submitData.PeriodArray.forEach(element => {
+                element.IsActive = false;
+            });
         },
         //重置cell激活状态
-        resetCellStatus(RowIndex, ColumnIndex) {
-            for (let i = 0; i < this.submitData.Staffs.length; i++) {
-                for (let j = 0; j < this.submitData.Staffs[i].Periods.length; j++) {
-                    if (this.submitData.Staffs[i].Periods[j].RowIndex === RowIndex && this.submitData.Staffs[i].Periods[j].ColumnIndex === ColumnIndex) {
-                        continue;
-                    }
-                    this.submitData.Staffs[i].Periods[j].IsCellActive = false;
-                }
-            }
+        resetCellStatus() {
+            this.submitData.Staffs.forEach(element => {
+                element.Periods.map(item => {
+                    item.IsCellActive = false;
+                    return item;
+                });
+            });
         },
         //切换班种激活状态
         switchPeriodStatus(obj) {
+            let periodState = obj.IsActive;
             this.resetPeriodStatus(obj);
-            obj.IsActive = !obj.IsActive;
+            obj.IsActive = !periodState;
             if (obj.IsActive) {
                 if (obj.IsPeriod) {
                     Object.assign(this.activePeriod, obj);
@@ -514,48 +513,32 @@ export default {
         //设置日期
         setCalendarDate() {
             this.submitData.Days = [];
-            //当月一号的时间
-            let currentFirstDayStamp = new Date(
-                this.currentSelectMonth.year,
-                this.currentSelectMonth.month,
-                1
-            ).getTime();
-            for (let i = 1; i < 32; i++) {
-                if (i <= 28) {
-                    this.submitData.Days.push({
-                        day: i < 10 ? '0' + i : i + '',
-                        isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
-                    });
-                } else {
-                    if (this.isCurrentMonth(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))) {
-                        this.submitData.Days.push({
-                            day: i + '',
-                            isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
-                        });
-                    } else {
-                        break;
-                    }
-                }
+            let thisMonthDays = new Date(this.currentSelectMonth.year, this.currentSelectMonth.month + 1, 0).getDate();
+            for (let i = 1; i <= thisMonthDays; i++) {
+                this.submitData.Days.push({
+                    day: i < 10 ? '0' + i : i + '',
+                    isWeekend: this.isWeekend(new Date(this.currentSelectMonth.year, this.currentSelectMonth.month, i))
+                });
             }
             this.initData();
         },
         //初始化数据
         initData() {
-            for (let i = 0; i < this.submitData.Staffs.length; i++) {
-                this.submitData.Staffs[i].Periods = [];
-                for (let j = 0; j < this.submitData.Days.length; j++) {
-                    this.submitData.Staffs[i].Periods.push({
-                        Day: this.submitData.Days[j].day,
+            this.submitData.Staffs.forEach(element => {
+                element.Periods = [];
+                this.submitData.Days.forEach(item => {
+                    element.Periods.push({
+                        Day: item.day,
                         PeriodId: 0,
                         PeriodName: '',
                         IsIncludeLunch: false,
-                        IsWeekend: this.submitData.Days[j].isWeekend,
+                        IsWeekend: item.isWeekend,
                         IsCellActive: false,
                         IsCheckIn: false,
                         PeriodType: null
-                    });
-                }
-            }
+                    })
+                });
+            });
         },
         //行拖拽
         rowDrop() {
@@ -688,17 +671,6 @@ export default {
         //关闭预览
         closePrintView() {
             this.isShowPrintView = false;
-        },
-        // 是否是当前月
-        isCurrentMonth(date) {
-            let {
-                year,
-                month
-            } = this.getNewDate(date);
-            return (
-                this.currentSelectMonth.year == year &&
-                this.currentSelectMonth.month == month
-            );
         },
         //是否是周末
         isWeekend(date) {

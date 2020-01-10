@@ -15,98 +15,98 @@ const router = new Router({
                 import ('./components/index/Index')
         },
         {
-            path: '/basic',
-            name: 'basic',
+            path: '/dataSource',
+            name: 'dataSource',
             meta: { index: 1 },
             component: () =>
-                import ('./components/basic/Basic'),
+                import ('./components/dataSource/Basic'),
             children: [{
-                    path: '/basic/device/:Type',
+                    path: '/dataSource/device/:Type',
                     name: 'device',
                     component: () =>
-                        import ('./components/basic/Device'),
+                        import ('./components/dataSource/Device'),
                 }, {
-                    path: '/basic/instrument',
+                    path: '/dataSource/instrument',
                     name: 'instrument',
                     component: () =>
-                        import ('./components/basic/Instrument')
+                        import ('./components/dataSource/Instrument')
                 }, {
-                    path: '/basic/producer/:Type',
+                    path: '/dataSource/producer/:Type',
                     name: 'producer',
                     component: () =>
-                        import ('./components/basic/Producer')
+                        import ('./components/dataSource/Producer')
                 }, {
-                    path: '/basic/product/:Type',
+                    path: '/dataSource/product/:Type',
                     name: 'product',
                     component: () =>
-                        import ('./components/basic/Product')
+                        import ('./components/dataSource/Product')
                 }, {
-                    path: '/basic/supplier/:Type',
+                    path: '/dataSource/supplier/:Type',
                     name: 'supplier',
                     component: () =>
-                        import ('./components/basic/Supplier')
+                        import ('./components/dataSource/Supplier')
                 }, {
-                    path: '/basic/material',
+                    path: '/dataSource/material',
                     name: 'material',
                     component: () =>
-                        import ('./components/basic/Material')
+                        import ('./components/dataSource/Material')
                 },
                 {
-                    path: '/basic/carrier/:Type',
+                    path: '/dataSource/carrier/:Type',
                     name: 'carrier',
                     component: () =>
-                        import ('./components/basic/Carrier')
+                        import ('./components/dataSource/Carrier')
                 },
                 {
-                    path: '/basic/car/:Type',
+                    path: '/dataSource/car/:Type',
                     name: 'car',
                     component: () =>
-                        import ('./components/basic/Car')
+                        import ('./components/dataSource/Car')
                 },
                 {
-                    path: '/basic/period/:Type',
+                    path: '/dataSource/period/:Type',
                     name: 'period',
                     component: () =>
-                        import ('./components/basic/Period')
+                        import ('./components/dataSource/Period')
                 },
                 {
-                    path: '/basic/externalPackage',
+                    path: '/dataSource/externalPackage',
                     name: 'externalPackage',
                     component: () =>
-                        import ('./components/basic/ExternalPackage')
+                        import ('./components/dataSource/ExternalPackage')
                 },
                 {
-                    path: '/basic/clinic',
+                    path: '/dataSource/clinic',
                     name: 'clinic',
                     component: () =>
-                        import ('./components/basic/Clinic')
+                        import ('./components/dataSource/Clinic')
                 },
                 {
-                    path: '/basic/staff',
+                    path: '/dataSource/staff',
                     name: 'staff',
                     component: () =>
-                        import ('./components/basic/Staff')
+                        import ('./components/dataSource/Staff')
                 },
                 {
-                    path: '/basic/logisticsStaff',
+                    path: '/dataSource/logisticsStaff',
                     name: 'logisticsStaff',
                     component: () =>
-                        import ('./components/basic/LogisticsStaff')
+                        import ('./components/dataSource/LogisticsStaff')
                 }, {
-                    path: '/basic/disposable',
+                    path: '/dataSource/disposable',
                     name: 'disposable',
                     component: () =>
-                        import ('./components/basic/Disposable')
+                        import ('./components/dataSource/Disposable')
                 }, {
-                    path: '/basic/failedCause',
+                    path: '/dataSource/failedCause',
                     name: 'failedCause',
                     component: () =>
-                        import ('./components/basic/FailedCause')
+                        import ('./components/dataSource/FailedCause')
                 }, {
-                    path: '/basic/workArea',
+                    path: '/dataSource/workArea',
                     name: 'workArea',
                     component: () =>
-                        import ('./components/basic/WorkArea')
+                        import ('./components/dataSource/WorkArea')
                 }
             ]
         },

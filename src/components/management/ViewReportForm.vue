@@ -14,7 +14,7 @@
             <el-button @click="printView">打印预览</el-button>
         </p>
     </div>
-    <el-table :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="multipleTable">
+    <el-table :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="customReportTable">
         <el-table-column v-for="(item,index) in columnList" :key="index" :label="item.DisplayName" :prop="dropCol[index].SpliceName" :filters="item.FilterArr" :filter-method="filterData" :column-key="dropCol[index].SpliceName" sortable :sort-by="dropCol[index].SpliceName"></el-table-column>
     </el-table>
     <PrintPreview v-if="isShowPrintView"></PrintPreview>
@@ -344,7 +344,8 @@ export default {
         },
         //开始打印
         startPrinting() {
-            this.printData.table = this.tableData.filter(element => element.Visiable);
+            // this.printData.table = this.tableData.filter(element => element.Visiable);
+            this.printData.table = this.$refs.customReportTable.tableData;
             this.hiprintTemplate.print(this.printData);
         },
         //关闭预览
@@ -400,7 +401,7 @@ export default {
                     this.tableData.forEach(element => {
                         element.Visiable = true;
                     });
-                    this.$refs.multipleTable.clearFilter();
+                    this.$refs.customReportTable.clearFilter();
                 }
             }
         },

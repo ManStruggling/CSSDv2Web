@@ -45,32 +45,32 @@ export default {
                     children: [{
                             label: "追溯的无菌包",
                             index: "80",
-                            href: "/basic/product/80"
+                            href: "/dataSource/product/80"
                         },
                         {
                             label: "外来器械包",
                             index: "81",
-                            href: "/basic/product/81"
+                            href: "/dataSource/product/81"
                         },
                         {
                             label: "高水平消毒包",
                             index: "82",
-                            href: "/basic/product/82"
+                            href: "/dataSource/product/82"
                         },
                         {
                             label: "追溯的辅料包",
                             index: "83",
-                            href: "/basic/product/83"
+                            href: "/dataSource/product/83"
                         },
                         {
                             label: "一次性物品",
                             index: "84",
-                            href: "/basic/disposable"
+                            href: "/dataSource/disposable"
                         },
                         {
                             label: "代消包",
                             index: "85",
-                            href: "/basic/product/85"
+                            href: "/dataSource/product/85"
                         }
                     ]
                 },
@@ -80,17 +80,17 @@ export default {
                     children: [{
                             label: "器械",
                             index: "0",
-                            href: "/basic/instrument"
+                            href: "/dataSource/instrument"
                         },
                         {
                             label: "原料",
                             index: "1",
-                            href: "/basic/material"
+                            href: "/dataSource/material"
                         },
                         {
                             label: "外包装",
                             index: "2",
-                            href: "/basic/externalPackage"
+                            href: "/dataSource/externalPackage"
                         },
                     ]
                 },
@@ -100,17 +100,17 @@ export default {
                     children: [{
                             label: "清洗网篮",
                             index: "0",
-                            href: "/basic/carrier/0"
+                            href: "/dataSource/carrier/0"
                         },
                         {
                             label: "灭菌网篮",
                             index: "1",
-                            href: "/basic/carrier/1"
+                            href: "/dataSource/carrier/1"
                         },
                         {
                             label: "单包网篮",
                             index: "3",
-                            href: "/basic/carrier/3"
+                            href: "/dataSource/carrier/3"
                         }
                     ]
                 },
@@ -120,7 +120,7 @@ export default {
                     children: [{
                         label: "设备",
                         index: "0",
-                        href: "/basic/producer/0"
+                        href: "/dataSource/producer/0"
                     }]
                 },
                 {
@@ -129,12 +129,12 @@ export default {
                     children: [{
                             label: "设备",
                             index: "0",
-                            href: "/basic/supplier/0"
+                            href: "/dataSource/supplier/0"
                         },
                         {
                             label: "外来器械",
                             index: "1",
-                            href: "/basic/supplier/1"
+                            href: "/dataSource/supplier/1"
                         }
                     ]
                 },
@@ -144,12 +144,12 @@ export default {
                     children: [{
                             label: "灭菌设备",
                             index: "0",
-                            href: "/basic/device/0"
+                            href: "/dataSource/device/0"
                         },
                         {
                             label: "清洗设备",
                             index: "1",
-                            href: "/basic/device/1"
+                            href: "/dataSource/device/1"
                         }
                     ]
                 },
@@ -159,12 +159,12 @@ export default {
                     children: [{
                             label: "污车",
                             index: "0",
-                            href: "/basic/car/0"
+                            href: "/dataSource/car/0"
                         },
                         {
                             label: "洁车",
                             index: "1",
-                            href: "/basic/car/1"
+                            href: "/dataSource/car/1"
                         }
                     ]
                 },
@@ -174,44 +174,44 @@ export default {
                     children: [{
                             label: '常日班',
                             index: '0',
-                            href: '/basic/period/0'
+                            href: '/dataSource/period/0'
                         },
                         {
                             label: '休假',
                             index: '1',
-                            href: '/basic/period/1'
+                            href: '/dataSource/period/1'
                         },
                         {
                             label: '备班',
                             index: '2',
-                            href: '/basic/period/2'
+                            href: '/dataSource/period/2'
                         }
                     ]
                 },
                 {
                     label: "工作区域",
                     isHasSubmenu: false,
-                    href: "/basic/workArea"
+                    href: "/dataSource/workArea"
                 },
                 {
                     label: "科室",
                     isHasSubmenu: false,
-                    href: "/basic/clinic"
+                    href: "/dataSource/clinic"
                 },
                 {
                     label: "员工",
                     isHasSubmenu: false,
-                    href: "/basic/staff"
+                    href: "/dataSource/staff"
                 },
                 {
                     label: "失败原因",
                     isHasSubmenu: false,
-                    href: "/basic/failedCause"
+                    href: "/dataSource/failedCause"
                 },
                 {
                     label: "物流人员",
                     isHasSubmenu: false,
-                    href: "/basic/logisticsStaff"
+                    href: "/dataSource/logisticsStaff"
                 }
             ]
         };

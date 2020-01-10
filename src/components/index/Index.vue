@@ -162,7 +162,7 @@
             <dt>基础资料管理</dt>
             <dd>
                 <ul>
-                    <router-link to="/basic">
+                    <router-link to="/dataSource">
                         <li>
                             <p class="cssd_index_basicResource"></p>
                             <span>基础资料</span>

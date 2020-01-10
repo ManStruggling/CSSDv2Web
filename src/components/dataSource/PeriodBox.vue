@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>班名称</p>
-                    <el-input type="text" placeholder="班名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="班名称(必填)" v-model.trim="editBoxData.Name" @input="getMaxLength"></el-input>
                 </li>
                 <li>
                     <p>颜色</p>
@@ -61,6 +61,18 @@ export default {
         this.editBoxData = this.$props.data;
     },
     methods: {
+        //获取最大长度
+        getMaxLength(val) {
+            const char = val.match(/[\u2E80-\u9FFF]/g);
+            const charLen = char ? char.length : 0;
+            const num = val.match(/\d|\./g);
+            const numLen = num ? num.length : 0;
+            const otherLen = val.length - charLen - numLen;
+            let calcLen = charLen * 1.1 + numLen * 0.65 + otherLen * 0.5;
+            if(calcLen*18>80){
+                this.editBoxData.Name = val.substring(0,val.length-1);
+            }
+        },
         //取消编辑
         editBoxCancelSave() {
             this.$emit("to-father", "");
@@ -77,11 +89,11 @@ export default {
                     val: this.editBoxData.Name,
                     type: "StringNotEmpty",
                     msg: "班名称不能为空！"
-                },{
+                }, {
                     val: this.editBoxData.StartTime,
                     type: "StringNotEmpty",
                     msg: "开始时间不能为空！"
-                },{
+                }, {
                     val: this.editBoxData.EndTime,
                     type: "StringNotEmpty",
                     msg: "结束时间不能为空！"

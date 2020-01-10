@@ -78,7 +78,7 @@ export default {
         }
     },
     mounted() {
-        CSManager.ListenKeyDownEvent();
+        CSManager.ListenKeyUpEvent();
     },
     provide() {
         return {
