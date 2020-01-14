@@ -2,7 +2,7 @@
 <!-- 审核清洗不合格包
         根据合格器械数算出不合格数最小值(外来器械直接填写不合格包数量)
   -->
-<div class="cssd_totalBar tabs_totalBar" id="cleanFailedPackageList">
+<div :class="{cssd_totalBar:true, tabs_totalBar:true,displayNav:displayNav}" id="cleanFailedPackageList">
     <el-tabs type="border-card" :tab-position="'left'">
         <el-tab-pane v-for="(item,index) in carrierList" :key="index" :name="index+''">
             <div slot="label">
@@ -62,6 +62,10 @@
             </div>
         </el-tab-pane>
     </el-tabs>
+    <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
     <div class="cssd_table_bottom">
         <p>
             <el-button @click="cancel">取消</el-button>
@@ -79,6 +83,7 @@ import UnqualifiedInstruments from "./UnqualifiedInstruments";
 export default {
     data() {
         return {
+            displayNav:true,
             isShowUnqualifiedInstruments: false, //不合格器械质量卡
             carrierList: [],
             cleanQuality: {}, //清洗质量

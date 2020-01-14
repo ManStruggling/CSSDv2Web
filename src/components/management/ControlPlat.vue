@@ -12,50 +12,56 @@
             <a @click="GLOBAL.logOut" class="logOut"></a>
         </div>
     </div>
-    <div class="basic_content">
+    <div :class="{basic_content:true,displayNav:displayNav}">
         <!-- 侧导航 -->
-        <div class="basic_nav">
-            <div class="basic_menu_box">
-                <el-menu class="el-menu-demo" mode="vertical" @select="handleSelect" :unique-opened="true">
-                    <el-menu-item index="0">
-                        <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link>
-                    </el-menu-item>
-                    <el-submenu index="1">
-                        <template slot="title">数据报表</template>
-                        <el-menu-item index="1-1">
-                            <router-link to="/management/viewReportForm" :active-class="'isActive'">查看报表</router-link>
+        <transition name="slide" enter-active-class="animated slideInLeft" leave-active-class="animated slideOutLeft" :duration="{enter:5000,leave:1000}">
+            <div class="basic_nav" v-show="displayNav">
+                <div class="basic_menu_box">
+                    <el-menu class="el-menu-demo" mode="vertical" @select="handleSelect" :unique-opened="true">
+                        <el-menu-item index="0">
+                            <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link>
                         </el-menu-item>
-                        <el-menu-item index="1-2">
-                            <router-link to="/management/reportForm" :active-class="'isActive'">编辑报表</router-link>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="2">
-                        <template slot="title">人员排班</template>
-                        <el-menu-item index="2-1">
-                            <router-link to="/management/dailyWorkSheet" :active-class="'isActive'">日常班表</router-link>
-                        </el-menu-item>
-                        <el-menu-item index="2-2">
-                            <router-link to="/management/schedulingWorkSheet" :active-class="'isActive'">排班</router-link>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="3">
-                        <template slot="title">节假日排班</template>
-                        <el-menu-item index="3-1">
-                            <router-link to="/management/vacationScheduleView" :active-class="'isActive'">查看班表</router-link>
-                        </el-menu-item>
-                        <el-menu-item index="3-2">
-                            <router-link to="/management/vacationSchedule" :active-class="'isActive'">编辑班表</router-link>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="4">
-                        <template slot="title">系统配置</template>
-                        <el-menu-item index="4-1">
-                            <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
-                        </el-menu-item>
-                    </el-submenu>
-                </el-menu>
+                        <el-submenu index="1">
+                            <template slot="title">数据报表</template>
+                            <el-menu-item index="1-1">
+                                <router-link to="/management/viewReportForm" :active-class="'isActive'">查看报表</router-link>
+                            </el-menu-item>
+                            <el-menu-item index="1-2">
+                                <router-link to="/management/reportForm" :active-class="'isActive'">编辑报表</router-link>
+                            </el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="2">
+                            <template slot="title">人员排班</template>
+                            <el-menu-item index="2-1">
+                                <router-link to="/management/dailyWorkSheet" :active-class="'isActive'">日常班表</router-link>
+                            </el-menu-item>
+                            <el-menu-item index="2-2">
+                                <router-link to="/management/schedulingWorkSheet" :active-class="'isActive'">排班</router-link>
+                            </el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="3">
+                            <template slot="title">节假日排班</template>
+                            <el-menu-item index="3-1">
+                                <router-link to="/management/vacationScheduleView" :active-class="'isActive'">查看班表</router-link>
+                            </el-menu-item>
+                            <el-menu-item index="3-2">
+                                <router-link to="/management/vacationSchedule" :active-class="'isActive'">编辑班表</router-link>
+                            </el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="4">
+                            <template slot="title">系统配置</template>
+                            <el-menu-item index="4-1">
+                                <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
+                            </el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                    <div class="shrinkNavBox">
+                        <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                    </div>
+                </div>
             </div>
-        </div>
+        </transition>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <router-view v-if="isRouterAlive"></router-view>
     </div>
 </div>
@@ -65,6 +71,7 @@
 export default {
     data() {
         return {
+            displayNav: true,
             isRouterAlive: true,
         };
     },
@@ -160,8 +167,13 @@ export default {
         position: relative;
         width: 100%;
         height: 100%;
-        padding-left: 240px;
         box-sizing: border-box;
+        padding-left: 0;
+        transition: padding 1s;
+
+        &.displayNav {
+            padding-left: 240px;
+        }
 
         .basic_nav {
             position: absolute;
@@ -172,22 +184,30 @@ export default {
             z-index: 6;
 
             .basic_menu_box {
-                background: url("../../assets/images/background.png") repeat-y;
+                background: #182B37;
                 height: 100%;
                 overflow-y: scroll;
                 overflow-x: hidden;
                 width: 100%;
+                box-sizing: border-box;
+                padding-bottom: 60px;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 10px;
+                    background: #fff;
+                }
 
                 .el-menu {
                     background-color: transparent;
                     border: 0;
-
-                    >.el-menu-item {
-                        &.is-active {
-                            background: #00c16b;
-                            border-radius: 0 8px 8px 0;
-                        }
-                    }
+                    position: relative;
+                    z-index: 3;
+                    height: 100%;
 
                     .el-submenu {
                         position: relative;
@@ -253,8 +273,19 @@ export default {
                                 width: 250px;
                                 border-radius: 0px 4px 4px 0px;
                             }
+
+                            &.sub-item {
+                                padding-left: 20px;
+                            }
                         }
                     }
+                }
+
+                .shrinkNavBox {
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    z-index: 4;
                 }
 
                 >.el-menu {
@@ -266,6 +297,14 @@ export default {
                 }
             }
         }
+
+        .expandNavBox {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 5;
+        }
     }
 }
 
@@ -276,7 +315,8 @@ export default {
     height: 100%;
     box-sizing: border-box;
     padding: 30px 40px;
-    &::-webkit-scrollbar{
+
+    &::-webkit-scrollbar {
         width: 10px;
     }
 

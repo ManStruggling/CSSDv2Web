@@ -474,3 +474,30 @@ html body .el-popover .el-popover-content p b {
     font-weight: bold;
     color: #333;
 }
+
+// 收缩框样式
+.shrinkNavBox {
+    width: 240px;
+    height: 60px;
+    font-size: 24px;
+    text-align: center;
+    color: #fff;
+    background: #182B37;
+    padding: 0 20px;
+    box-sizing: border-box;
+    line-height: 59px;
+    .border_div {
+        height: 1px;
+        background: #334048;
+    }
+    i {
+        cursor: pointer;
+    }
+}
+
+.expandNavBox {
+    width: 20px;
+    background: #182B37 url(../../assets/images/expandNavImg.png) center no-repeat;
+    background-size: 9px 40px;
+    cursor: pointer;
+}

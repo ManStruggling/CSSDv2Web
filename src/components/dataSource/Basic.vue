@@ -10,25 +10,31 @@
             <a @click="GLOBAL.logOut" class="logOut"></a>
         </div>
     </div>
-    <div class="basic_content">
+    <div :class="{basic_content:true,displayNav:displayNav}">
         <!-- 侧导航 -->
-        <div class="basic_nav">
-            <div class="basic_menu_box">
-                <el-menu class="el-menu-demo" mode="vertical" @select="handleSelect" :unique-opened="true" :default-openeds="openedArr">
-                    <div v-for="(item,index) in navData" :key="index">
-                        <el-submenu v-if="item.isHasSubmenu" :index="index+''">
-                            <template slot="title">{{item.label}}</template>
-                            <el-menu-item v-for="(val,idx) in item.children" :key="idx" :index="val.index">
-                                <router-link :to="val.href" :active-class="'isActive'">{{val.label}}</router-link>
+        <transition name="slide" enter-active-class="animated slideInLeft" leave-active-class="animated slideOutLeft" :duration="{enter:5000,leave:1000}">
+            <div class="basic_nav" v-show="displayNav">
+                <div class="basic_menu_box">
+                    <el-menu class="el-menu-demo" mode="vertical" @select="handleSelect" :unique-opened="true" :default-openeds="openedArr">
+                        <div v-for="(item,index) in navData" :key="index">
+                            <el-submenu v-if="item.isHasSubmenu" :index="index+''">
+                                <template slot="title">{{item.label}}</template>
+                                <el-menu-item v-for="(val,idx) in item.children" :key="idx" :index="val.index">
+                                    <router-link :to="val.href" :active-class="'isActive'">{{val.label}}</router-link>
+                                </el-menu-item>
+                            </el-submenu>
+                            <el-menu-item v-else :index="index+''">
+                                <router-link :to="item.href" :active-class="'isActive'" :class="'sub-item'">{{item.label}}</router-link>
                             </el-menu-item>
-                        </el-submenu>
-                        <el-menu-item v-else :index="index+''">
-                            <router-link :to="item.href" :active-class="'isActive'" :class="'sub-item'">{{item.label}}</router-link>
-                        </el-menu-item>
+                        </div>
+                    </el-menu>
+                    <div class="shrinkNavBox">
+                        <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
                     </div>
-                </el-menu>
+                </div>
             </div>
-        </div>
+        </transition>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <router-view></router-view>
     </div>
 </div>
@@ -38,6 +44,7 @@
 export default {
     data() {
         return {
+            displayNav: true,
             openedArr: [],
             navData: [{
                     label: "产品",
@@ -168,7 +175,7 @@ export default {
                         }
                     ]
                 },
-                 {
+                {
                     label: '排班班种',
                     isHasSubmenu: true,
                     children: [{
@@ -300,8 +307,13 @@ export default {
         position: relative;
         width: 100%;
         height: 100%;
-        padding-left: 240px;
         box-sizing: border-box;
+        padding-left: 0;
+        transition: padding 1s;
+
+        &.displayNav {
+            padding-left: 240px;
+        }
 
         .basic_nav {
             position: absolute;
@@ -309,18 +321,33 @@ export default {
             top: 0;
             width: 250px;
             height: 100%;
-            z-index: 1;
+            z-index: 6;
 
             .basic_menu_box {
-                background: url("../../assets/images/background.png") repeat-y;
+                background: #182B37;
                 height: 100%;
                 overflow-y: scroll;
                 overflow-x: hidden;
                 width: 100%;
+                box-sizing: border-box;
+                padding-bottom: 60px;
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 10px;
+                    background: #fff;
+                }
 
                 .el-menu {
                     background-color: transparent;
                     border: 0;
+                    position: relative;
+                    z-index: 3;
+                    height: 100%;
 
                     .el-submenu {
                         position: relative;
@@ -394,6 +421,13 @@ export default {
                     }
                 }
 
+                .shrinkNavBox {
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    z-index: 4;
+                }
+
                 >.el-menu {
                     >.el-menu-item {
                         a {
@@ -402,6 +436,14 @@ export default {
                     }
                 }
             }
+        }
+
+        .expandNavBox {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 5;
         }
     }
 }

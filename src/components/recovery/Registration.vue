@@ -19,7 +19,7 @@
             <li @click="handelLostBarCode">
                 <p>条码丢失登记</p>
             </li>
-            <li @click="handleShowCountPackages">
+            <li v-if="GLOBAL.UserInfo.Configuration.IsActiveNotBarCodeProduct" @click="handleShowCountPackages">
                 <p>计数包回收</p>
             </li>
             <router-link :to="{
@@ -72,7 +72,7 @@
             <span class="hasCarrierData" v-show="recoveryData.CarrierId!=0">{{recoveryData.CarrierName}}</span>
         </div>
     </div>
-    <div class="cssd_table_center cssd_table_expand tabs_totalBar cssd_totalBar">
+    <div :class="{cssd_table_center:true, cssd_table_expand:true, tabs_totalBar:true, cssd_totalBar:true, displayNav:displayNav}">
         <el-tabs type="border-card" :tab-position="'left'" v-model="activeName">
             <el-tab-pane v-for="(item,index) in recoveryData.Clinics" :key="index" :name="index +''">
                 <div slot="label">
@@ -180,6 +180,10 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <div class="cssd_table_bottom">
             <p>
                 共计
@@ -219,6 +223,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav:true,
             BarCodeList: [], //检测是否录入重复
             waitToAllocation: [], //待分配的条码通用包
             packageClass: "",

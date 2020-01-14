@@ -2,9 +2,9 @@
 <div class="cssd_box" id="clinicApply">
     <div class="cssd_title">
         <ul class="cssd_menu">
-            <router-link to="/" tag="li">
+            <li @click="goBack">
                 <p>返回</p>
-            </router-link>
+            </li>
             <li @click="handleShowManualEnter">
                 <p>手工录入</p>
             </li>
@@ -309,6 +309,13 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        goBack(){
+            if(this.isChangeMode){
+                this.cancelChange();
+            }else{
+                this.$router.push('/');
+            }
+        },
         //住院号查询
         searchOuterPackage() {
             if (

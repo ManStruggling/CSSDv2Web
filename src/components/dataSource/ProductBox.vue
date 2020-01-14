@@ -94,7 +94,7 @@
                         </li>
                     </ul>
                     <ul class="clear_float ul_form_style">
-                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
+                        <li v-if="GLOBAL.UserInfo.Configuration.IsActiveNotBarCodeProduct&&(editBoxData.Type==80||editBoxData.Type==82)" v-show="!editBoxData.IsSingleCarrierProduct">
                             <p>计数包</p>
                             <el-select v-model="editBoxData.IsNotPrintBarCode" @change="countPackageChange" class="green24x13">
                                 <el-option label="是" :value="true"></el-option>
@@ -110,7 +110,7 @@
                         </li>
                     </ul>
                     <ul class="clear_float ul_form_style">
-                        <li v-if="editBoxData.Type==80||editBoxData.Type==82" v-show="!editBoxData.IsSingleCarrierProduct">
+                        <li v-if="GLOBAL.UserInfo.Configuration.IsActiveNumberProduct&&(editBoxData.Type==80||editBoxData.Type==82)" v-show="!editBoxData.IsSingleCarrierProduct">
                             <p>个数包</p>
                             <el-select v-model="editBoxData.IsNumberProduct" @change="numberPackageChange" class="green24x13">
                                 <el-option label="是" :value="true"></el-option>

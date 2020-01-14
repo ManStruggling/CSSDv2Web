@@ -29,7 +29,7 @@
             </p>
         </div>
     </div>
-    <div class="cssd_table_center">
+    <div :class="{cssd_table_center:true, displayNav:displayNav}">
         <div class="cssd_table_left">
             <div class="cssd_talbe_left_menu">
                 <el-tabs :tab-position="'left'" v-model="tabActiveName" @tab-click="handleTabClick">
@@ -165,6 +165,10 @@
                         </div>
                     </el-tab-pane>
                 </el-tabs>
+                <div class="shrinkNavBox">
+                    <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                </div>
+                <div class="expandNavBox" @click="displayNav=!displayNav"></div>
             </div>
         </div>
         <div class="cssd_table_right"></div>
@@ -187,6 +191,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav:true,
             isShowProductList: false,
             showAllTask: false,
             hasNewTask: false,
@@ -875,157 +880,163 @@ export default {
     }
 
     .cssd_table_center {
-        .el-tabs {
-            .el-tabs__item {
-                padding: 0;
-                height: auto;
+        .cssd_talbe_left_menu{
 
-                &.is-active {
-                    p {
-                        color: #c6f3df;
-                    }
-                }
-
-                .el-tabs__item_clinic {
-                    padding: 24px 20px;
-                }
-
-                h4 {
-                    text-align: left;
-                    font-size: 16px;
-                    font-family: Microsoft YaHei;
-                    font-weight: bold;
-                    color: rgba(255, 255, 255, 1);
-                    line-height: 21px;
-                }
-
-                h3 {
-                    text-align: left;
-                    font-size: 20px;
-                    font-family: Microsoft YaHei;
-                    font-weight: bold;
-                    color: rgba(255, 255, 255, 1);
-                    line-height: 26px;
-                }
-
-                p {
-                    line-height: 20px;
-                    text-align: left;
-                    color: #d0d4da;
-                    font-size: 14px;
-                    font-family: Microsoft YaHei;
-                    font-weight: bold;
-                    display: flex;
-
-                    >span {
-                        &:first-child {
-                            margin-right: 10px;
-                        }
-
-                        width: 100px;
-                    }
-                }
+            .shrinkNavBox{
+                z-index: 2;
             }
+            .el-tabs {
+                .el-tabs__item {
+                    padding: 0;
+                    height: auto;
 
-            .el-tabs__content {
-                .tab_content {
-                    &::-webkit-scrollbar {
-                        width: 10px;
-                    }
-
-                    .selectSubClinic {
-                        display: flex;
-                        color: #878d9f;
-                        line-height: 40px;
-                        padding-bottom: 20px;
-
+                    &.is-active {
                         p {
-                            font-size: 16px;
-                            margin-right: 10px;
-                        }
-
-                        .el-select {
-                            width: 160px;
-
-                            .el-input {
-                                input {
-                                    font-size: 16px;
-                                    color: #333;
-                                    font-weight: bold;
-                                }
-                            }
+                            color: #c6f3df;
                         }
                     }
 
-                    .el-collapse {
-                        .el-collapse-item__header {
-                            &.is-active {
-                                .collapseTd {
-                                    a {
-                                        color: #fff;
+                    .el-tabs__item_clinic {
+                        padding: 24px 20px;
+                    }
+
+                    h4 {
+                        text-align: left;
+                        font-size: 16px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        color: rgba(255, 255, 255, 1);
+                        line-height: 21px;
+                    }
+
+                    h3 {
+                        text-align: left;
+                        font-size: 20px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        color: rgba(255, 255, 255, 1);
+                        line-height: 26px;
+                    }
+
+                    p {
+                        line-height: 20px;
+                        text-align: left;
+                        color: #d0d4da;
+                        font-size: 14px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        display: flex;
+
+                        >span {
+                            &:first-child {
+                                margin-right: 10px;
+                            }
+
+                            width: 100px;
+                        }
+                    }
+                }
+
+                .el-tabs__content {
+                    .tab_content {
+                        &::-webkit-scrollbar {
+                            width: 10px;
+                        }
+
+                        .selectSubClinic {
+                            display: flex;
+                            color: #878d9f;
+                            line-height: 40px;
+                            padding-bottom: 20px;
+
+                            p {
+                                font-size: 16px;
+                                margin-right: 10px;
+                            }
+
+                            .el-select {
+                                width: 160px;
+
+                                .el-input {
+                                    input {
+                                        font-size: 16px;
+                                        color: #333;
+                                        font-weight: bold;
                                     }
                                 }
                             }
+                        }
 
-                            .collapseTd {
-                                a {
-                                    color: #f93e3e;
-                                    line-height: 65px;
-                                    font-size: 18px;
-                                    font-weight: bold;
+                        .el-collapse {
+                            .el-collapse-item__header {
+                                &.is-active {
+                                    .collapseTd {
+                                        a {
+                                            color: #fff;
+                                        }
+                                    }
+                                }
+
+                                .collapseTd {
+                                    a {
+                                        color: #f93e3e;
+                                        line-height: 65px;
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    .insertDisposableProduct {
-                        margin: 20px 0 20px 40px;
-                        color: #fff;
-                    }
+                        .insertDisposableProduct {
+                            margin: 20px 0 20px 40px;
+                            color: #fff;
+                        }
 
-                    .tab_content_bottom {
-                        p {
-                            &:first-child {
-                                color: #232e41;
-                                font-size: 20px;
-                                font-family: Microsoft YaHei;
-                                font-weight: bold;
-                                margin-left: 40px;
+                        .tab_content_bottom {
+                            p {
+                                &:first-child {
+                                    color: #232e41;
+                                    font-size: 20px;
+                                    font-family: Microsoft YaHei;
+                                    font-weight: bold;
+                                    margin-left: 40px;
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        .el-table {
-            .cell {
-                .el-button {
-                    border: 0;
-                    font-size: 18px;
-                    font-family: Microsoft YaHei;
-                    color: rgba(249, 62, 62, 1);
+            .el-table {
+                .cell {
+                    .el-button {
+                        border: 0;
+                        font-size: 18px;
+                        font-family: Microsoft YaHei;
+                        color: rgba(249, 62, 62, 1);
 
-                    &:hover {
-                        background: none;
+                        &:hover {
+                            background: none;
+                        }
                     }
-                }
 
-                .el-select {
-                    width: 160px;
+                    .el-select {
+                        width: 160px;
 
-                    input {
-                        font-size: 16px;
-                        font-weight: bold;
+                        input {
+                            font-size: 16px;
+                            font-weight: bold;
+                        }
                     }
-                }
 
-                .el-input-number {
-                    width: 50px;
-                    height: 24px;
+                    .el-input-number {
+                        width: 50px;
+                        height: 24px;
 
-                    input {
-                        height: 100%;
+                        input {
+                            height: 100%;
+                        }
                     }
                 }
             }

@@ -8,7 +8,7 @@
             <li @click="handleShowManualEnter">
                 <p>手工录入</p>
             </li>
-            <li @click="handleShowCountPackages">
+            <li v-if="GLOBAL.UserInfo.Configuration.IsActiveNotBarCodeProduct" @click="handleShowCountPackages">
                 <p>计数包登记</p>
             </li>
             <router-link to="/sterilize/readyRecord" tag="li" v-if="!sterilizeReadyChangeMode">

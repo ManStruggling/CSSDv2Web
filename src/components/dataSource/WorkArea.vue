@@ -45,7 +45,7 @@ export default {
             })
             .then(res => {
                 if (res.data.Code == 200) {
-                    this.table_data = res.data.value;
+                    this.table_data = res.data.Data;
                 } else {
                     this.showInformation({
                         classify: 'message',

@@ -38,7 +38,7 @@
             </p>
         </div>
     </div>
-    <div class="cssd_table_center table_collapse table_unExpand">
+    <div :class="{cssd_table_center:true, table_collapse:true, table_unExpand:true,displayNav:displayNav}">
         <div class="cssd_table_left">
             <div class="cssd_talbe_left_menu">
                 <div class="task_origin">
@@ -188,6 +188,10 @@
                         </div>
                     </el-tab-pane>
                 </el-tabs>
+                <div class="shrinkNavBox">
+                    <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                </div>
+                <div class="expandNavBox" @click="displayNav=!displayNav"></div>
             </div>
         </div>
         <div class="cssd_table_right"></div>
@@ -220,6 +224,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav:true,
             isShowManualEnter: false, //控制手工录入
             hasNewTask: false, //是否有新任务
             isShowPhoto: false, //查看照片

@@ -7,7 +7,7 @@
             </router-link>
         </ul>
     </div>
-    <div class="cssd_table_center cssd_totalBar tabs_totalBar">
+    <div :class="{cssd_table_center:true, cssd_totalBar:true, tabs_totalBar:true,displayNav:displayNav}">
         <el-tabs type="border-card" :tab-position="'left'" :activeName="'0'">
             <el-tab-pane v-for="(item,index) in submitData.SterilizeTaskForRecall" :key="index" :name="index+''">
                 <div slot="label">{{item.SterilizeBarCode}}</div>
@@ -55,6 +55,10 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <div class="cssd_table_bottom">
             <p>
                 <el-button @click="cancelRecall">重新审核</el-button>
@@ -69,6 +73,7 @@
 export default {
     data() {
         return {
+            displayNav:true,
             submitData: {}
         };
     },

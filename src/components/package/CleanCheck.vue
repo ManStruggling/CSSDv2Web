@@ -18,7 +18,7 @@
                     </router-link>
                 </ul>
             </div>
-            <div class="cssd_table_center cssd_table_subTabs review_check">
+            <div :class="{cssd_table_center:true, cssd_table_subTabs:true, review_check:true,displayNav:displayNav}">
                 <div class="cssd_table_left">
                     <div class="cssd_talbe_left_menu">
                         <dl class="isActive">
@@ -145,6 +145,10 @@
                                 </el-tabs>
                             </dd>
                         </dl>
+                        <div class="shrinkNavBox">
+                            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                        </div>
+                        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
                     </div>
                 </div>
                 <div class="cssd_table_right"></div>
@@ -163,6 +167,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav: true,
             taskIndex: 0, //不合格包所属任务索引
             taskId: 0, //不合格包所属任务Id
             failedCarrier: [],

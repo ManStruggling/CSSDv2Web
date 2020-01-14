@@ -19,7 +19,7 @@
             </router-link>
         </ul>
     </div>
-    <div class="cssd_table_center cssd_table_subTabs review_check">
+    <div :class="{cssd_table_center:true, cssd_table_subTabs:true, review_check:true,displayNav:displayNav}">
         <div class="cssd_table_left">
             <div class="cssd_talbe_left_menu">
                 <dl class="isActive">
@@ -129,7 +129,7 @@
                                     </el-table>
                                     <h6>
                                         <el-button type="primary" @click="addFailedPackage(index)" class="btn120x40" :disabled="item.ChemicalReviewStatus==3">新增不合格包</el-button>
-                                        <el-button @click="addFailedCountPackage(index)" :disabled="item.ChemicalReviewStatus==3">新增计数包</el-button>
+                                        <el-button v-if="GLOBAL.UserInfo.Configuration.IsActiveNotBarCodeProduct" @click="addFailedCountPackage(index)" :disabled="item.ChemicalReviewStatus==3">新增计数包</el-button>
                                     </h6>
                                     <div class="tab_content_bottom">
                                         <el-button type="primary" @click="submitCheckResult(index)" class="btn150x40main">审核完成</el-button>
@@ -186,6 +186,10 @@
                         </el-tabs>
                     </dd>
                 </dl>
+                <div class="shrinkNavBox">
+                    <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                </div>
+                <div class="expandNavBox" @click="displayNav=!displayNav"></div>
             </div>
         </div>
         <div class="cssd_table_right"></div>
@@ -232,6 +236,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav: true,
             photoData: [],
             task_index: -1, //待审核任务的索引
             input_str: "", //快速定位绑定值

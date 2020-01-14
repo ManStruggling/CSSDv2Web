@@ -5,7 +5,7 @@
                           inputBlur函数 -- SingleCarrierName
     修改完成&回收完成：整理成api所需的数据结构之前会检测单包网篮录入是否重复。提交成功发送webSocket消息推送
   -->
-<div class="cssd_box newPurchasingRegistration">
+<div class="cssd_box" id="newPurchasingRegistration">
     <div class="cssd_title">
         <ul class="cssd_menu">
             <li @click="newPurchasingGoBack">
@@ -32,7 +32,7 @@
             <span class="hasCarrierData" v-show="submitData.CarrierId!=0">{{submitData.CarrierName}}</span>
         </div>
     </div>
-    <div class="cssd_table_center tabs_totalBar cssd_totalBar">
+    <div :class="{cssd_table_center:true, tabs_totalBar:true, cssd_totalBar:true,displayNav:displayNav}">
         <el-tabs type="border-card" :tab-position="'left'">
             <el-tab-pane v-for="(item,index) in newPurchasingData" :key="index">
                 <div slot="label">
@@ -70,36 +70,13 @@
                         </el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>
-                    <!-- <div class="content_title">
-                        <p>包名称</p>
-                        <p>包数量</p>
-                        <p>单包网篮</p>
-                        <p>单包网篮名称</p>
-                    </div>
-                    <ol>
-                        <li v-for="(val,idx) in item.Packages" :key="idx">
-                            <p>
-                                <b class="beyondHiding">{{val.ProductName}}</b>
-                            </p>
-                            <p>
-                                <el-input-number v-model="val.ProductQuantity" :min="0" :max="val.IsSingleCarrierProduct?1:999" size="mini" :controls="false" @change="((newValue,oldValue)=>{packageNumberChange(newValue,oldValue,index,idx)})"></el-input-number>
-                            </p>
-                            <p class="singleCarrierBox">
-                                <template v-if="val.IsSingleCarrierProduct">
-                                    <el-input type="text" v-model.trim="val.SingleCarrierBarCode" placeholder="输入单包网篮(必填)" @blur="inputBlur(val)" :disabled="val.SingleCarrierId===0?false:true"></el-input>
-                                    <i class="deleteSingleCarrier el-icon-error" @click="deleteTheIdOfAlreadyEnteredSingleCarrierIds(val)" v-show="val.SingleCarrierId!=0"></i>
-                                </template>
-                                <template v-else>{{"-"}}</template>
-                            </p>
-                            <p>
-                                <template v-if="val.IsSingleCarrierProduct">{{val.SingleCarrierName}}</template>
-                                <template v-else>{{"-"}}</template>
-                            </p>
-                        </li>
-                    </ol> -->
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <div class="cssd_table_bottom">
             <p>
                 共计
@@ -129,6 +106,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav:true,
             isShowPackageList: false,
             isShowManualEnter: false,
             isNewpurchasingChangeMode: false,
@@ -532,7 +510,7 @@ export default {
 @import "../../assets/css/tabsTotalBar";
 @import "../../assets/css/tableUnExpand";
 
-.newPurchasingRegistration {
+#newPurchasingRegistration {
     font-family: Microsoft YaHei;
     font-weight: bold;
 
@@ -556,11 +534,48 @@ export default {
     .cssd_table_center {
         display: flex;
         position: relative;
-
+        // &.displayNav{
+        //     .el-tabs__header{
+        //         margin-left: 0;
+        //     }
+        //     .shrinkNavBox{
+        //         left: 0;
+        //     }
+        //     .expandNavBox{
+        //         left: -20px;
+        //     }
+        //     .el-tabs__content{
+        //         left: 250px;
+        //     }
+        // }
+        // .el-tabs__header{
+        //     margin-left: -250px;
+        //     transition-duration: 1s;
+        // }
+        // .el-tabs__content{
+        //     transition-duration: 1s;
+        //     left: 0;
+        // }
+        // .shrinkNavBox{
+        //     transition-duration: 1s;
+        //     position: absolute;
+        //     left: -250px;
+        //     bottom: 60px;
+        // }
+        // .expandNavBox{
+        //     transition-duration: 1s;
+        //     position: absolute;
+        //     left: 0;
+        //     bottom: 0;
+        //     top: 0;
+        //     width: 20px;
+        //     z-index: 1;
+        // }
         .el-table {
             tbody {
                 td {
                     padding: 0;
+
                     &.singleCarrierBox {
                         position: relative;
 

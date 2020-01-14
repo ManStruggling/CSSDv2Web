@@ -24,7 +24,7 @@
             <a @click="reSelect">重新选择</a>
         </div>
     </div>
-    <div class="cssd_table_center deviceRegistrationCenter tabs_totalBar cssd_totalBar">
+    <div :class="{cssd_table_center:true, deviceRegistrationCenter:true, tabs_totalBar:true, cssd_totalBar:true,displayNav:displayNav}">
         <el-tabs type="border-card" :tab-position="'left'" v-model="activeName">
             <el-tab-pane v-for="(item,index) in submitData.Carriers" :key="index" :name="index+''">
                 <div slot="label" class="tab_title">
@@ -41,6 +41,10 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <div class="cssd_table_bottom">
             <p>
                 共计
@@ -79,6 +83,7 @@ import CleanableCarriers from "./CleanableCarriers";
 export default {
     data() {
         return {
+            displayNav:true,
             cleanableCarriers: [], //清洗失败的网篮
             activeName: "0",
             isShowPhoto: false, //显示照片

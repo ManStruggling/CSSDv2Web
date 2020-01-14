@@ -1,6 +1,6 @@
 <template>
 <!-- 灭菌 -->
-<div class="cssd_box" id="sterilizeRegistration">
+<div class="cssd_box tabs_half_bar" id="sterilizeRegistration">
     <div class="cssd_title">
         <ul class="cssd_menu">
             <li @click="goBack">
@@ -9,10 +9,10 @@
             <li @click="handleShowManualEnter">
                 <p>手工录入</p>
             </li>
-            <li @click="handleShowCountPackages">
+            <li v-if="GLOBAL.UserInfo.Configuration.IsActiveNotBarCodeProduct" @click="handleShowCountPackages">
                 <p>计数包登记</p>
             </li>
-            <li @click="substitution" v-if="GLOBAL.UserInfo.HospitalVersion!='SONGJIANGNANYUAN'">
+            <li @click="substitution" v-if="!GLOBAL.UserInfo.Configuration.IsProxyProductPrintBarCode">
                 <p>代消包登记</p>
             </li>
         </ul>
@@ -32,7 +32,7 @@
             <a @click="reSelect">重新选择</a>
         </div>
     </div>
-    <div class="cssd_table_center cssd_totalBar table_unExpand">
+    <div :class="{cssd_table_center:true, cssd_totalBar:true, table_unExpand:true,displayNav:displayNav}">
         <div class="cssd_table_left">
             <div class="cssd_talbe_left_menu">
                 <el-tabs :tab-position="'left'" :activeName="activeName" @tab-click="carrierTabClick">
@@ -79,6 +79,10 @@
                         </div>
                     </el-tab-pane>
                 </el-tabs>
+                <div class="shrinkNavBox">
+                    <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+                </div>
+                <div class="expandNavBox" @click="displayNav=!displayNav"></div>
             </div>
         </div>
         <div class="cssd_table_right"></div>
@@ -125,6 +129,7 @@ import SterilizeablePackages from '../common/SterilizeablePackages';
 export default {
     data() {
         return {
+            displayNav: true,
             sterilizeablePackages: [],
             activeName: "",
             activeNameNotCarriersPackage: "",
@@ -299,12 +304,26 @@ export default {
         },
         //删除无网篮包
         deleteNotCarrierPackages() {
-            this.submitData.NotInCarrierPackages = [];
-            this.submitData.IsHasSubstitution = false;
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除包吗?',
+                confirmCallBack: () => {
+                    this.submitData.NotInCarrierPackages = [];
+                    this.submitData.IsHasSubstitution = false;
+                },
+                cancelCallBack: () => {}
+            });
         },
         //删除网篮
         deleteThisCarrier(index) {
-            this.submitData.Carriers.splice(index, 1);
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除网篮吗?',
+                confirmCallBack: () => {
+                    this.submitData.Carriers.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //ui样式 tab切换
         notCarrierTabClick(vm) {
@@ -526,6 +545,7 @@ export default {
 
 <style lang="scss">
 @import "../../assets/css/tableNav";
+@import "../../assets/css/tabsHalfBar";
 @import "../../assets/css/tableTotalBottomBar";
 @import "../../assets/css/tableUnExpand";
 
@@ -575,34 +595,32 @@ export default {
 
             .cssd_talbe_left_menu {
                 overflow-y: scroll;
-                background: url("../../assets/images/background.png") repeat-y;
+                background: #182B37;
                 width: 100%;
                 overflow-x: hidden;
                 height: 100%;
 
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 240px;
+                    bottom: 60px;
+                    width: 10px;
+                    background: #fff;
+                }
+
+                .shrinkNavBox {
+                    position: absolute;
+                    left: 0;
+                    bottom: 60px;
+                }
+
                 .el-tabs {
-                    width: 250px;
-
                     .el-tabs__header {
-                        margin: 0;
-                        width: 100%;
-
                         .el-tabs__nav-wrap {
-                            margin: 0;
-
-                            &::after {
-                                display: none;
-                            }
-
-                            .el-tabs__active-bar {
-                                display: none;
-                                overflow: visible;
-                            }
 
                             .el-tabs__item {
-                                width: 240px;
-                                height: 80px;
-                                transition: all 0s;
 
                                 &:hover {
                                     .tab_title {
@@ -612,10 +630,18 @@ export default {
                                     }
                                 }
 
+                                &.is-active {
+                                    width: 250px;
+                                    background: #00c16b;
+                                    border-radius: 0 4px 4px 0;
+                                }
+
                                 .tab_title {
                                     display: flex;
                                     justify-content: space-between;
                                     align-items: center;
+                                    width: 100%;
+                                    height: 100%;
 
                                     p {
                                         font-size: 20px;
@@ -632,83 +658,47 @@ export default {
                                         display: none;
                                     }
                                 }
-
-                                .tabTh {
-                                    text-align: left;
-
-                                    h4 {
-                                        font-size: 16px;
-                                        font-family: Microsoft YaHei;
-                                        font-weight: bold;
-                                        color: rgba(255, 255, 255, 1);
-                                        line-height: 21px;
-                                    }
-
-                                    h3 {
-                                        font-size: 20px;
-                                        font-family: Microsoft YaHei;
-                                        font-weight: bold;
-                                        color: rgba(255, 255, 255, 1);
-                                        line-height: 26px;
-                                    }
-                                }
-
-                                &.is-active {
-                                    width: 250px;
-                                    background: #00c16b;
-                                    border-radius: 0 4px 4px 0;
-                                }
                             }
                         }
                     }
 
-                    .el-tabs__content {
-                        position: absolute;
-                        left: 240px;
-                        right: 0;
-                        top: 0;
-                        bottom: 0;
-                        margin: auto;
-                        color: #999;
+                    .el-tab-pane {
+                        height: 100%;
 
-                        .el-tab-pane {
+                        .tab_content {
+                            padding: 30px 40px 90px;
+                            box-sizing: border-box;
                             height: 100%;
+                            overflow-y: auto;
 
-                            .tab_content {
-                                padding: 30px 40px 90px;
-                                box-sizing: border-box;
-                                height: 100%;
-                                overflow-y: auto;
+                            &::-webkit-scrollbar {
+                                width: 10px;
+                            }
 
-                                &::-webkit-scrollbar {
-                                    width: 10px;
-                                }
+                            .el-table {
+                                tbody {
+                                    .cell {
+                                        font-size: 18px;
+                                        font-family: Microsoft YaHei;
+                                        font-weight: bold;
+                                        color: rgba(35, 46, 65, 1);
 
-                                .el-table {
-                                    tbody {
-                                        .cell {
+                                        .el-button {
+                                            border: 0;
+                                            font-size: 18px;
+                                            font-family: Microsoft YaHei;
+                                            color: rgba(249, 62, 62, 1);
+
+                                            &:hover {
+                                                background: none;
+                                            }
+                                        }
+
+                                        >div {
                                             font-size: 18px;
                                             font-family: Microsoft YaHei;
                                             font-weight: bold;
-                                            color: rgba(35, 46, 65, 1);
-
-                                            .el-button {
-                                                border: 0;
-                                                font-size: 18px;
-                                                font-family: Microsoft YaHei;
-                                                color: rgba(249, 62, 62, 1);
-
-                                                &:hover {
-                                                    background: none;
-                                                }
-                                            }
-
-                                            >div {
-                                                font-size: 18px;
-                                                font-family: Microsoft YaHei;
-                                                font-weight: bold;
-                                                color: #232e41;
-                                            }
+                                            color: #232e41;
                                         }
                                     }
                                 }
@@ -726,6 +716,7 @@ export default {
         .cssd_table_bottom {
             z-index: 5;
             background: #fff;
+            position: fixed;
         }
     }
 }

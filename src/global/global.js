@@ -287,14 +287,14 @@ function notificationRecycling(that) {
 
 //是否启用websocket
 function useWebsocketOrNot(that, origin) {
-    if (sessionStorage.configure) {
+    if (that.GLOBAL.UserInfo.Configuration && that.GLOBAL.UserInfo.Configuration.IsActiveNewTaskNotification) {
         initWebSorcket(that, origin);
     } else {
         return false;
     }
 }
 
-//取消事件冒泡
+//取消事件冒泡 Don't delete this method!
 function cancelBubble() {}
 
 //获取地址栏参数

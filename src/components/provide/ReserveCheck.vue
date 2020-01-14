@@ -16,7 +16,7 @@
             </p>
         </div>
     </div>
-    <div class="cssd_table_center tabs_totalBar cssd_totalBar">
+    <div :class="{cssd_table_center:true, tabs_totalBar:true, cssd_totalBar:true,displayNav:displayNav}">
         <el-tabs type="border-card" :tab-position="'left'" v-model="tabsActiveName">
             <el-tab-pane v-for="(item,index) in subClinics" :key="index" :name="index+''">
                 <div slot="label">
@@ -89,6 +89,10 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <div class="shrinkNavBox">
+            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+        </div>
+        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
         <div class="cssd_table_bottom">
             <p></p>
             <p>
@@ -105,6 +109,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            displayNav:true,
             hasNewTask: false,
             tabsActiveName: "0",
             subClinics: [],

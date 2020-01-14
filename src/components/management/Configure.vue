@@ -139,7 +139,7 @@ export default {
                             // this.setData = res.data.Data;
                             let userInfo = JSON.parse(sessionStorage.userInfo);
                             if (userInfo.Configuration) {
-                                userInfo.Configuration=this.setData;
+                                userInfo.Configuration = this.setData;
                                 sessionStorage.userInfo = JSON.stringify(userInfo);
                             }
                             window.location.href = '/management/configure';
