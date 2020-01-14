@@ -10,7 +10,7 @@
             <el-table-column prop="Specification" label="规格" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Quantity" label="数量">
                 <template slot-scope="scope">
-                    <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
+                    <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
                 </template>
             </el-table-column>
         </el-table>
@@ -30,6 +30,9 @@ export default {
             materialList: [], //显示的器械列表
             multipleSelection: []
         };
+    },
+    created() {
+        this.getMaterialsData(`/odata/productmaterials`);
     },
     methods: {
         //点击当前行选择数据
@@ -75,9 +78,15 @@ export default {
         },
         //默认原料数量
         resetQuantity(arr) {
-            arr.forEach(item => {
-                item.Quantity = 1;
-            });
+            for (let i = 0; i < arr.length; i++) {
+                arr[i].Quantity = 1;
+                for (let j = 0; j < this.multipleSelection.length; j++) {
+                    if (arr[i].Id === this.multipleSelection[j].Id) {
+                        arr[i] = this.multipleSelection[j];
+                        break;
+                    }
+                }
+            }
         },
         //获取原料数据
         getMaterialsData(url) {
@@ -90,9 +99,6 @@ export default {
                     //error
                 });
         }
-    },
-    created() {
-        this.getMaterialsData(`/odata/productmaterials`);
     }
 };
 </script>

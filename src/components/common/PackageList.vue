@@ -10,7 +10,7 @@
             </el-select>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="packageSearch" :style="selectIsFix?'width:100%':''"></el-input>
         </h3>
-        <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @row-click="handleRowClick" @selection-change="handleSelectionChange" :row-key="getRowKeys">
+        <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="300" width="400" @row-click="handleRowClick" @selection-change="handleSelectionChange" :row-key="getRowKeys" current-row-key="ProductId">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column prop="ProductName" label="包名称" width="201" class="product_name" sortable :sort-by="'ProductShortCode'" show-overflow-tooltip></el-table-column>
             <el-table-column prop="ProvideSubClinicName" label="所属科室" sortable :sort-by="'ProvideSubClinicShortCode'" width="160" show-overflow-tooltip>
@@ -192,6 +192,7 @@ export default {
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
+            this.$forceUpdate()
         },
         getRowKeys(row) {
             return row.ProductId;
@@ -237,6 +238,12 @@ export default {
                         if (res.data.value[i].IsCommonProduct) {
                             res.data.value[i].ProvideSubClinicId = "";
                         }
+                        for (let j = 0; j < this.multipleSelection.length; j++) {
+                            if (this.multipleSelection[j].ProductId === res.data.value[i].ProductId) {
+                                res.data.value[i] = this.multipleSelection[j];
+                            }
+                        }
+                        
                     }
                     this.packageList = res.data.value;
                 })

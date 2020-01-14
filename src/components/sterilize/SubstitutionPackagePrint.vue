@@ -30,8 +30,7 @@
         <div class="cssd_table_bottom">
             <p>
                 <s>共计</s>
-                <!-- <b>{{countPackageNumber(submitData.PackageBarCodes)}}</b> -->
-                <b>3</b>
+                <b>{{countPackageNumber}}</b>
                 <span>包</span>
             </p>
             <p>
@@ -145,7 +144,18 @@ export default {
                 });
             }
         }
-    }
+    },
+    computed: {
+        countPackageNumber(){
+            let num = 0;
+            this.submitData.ViewList.forEach(element => {
+                if(element.Quantity){
+                    num += element.Quantity;
+                }
+            });
+            return num;
+        }
+    },
 };
 </script>
 

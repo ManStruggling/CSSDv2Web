@@ -15,11 +15,11 @@
                 <b>{{cleanableCarriers.length}}</b>
                 <a @click="handleShowCleanableCarriers">查看</a>
             </p>
-            <p class="photoEdit">
+            <!-- <p class="photoEdit">
                 <span>照片</span>:
                 <b>{{computedPhotoNumber}}</b>
                 <a @click="handleShowPhotos">编辑</a>
-            </p>
+            </p> -->
             <b>{{submitData.DeviceModelName}}:{{submitData.DeviceModelProgramName}}</b>
             <a @click="reSelect">重新选择</a>
         </div>

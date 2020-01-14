@@ -24,9 +24,9 @@
             <li @click="addSupportMaterialProduct">
                 <p>添加辅料包</p>
             </li>
-            <li>
+            <!-- <li>
                 <p>器械检查</p>
-            </li>
+            </li> -->
             <router-link to="/package/taskRecord" tag="li">
                 <p>配包记录</p>
             </router-link>

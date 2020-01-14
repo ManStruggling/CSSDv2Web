@@ -477,7 +477,14 @@ export default {
         },
         //删除不合格包
         deleteFailedPackage(index, item) {
-            item.SterilizeFailedPackages.splice(index, 1);
+            this.showInformation({
+                classify: 'confirm',
+                msg: '确定要删除该包吗?',
+                confirmCallBack: () => {
+                    item.SterilizeFailedPackages.splice(index, 1);
+                },
+                cancelCallBack: () => {}
+            });
         },
         //灭菌审核提交
         submitCheckResult(index) {
@@ -673,36 +680,37 @@ export default {
     .el-table {
         margin-top: 0;
         width: 100%;
-
-        .cell {
-            font-size: 18px;
-            font-family: Microsoft YaHei;
-            font-weight: bold;
-            color: rgba(35, 46, 65, 1);
-
-            .el-select {
-                width: 160px;
-
-                .el-input {
-                    font-size: 16px;
-                    font-family: Microsoft YaHei;
-                    font-weight: bold;
-                    color: rgba(51, 51, 51, 1);
-
-                    input {
-                        padding: 0 15px 0 10px;
-                    }
-                }
-            }
-
-            .el-button {
-                border: 0;
+        tbody{
+            .cell {
                 font-size: 18px;
                 font-family: Microsoft YaHei;
-                color: rgba(249, 62, 62, 1);
+                font-weight: bold;
+                color: rgba(35, 46, 65, 1);
 
-                &:hover {
-                    background: none;
+                .el-select {
+                    width: 160px;
+
+                    .el-input {
+                        font-size: 16px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        color: rgba(51, 51, 51, 1);
+
+                        input {
+                            padding: 0 15px 0 10px;
+                        }
+                    }
+                }
+
+                .el-button {
+                    border: 0;
+                    font-size: 18px;
+                    font-family: Microsoft YaHei;
+                    color: rgba(249, 62, 62, 1);
+
+                    &:hover {
+                        background: none;
+                    }
                 }
             }
         }

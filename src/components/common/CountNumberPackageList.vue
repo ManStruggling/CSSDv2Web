@@ -10,7 +10,7 @@
             <el-table-column prop="ProvideSubClinicName" label="回收科室" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column label="数量">
                 <template slot-scope="props">
-                    <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="props.row.MaximumQuantity" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
+                    <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="props.row.MaximumQuantity" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
                 </template>
             </el-table-column>
         </el-table>
@@ -32,6 +32,13 @@ export default {
         };
     },
     props: ['getApi'],
+    created() {
+        axios({
+            url: this.$props.getApi
+        }).then(res => {
+            this.packageList = res.data.value;
+        }).catch(err => {})
+    },
     methods: {
         //点击当前行选择数据
         handleRowClick(row, column, event) {
@@ -62,6 +69,14 @@ export default {
                 url: `${this.$props.getApi}?$filter=contains(ProductShortCode,${"'" +encodeURIComponent(this.searchShortCode) +"'"}) 
                     or contains(ProductName,${"'" +encodeURIComponent(this.searchShortCode) +"'"})`
             }).then(res => {
+                for (let i = 0; i < res.data.value.length; i++) {
+                    for(let j=0;j<this.multipleSelection.length;j++){
+                        if(res.data.value[i].ProductId===this.multipleSelection[j].ProductId){
+                            res.data.value[i] = this.multipleSelection[j];
+                            break;
+                        }
+                    }
+                }
                 this.packageList = res.data.value;
             }).catch(err => {})
         },
@@ -70,15 +85,8 @@ export default {
             this.multipleSelection = val;
         },
         getRowKeys(row) {
-            return row.Id;
+            return row.ProductId;
         }
-    },
-    created() {
-        axios({
-            url: this.$props.getApi
-        }).then(res => {
-            this.packageList = res.data.value;
-        }).catch(err => {})
     }
 };
 </script>

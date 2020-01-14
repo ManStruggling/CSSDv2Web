@@ -10,7 +10,7 @@
             <el-table-column prop="Specification" label="规格" width="100" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Quantity" label="数量" show-overflow-tooltip>
                 <template slot-scope="scope">
-                    <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" class="inputNumber60x40" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
+                    <el-input-number v-model="scope.row.Quantity" :min="1" :max="999" :controls="false" @click.native.stop="GLOBAL.cancelBubble" class="inputNumber60x40" @change="((newValue,oldValue)=>{handleCountNumberPackage(newValue,oldValue,scope.$index)})"></el-input-number>
                 </template>
             </el-table-column>
         </el-table>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import Sortable from 'sortablejs';
 export default {
     data() {
         return {
@@ -32,6 +31,10 @@ export default {
             multipleSelection: []
         };
     },
+    created() {
+        this.getInstrumentsData(`/odata/instruments`);
+    },
+    mounted() {},
     methods: {
         //点击当前行选择数据
         handleRowClick(row, column, event) {
@@ -76,9 +79,15 @@ export default {
             return row.Id;
         },
         resetQuantity(arr) {
-            arr.forEach(item => {
-                item.Quantity = 1;
-            });
+            for (let i = 0; i < arr.length; i++) {
+                arr[i].Quantity = 1;
+                for (let j = 0; j < this.multipleSelection.length; j++) {
+                    if (arr[i].Id === this.multipleSelection[j].Id) {
+                        arr[i] = this.multipleSelection[j];
+                        break;
+                    }
+                }
+            }
         },
         //获取器械数据
         getInstrumentsData(url) {
@@ -91,28 +100,7 @@ export default {
                     //error
                 });
         },
-        //行拖拽
-        rowDrop() {
-            const tbody = document.querySelector(".instrumentListComponent .el-table__body-wrapper tbody");
-            Sortable.create(tbody, {
-                animation: 180,
-                delay: 0,
-                onEnd: ({
-                    newIndex,
-                    oldIndex
-                }) => {
-                    const currRow = this.instrumentList.splice(oldIndex, 1)[0];
-                    this.instrumentList.splice(newIndex, 0, currRow);
-                }
-            });
-        }
-    },
-    created() {
-        this.getInstrumentsData(`/odata/instruments`);
-    },
-    mounted() {
-        this.rowDrop();
-    },
+    }
 };
 </script>
 
@@ -143,6 +131,13 @@ export default {
 
         h3 {
             display: flex;
+            .el-input{
+                input{
+                    font-size:16px;
+                    font-weight: bold;
+                    color: #232E41;
+                }
+            }
         }
 
         .el-table {

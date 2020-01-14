@@ -65,12 +65,12 @@
                         <p>监控</p>
                         <span>监控</span>
                     </li> -->
-                    <li>
+                    <!-- <li>
                         <p>照片</p>
                         <span>
                             <a @click="handleShowPhotos(collapseIndex)">查看</a>
                         </span>
-                    </li>
+                    </li> -->
                 </ul>
                 <el-table :data="item.Carriers" :default-expand-all="true">
                     <el-table-column label="网篮条码" prop="BarCode" width="240"></el-table-column>

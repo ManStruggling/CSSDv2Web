@@ -89,6 +89,14 @@ export default {
                     }
                 })
                 .then(res => {
+                    for (let i = 0; i < res.data.value.length; i++) {
+                        for (let j = 0; j < this.multipleSelection.length; j++) {
+                            if(res.data.value[i].ProductId===this.multipleSelection[j].ProductId){
+                                res.data.value[i] = this.multipleSelection[j];
+                                break;
+                            }
+                        }                        
+                    }
                     this.list = res.data.value;
                 })
                 .catch(err => {});

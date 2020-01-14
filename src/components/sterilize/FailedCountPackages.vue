@@ -1,5 +1,5 @@
 <template>
-<div id="failed_count_number_package" class="basic_package_box" @click.self="cancelSend">
+<div id="failed_count_number_package" class="basic_package_box">
     <div class="package_box">
         <h3>
             <el-input v-model="searchShortCode" placeholder="请输入拼音简码" @input="packageSearch"></el-input>
@@ -10,7 +10,7 @@
             <el-table-column prop="ProvideSubClinicName" label="回收科室" width="120"></el-table-column>
             <el-table-column label="数量" show-overflow-tooltip>
                 <template slot-scope="props">
-                    <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="props.row.MaxProductQuantity" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
+                    <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="props.row.MaxProductQuantity" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>
                 </template>
             </el-table-column>
         </el-table>
@@ -28,10 +28,28 @@ export default {
         return {
             searchShortCode: "", //简码搜索字段
             packageList: [], //显示的包列表
+            totalPackages: [], //全部的包
             multipleSelection: []
         };
     },
     props: ['task_index', 'ApiUrl'],
+    created() {
+        axios({
+            url: this.$props.ApiUrl
+        }).then(res => {
+            if (res.data.Code == 200) {
+                this.totalPackages = res.data.Data;
+                this.packageList = JSON.parse(JSON.stringify(res.data.Data));
+            } else {
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                });
+            }
+        }).catch(err => {
+
+        })
+    },
     methods: {
         //点击当前行选择数据
         handleRowClick(row, column, event) {
@@ -61,32 +79,34 @@ export default {
         //确定
 
         //搜索事件
-        packageSearch() {
+        packageSearch(val) {
             //code
+            if(val){
+                this.packageList = this.packageList.filter(element=>{
+                    if(element.ProductName.includes(this.searchShortCode)||(element.ShortCode&&element.ShortCode.includes(this.searchShortCode))){
+                        return true;
+                    }
+                })
+            }else{
+                let arr = JSON.parse(JSON.stringify(this.totalPackages));
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = 0; j < this.multipleSelection.length; j++) {
+                        if(arr[i].ProductId===this.multipleSelection[j].ProductId){
+                            arr[i] = this.multipleSelection[j];
+                            break;
+                        }
+                    }
+                }
+                this.packageList = arr;
+            }
         },
         //选择数据
         handleSelectionChange(val) {
             this.multipleSelection = val;
         },
         getRowKeys(row) {
-            return row.Id;
+            return row.ProductId;
         }
-    },
-    created() {
-        axios({
-            url: this.$props.ApiUrl
-        }).then(res => {
-            if (res.data.Code == 200) {
-                this.packageList = res.data.Data;
-            } else {
-                this.showInformation({
-                    classify: "message",
-                    msg: res.data.Msg
-                });
-            }
-        }).catch(err => {
-
-        })
     }
 };
 </script>

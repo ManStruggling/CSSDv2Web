@@ -79,6 +79,7 @@ export default {
     },
     methods: {
         selectedSubClinicIdChange() {
+            this.$refs.multipleTable.clearSelection();
             this.judgedParameters();
             this.getPackagesData(this.getUrl);
         },
@@ -197,6 +198,12 @@ export default {
                                     res.data.value[i].ProductQuantity += this.pendingRecycleProducts[j].ProductQuantity;
                                     break;
                                 }
+                            }
+                        }
+                        for(let j=0;j<this.multipleSelection.length;j++){
+                            if(res.data.value[i].ProductId===this.multipleSelection[j].ProductId){
+                                res.data.value[i] = this.multipleSelection[j];
+                                break;
                             }
                         }
                     }

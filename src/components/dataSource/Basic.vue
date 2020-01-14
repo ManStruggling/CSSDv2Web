@@ -636,7 +636,7 @@ export default {
         bottom: 0;
         margin: auto;
         background: rgba(51, 51, 51, 0.6);
-        z-index: 2;
+        z-index: 7;
 
         .editContainer {
             position: absolute;
