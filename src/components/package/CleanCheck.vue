@@ -87,7 +87,7 @@
                                                 </li>
                                                 <li class="myTextarea">
                                                     <p>备注</p>
-                                                    <el-input type="textarea" resize="none" placeholder="填写备注" v-model="item.Remark" maxlength="20" show-word-limit></el-input>
+                                                    <el-input type="textarea" resize="none" placeholder="填写备注" v-model="item.Remark"></el-input>
                                                 </li>
                                             </ul>
                                             <div class="tab_content_bottom">

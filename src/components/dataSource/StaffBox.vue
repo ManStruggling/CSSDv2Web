@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>员工姓名</p>
-                    <el-input type="text" placeholder="员工姓名(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="员工姓名(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
                 <li>
                     <p>员工工号</p>

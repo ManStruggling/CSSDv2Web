@@ -38,7 +38,7 @@
                 <li class="myTextarea">
                     <p class="font16gray">备注</p>
                     <div class="el_input_box font16blod">
-                        <el-input class="font16blod" v-model.trim="submitData.Remark" type="textarea" resize="none" placeholder="请输入备注" maxlength="20" show-word-limit></el-input>
+                        <el-input class="font16blod" v-model.trim="submitData.Remark" type="textarea" resize="none" placeholder="请输入备注"></el-input>
                     </div>
                 </li>
             </ul>

@@ -5,7 +5,7 @@
             <ul class="clear_float">
                 <li>
                     <p>原因名称</p>
-                    <el-input type="text" placeholder="原因名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="原因名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
                 <li>
                     <p>原因岗位</p>

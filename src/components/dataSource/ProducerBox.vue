@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>生产商名称</p>
-                    <el-input type="text" placeholder="生产商名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="生产商名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
                 <li>
                     <p>传真</p>
@@ -30,7 +30,7 @@
                 </li>
                 <li class="textareaBox">
                     <p>备注</p>
-                    <el-input type="textarea" maxlength="20" placeholder="备注" v-model.trim="editBoxData.Remark" show-word-limit></el-input>
+                    <el-input type="textarea" placeholder="备注" v-model.trim="editBoxData.Remark"></el-input>
                 </li>
             </ul>
             <div class="RelationBox table_collapse table_unExpand" v-if="editBoxData.Type == 0?true:false">
@@ -43,7 +43,7 @@
                         <div slot="title" class="collapseTh">
                             <div class="collapseTd">
                                 <p>
-                                    <el-input v-model.trim="item.Name" @click.native.stop="GLOBAL.cancelBubble" placeholder="型号名称(必填)" maxlength="10"></el-input>
+                                    <el-input v-model.trim="item.Name" @click.native.stop="GLOBAL.cancelBubble" placeholder="型号名称(必填)"></el-input>
                                 </p>
                             </div>
                             <div class="collapseTd">
@@ -55,7 +55,7 @@
                         <el-table :data="item.DevicePrograms">
                             <el-table-column label="程序名称" width="240">
                                 <template slot-scope="props">
-                                    <el-input type="text" v-model.trim="props.row.Name" placeholder="程序名称(必填)" maxlength="10"></el-input>
+                                    <el-input type="text" v-model.trim="props.row.Name" placeholder="程序名称(必填)"></el-input>
                                 </template>
                             </el-table-column>
                             <el-table-column label="程序运作时长（分钟）" width="210">

@@ -22,7 +22,7 @@
                 </li>
                 <li class="textareaBox">
                     <p>备注</p>
-                    <el-input type="textarea" v-model.trim="editBoxData.Remark" maxlength="20" placeholder="填写备注" show-word-limit></el-input>
+                    <el-input type="textarea" v-model.trim="editBoxData.Remark" placeholder="填写备注"></el-input>
                 </li>
             </ul>
         </div>

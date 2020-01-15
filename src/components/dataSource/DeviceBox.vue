@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>设备名称</p>
-                    <el-input type="text" placeholder="设备名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="设备名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
                 <li>
                     <p>设备简码</p>

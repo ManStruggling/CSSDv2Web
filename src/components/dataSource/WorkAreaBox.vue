@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>区域名称</p>
-                    <el-input type="text" placeholder="区域名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="区域名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
             </ul>
         </div>

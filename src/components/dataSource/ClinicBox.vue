@@ -6,7 +6,7 @@
             <ul class="clear_float">
                 <li>
                     <p>科室名称</p>
-                    <el-input type="text" placeholder="科室名称(必填)" v-model.trim="editBoxData.Name" maxlength="10"></el-input>
+                    <el-input type="text" placeholder="科室名称(必填)" v-model.trim="editBoxData.Name"></el-input>
                 </li>
                 <li>
                     <p>科室简码</p>
@@ -29,7 +29,7 @@
             <el-table :data="editBoxData.SubClinics">
                 <el-table-column label="子科室名称" width="240">
                     <template slot-scope="props">
-                        <el-input v-model.trim="props.row.Name" placeholder="子科室名称(必填)" maxlength="10"></el-input>
+                        <el-input v-model.trim="props.row.Name" placeholder="子科室名称(必填)"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column label="科室简码" prop="ShortCode" width="210"></el-table-column>

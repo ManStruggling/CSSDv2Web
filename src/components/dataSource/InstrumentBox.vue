@@ -39,7 +39,7 @@
                 </li>
                 <li class="textareaBox">
                     <p>备注</p>
-                    <el-input type="textarea" maxlength="20" placeholder="备注" v-model.trim="editBoxData.Remark" show-word-limit></el-input>
+                    <el-input type="textarea" placeholder="备注" v-model.trim="editBoxData.Remark"></el-input>
                 </li>
             </ul>
             <div class="photoOption">

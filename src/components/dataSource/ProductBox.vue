@@ -63,7 +63,7 @@
                         </li>
                         <li class="textareaBox">
                             <p>备注</p>
-                            <el-input type="textarea" placeholder="填写备注" v-model.trim="editBoxData.Remark" maxlength="20" show-word-limit></el-input>
+                            <el-input type="textarea" placeholder="填写备注" v-model.trim="editBoxData.Remark"></el-input>
                         </li>
                     </ul>
                 </el-tab-pane>
