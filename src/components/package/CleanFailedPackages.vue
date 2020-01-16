@@ -33,7 +33,9 @@
                             </div>
                             <!-- 回收科室 -->
                             <div class="collapseTd">
-                                <p>{{value.SubClinicName}}</p>
+                                <el-tooltip :content="value.SubClinicName" placement="right" :disabled="value.SubClinicName.length<11">
+                                    <p class="beyondHiding">{{value.SubClinicName}}</p>
+                                </el-tooltip>
                             </div>
                             <!-- 不合格包数量 -->
                             <div class="collapseTd">
@@ -63,9 +65,9 @@
         </el-tab-pane>
     </el-tabs>
     <div class="shrinkNavBox">
-            <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
-        </div>
-        <div class="expandNavBox" @click="displayNav=!displayNav"></div>
+        <div class="border_div"></div><i @click="displayNav=!displayNav" class="el-icon-d-arrow-left"></i>
+    </div>
+    <div class="expandNavBox" @click="displayNav=!displayNav"></div>
     <div class="cssd_table_bottom">
         <p>
             <el-button @click="cancel">取消</el-button>
@@ -83,7 +85,7 @@ import UnqualifiedInstruments from "./UnqualifiedInstruments";
 export default {
     data() {
         return {
-            displayNav:true,
+            displayNav: true,
             isShowUnqualifiedInstruments: false, //不合格器械质量卡
             carrierList: [],
             cleanQuality: {}, //清洗质量

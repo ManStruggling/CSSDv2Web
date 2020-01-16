@@ -126,7 +126,11 @@
                         <li v-if="editBoxData.Type==81">
                             <p>关联供应商</p>
                             <el-select filterable v-model="editBoxData.SupplierId" class="green24x13" placeholder="请选择(必选)">
-                                <el-option v-for="(item,index) in suppliers" :key="index" :label="item.Name" :value="item.SupplierId"></el-option>
+                                <el-option v-for="(item,index) in suppliers" :key="index" :label="item.Name" :value="item.SupplierId">
+                                    <el-tooltip :content="item.Name" placement="right" :disabled="item.Name.length<9">
+                                        <p class="beyondHiding">{{item.Name}}</p>
+                                    </el-tooltip>
+                                </el-option>
                             </el-select>
                         </li>
                         <li>

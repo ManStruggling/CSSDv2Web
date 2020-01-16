@@ -26,7 +26,7 @@
     </div>
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
-            <el-table-column label="供应商名称" prop="Name" width="240"></el-table-column>
+            <el-table-column label="供应商名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
             <el-table-column label="传真" prop="FaxNumber" width="210">
                 <template slot-scope="props">{{props.row.FaxNumber==""?"-":props.row.FaxNumber}}</template>
             </el-table-column>
@@ -114,7 +114,7 @@ export default {
         deleteThisTr(index) {
             this.showInformation({
                 classify: 'confirm',
-                msg: '您确定要删除该科室的权限?',
+                msg: '您确定要删除该项?',
                 confirmCallBack: () => {
                     axios.delete(`/api/Supplier/${this.Type}/${this.table_data[index].SupplierId}`)
                         .then(res => {

@@ -16,7 +16,11 @@
             <el-table-column prop="ProvideSubClinicName" label="所属科室" sortable :sort-by="'ProvideSubClinicShortCode'" width="160" show-overflow-tooltip>
                 <template slot-scope="scope">
                     <el-select v-if="scope.row.IsCommonProduct" v-model="scope.row.ProvideSubClinicId" filterable class="green18x10">
-                        <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId"></el-option>
+                        <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId">
+                            <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName.length<9">
+                                <p class="beyondHiding">{{item.ProvideSubClinicName}}</p>
+                            </el-tooltip>
+                        </el-option>
                     </el-select>
                     <div v-if="!scope.row.IsCommonProduct">{{scope.row.ProvideSubClinicName}}</div>
                 </template>
@@ -243,7 +247,7 @@ export default {
                                 res.data.value[i] = this.multipleSelection[j];
                             }
                         }
-                        
+
                     }
                     this.packageList = res.data.value;
                 })

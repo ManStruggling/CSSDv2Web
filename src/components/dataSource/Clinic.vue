@@ -22,8 +22,8 @@
     </div>
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
-            <el-table-column label="科室名称" prop="Name" width="240"></el-table-column>
-            <el-table-column label="拼音简码" prop="ShortCode" width="210"></el-table-column>
+            <el-table-column label="科室名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
+            <el-table-column label="拼音简码" prop="ShortCode" width="210" show-overflow-tooltip></el-table-column>
             <el-table-column label="科室条码" prop="BarCode" width="210"></el-table-column>
             <el-table-column label="科室电话" prop="Telephone" width="210">
                 <template slot-scope="props">{{props.row.Telephone==""?"-":props.row.Telephone}}</template>

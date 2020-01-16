@@ -53,8 +53,12 @@
                 <el-tabs :tab-position="'left'" v-model="tabActiveName" @tab-click="deselectTask">
                     <el-tab-pane v-for="(item,index) in tableData[selectOrigin]" :key="index" :name="index+''">
                         <div slot="label" class="tabTh">
-                            <h4>{{item.ClinicName}}</h4>
-                            <h3>{{item.SubClinicName}}</h3>
+                            <el-tooltip :content="item.ClinicName" placement="right" :disabled="item.ClinicName.length<14">
+                                <h4 class="beyondHiding">{{item.ClinicName}}</h4>
+                            </el-tooltip>
+                            <el-tooltip :content="item.SubClinicName" placement="right" :disabled="item.SubClinicName.length<12">
+                                <h3 class="beyondHiding">{{item.SubClinicName}}</h3>
+                            </el-tooltip>
                         </div>
                         <div class="tab_content table_expand">
                             <div class="content_title">
@@ -224,7 +228,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
-            displayNav:true,
+            displayNav: true,
             isShowManualEnter: false, //控制手工录入
             hasNewTask: false, //是否有新任务
             isShowPhoto: false, //查看照片

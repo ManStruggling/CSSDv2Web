@@ -76,8 +76,12 @@
         <el-tabs type="border-card" :tab-position="'left'" v-model="activeName">
             <el-tab-pane v-for="(item,index) in recoveryData.Clinics" :key="index" :name="index +''">
                 <div slot="label">
-                    <h4>{{item.ProvideClinicName}}</h4>
-                    <h3>{{item.ProvideSubClinicName}}</h3>
+                    <el-tooltip :content="item.ProvideClinicName" placement="right" :disabled="item.ProvideClinicName?item.ProvideClinicName.length<14:true">
+                        <h4 class="beyondHiding">{{item.ProvideClinicName}}</h4>
+                    </el-tooltip>
+                    <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName?item.ProvideSubClinicName.length<12:true">
+                        <h3 class="beyondHiding">{{item.ProvideSubClinicName}}</h3>
+                    </el-tooltip>
                     <div class="tab_count">
                         <p>
                             <span>总包数:</span>
@@ -103,7 +107,9 @@
                             <!-- ##根据是否是计数包来判断collapse能不能被展开 -->
                             <div slot="title" class="collapseTh">
                                 <div class="collapseTd">
-                                    <p>{{value.ProductName}}</p>
+                                    <el-tooltip :content="value.ProductName" placement="top-start" :disabled="value.ProductName.length<10">
+                                        <p>{{value.ProductName}}</p>
+                                    </el-tooltip>
                                 </div>
                                 <!-- 包数量  ##计数包和条码丢失包可以编辑 -->
                                 <div class="collapseTd" style="width:100px;">
@@ -223,7 +229,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
-            displayNav:true,
+            displayNav: true,
             BarCodeList: [], //检测是否录入重复
             waitToAllocation: [], //待分配的条码通用包
             packageClass: "",
@@ -785,6 +791,7 @@ export default {
 
 #recoveryRegistration {
     min-width: 1600px;
+
     .cssd_title_right {
         p {
             &.commonPackages {

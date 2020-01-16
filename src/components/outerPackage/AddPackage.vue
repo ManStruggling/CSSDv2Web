@@ -6,7 +6,11 @@
                 <li>
                     <p class="font16gray">送包单位</p>
                     <el-select filterable v-model="outerPackageVm.SupplierId" @change="supplierChange" :disabled="mode" class="green24x13" placeholder="送包单位(必填)">
-                        <el-option v-for="(item,index) in SupplierList.Suppliers" :key="index" :label="item.SupplierName" :value="item.SupplierId"></el-option>
+                        <el-option v-for="(item,index) in SupplierList.Suppliers" :key="index" :label="item.SupplierName" :value="item.SupplierId">
+                            <el-tooltip :content="item.SupplierName" placement="right" :disabled="item.SupplierName.length<9">
+                                <p class="beyondHiding">{{item.SupplierName}}</p>
+                            </el-tooltip>
+                        </el-option>
                     </el-select>
                 </li>
                 <li>
@@ -16,7 +20,11 @@
                 <li>
                     <p class="font16gray">包名称</p>
                     <el-select filterable v-model="outerPackageVm.ProductId" @change="productChange" :disabled="mode" class="green24x13" placeholder="包名称(必填)">
-                        <el-option v-for="(item,index) in SupplierList.Products" :key="index" :label="item.ProductName" :value="item.ProductId"></el-option>
+                        <el-option v-for="(item,index) in SupplierList.Products" :key="index" :label="item.ProductName" :value="item.ProductId">
+                            <el-tooltip :content="item.ProductName" placement="right" :disabled="item.ProductName.length<9">
+                                <p class="beyondHiding">{{item.ProductName}}</p>
+                            </el-tooltip>
+                        </el-option>
                     </el-select>
                 </li>
                 <li>
@@ -328,8 +336,10 @@ export default {
         }
     },
     computed: {
-        countBoxNumber(){
-            return this.outerPackageVm.BoxNumbers.filter(element=>{return element!='';}).length;
+        countBoxNumber() {
+            return this.outerPackageVm.BoxNumbers.filter(element => {
+                return element != '';
+            }).length;
         }
     },
 };
@@ -378,12 +388,14 @@ export default {
 
                     li {
                         margin-right: 20px;
-                        span{
+
+                        span {
                             font-size: 16px;
                             font-weight: bold;
                             color: #333;
                             line-height: 40px;
                         }
+
                         a {
                             display: block;
                             line-height: 40px;

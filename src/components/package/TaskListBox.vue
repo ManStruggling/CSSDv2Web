@@ -3,11 +3,15 @@
     <ul>
         <li>
             <h4>包名称</h4>
-            <p>{{submitData.Packages[0].ProductName}}</p>
+            <el-tooltip :content="submitData.Packages[0].ProductName" placement="right" :disabled="submitData.Packages[0].ProductName.length<11">
+                <p class="beyondHiding">{{submitData.Packages[0].ProductName}}</p>
+            </el-tooltip>
         </li>
         <li>
             <h4>所属科室</h4>
-            <p>{{submitData.Packages[0].SubClinicName}}</p>
+            <el-tooltip :content="submitData.Packages[0].SubClinicName" placement="right" :disabled="submitData.Packages[0].SubClinicName.length<11">
+                <p class="beyondHiding">{{submitData.Packages[0].SubClinicName}}</p>
+            </el-tooltip>
         </li>
         <li>
             <h4>本次配包数量</h4>

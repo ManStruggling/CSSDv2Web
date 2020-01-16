@@ -30,7 +30,7 @@
             <el-table-column label="包名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
             <el-table-column label="简码" prop="ShortCode" width="210" show-overflow-tooltip></el-table-column>
             <el-table-column label="发放供应室" prop="ProvideCssdName" width="210"></el-table-column>
-            <el-table-column :label="Type==81?'发放科室':'所属科室'" prop="ProvideClinicName" width="300">
+            <el-table-column :label="Type==81?'发放科室':'所属科室'" prop="ProvideClinicName" width="300" show-overflow-tooltip>
                 <template slot-scope="props">{{props.row.ProvideClinicName+'/'+props.row.ProvideSubClinicName}}</template>
             </el-table-column>
             <el-table-column label="操作" width="210">

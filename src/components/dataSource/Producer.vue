@@ -27,7 +27,7 @@
     </div>
     <div class="basic_table table_unExpand">
         <el-table :data="table_data">
-            <el-table-column label="生产商名称" prop="Name" width="240"></el-table-column>
+            <el-table-column label="生产商名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
             <el-table-column label="传真" prop="FaxNumber" width="210">
                 <template slot-scope="props">
                     {{props.row.FaxNumber==""?"-":props.row.FaxNumber}}

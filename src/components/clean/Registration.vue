@@ -34,7 +34,7 @@
                 <div class="tab_content table_unExpand">
                     <el-table :data="item.PackageBarCodeDetailList">
                         <el-table-column label="包名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
-                        <el-table-column label="回收科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+                        <el-table-column label="回收科室" prop="ProvideSubClinicName" width="210" show-overflow-tooltip></el-table-column>
                         <el-table-column label="数量" prop="Quantity" width="100"></el-table-column>
                         <el-table-column></el-table-column>
                     </el-table>

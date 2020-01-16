@@ -218,7 +218,7 @@
             </template>
             <div class="table_unExpand">
                 <el-table :data="submitData.Packages">
-                    <el-table-column label="包名称" prop="ProductName" width="240" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="包名称" prop="ProductName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="分包数" prop="SplitPackageCount" width="110"></el-table-column>
                     <el-table-column label="有无植入物" width="150">
                         <template slot-scope="props">{{props.row.HasImplants?'有':'无'}}</template>
@@ -226,7 +226,7 @@
                     <el-table-column label="清洗架" width="210">
                         <template slot-scope="props">{{props.row.CarrierName}}</template>
                     </el-table-column>
-                    <el-table-column label="送包单位" prop="SupplierName" width="150"></el-table-column>
+                    <el-table-column label="送包单位" prop="SupplierName" width="150" show-overflow-tooltip></el-table-column>
                     <el-table-column label="送包人" prop="DeliveryPerson" width="150"></el-table-column>
                     <el-table-column label="操作" width="110">
                         <template slot-scope="props">

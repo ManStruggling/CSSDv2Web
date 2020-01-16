@@ -3,7 +3,11 @@
     <div class="package_box">
         <h3>
             <el-select v-model="selectedSubClinicId" class="green24x13" :filterable="true" @change="selectedSubClinicIdChange">
-                <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId"></el-option>
+                <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId">
+                    <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName.length<8">
+                        <p class="beyondHiding">{{item.ProvideSubClinicName}}</p>
+                    </el-tooltip>
+                </el-option>
             </el-select>
             <el-select v-model="packageBoxClassSelect" @change="packageClassChange" class="green24x13" :disabled="!selectedSubClinicId">
                 <el-option label="全部" value="all"></el-option>

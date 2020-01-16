@@ -36,8 +36,12 @@
         <el-tabs type="border-card" :tab-position="'left'">
             <el-tab-pane v-for="(item,index) in newPurchasingData" :key="index">
                 <div slot="label">
-                    <h4>{{item.ProvideClinicName}}</h4>
-                    <h3>{{item.ProvideSubClinicName}}</h3>
+                    <el-tooltip :content="item.ProvideClinicName" placement="right" :disabled="item.ProvideClinicName?item.ProvideClinicName.length<14:true">
+                        <h4 class="beyondHiding">{{item.ProvideClinicName}}</h4>
+                    </el-tooltip>
+                    <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName?item.ProvideSubClinicName.length<12:true">
+                        <h3 class="beyondHiding">{{item.ProvideSubClinicName}}</h3>
+                    </el-tooltip>
                     <div class="tab_count">
                         <p>
                             <span>总包数:</span>
@@ -106,7 +110,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
-            displayNav:true,
+            displayNav: true,
             isShowPackageList: false,
             isShowManualEnter: false,
             isNewpurchasingChangeMode: false,
@@ -534,6 +538,7 @@ export default {
     .cssd_table_center {
         display: flex;
         position: relative;
+
         // &.displayNav{
         //     .el-tabs__header{
         //         margin-left: 0;

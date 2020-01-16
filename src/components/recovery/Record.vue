@@ -55,8 +55,8 @@
                 <div class="table_expand">
                     <el-table :style="'width:100%;'" :data="item.RecyclePackages" :default-expand-all="true">
                         <el-table-column label="包条码" prop="PackageBarCode" width="240"></el-table-column>
-                        <el-table-column label="包名称" prop="PackageName" width="210"></el-table-column>
-                        <el-table-column label="回收科室" prop="ProvideSubClinicName" width="210"></el-table-column>
+                        <el-table-column label="包名称" prop="PackageName" width="210" show-overflow-tooltip></el-table-column>
+                        <el-table-column label="回收科室" prop="ProvideSubClinicName" width="210" show-overflow-tooltip></el-table-column>
                         <el-table-column label="包数量" prop="PackageQuantity" width="210"></el-table-column>
                         <el-table-column label="单包网篮名称" prop="SingleProductCarrierName" width="210"></el-table-column>
                         <el-table-column label="丢失器械总数" prop="LostInstrumentTotalCount" v-if="mode==1" width="210"></el-table-column>
@@ -70,7 +70,9 @@
                                     </div>
                                     <ul>
                                         <li v-for="(selfs,myTableIndex) in props.row.LostInstrumentInRecycleRecords" :key="myTableIndex">
-                                            <p>{{selfs.InstrumentName}}</p>
+                                            <el-tooltip :content="selfs.InstrumentName" placement="right" :disabled="selfs.InstrumentName.length<11">
+                                                <p class="beyondHiding">{{selfs.InstrumentName}}</p>
+                                            </el-tooltip>
                                             <div>{{selfs.LostInstrumentQuantity}}</div>
                                         </li>
                                     </ul>

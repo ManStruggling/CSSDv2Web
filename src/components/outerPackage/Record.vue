@@ -135,7 +135,7 @@
                         <template slot-scope="props">{{props.row.HasImplants?"有":"无"}}</template>
                     </el-table-column>
                     <el-table-column label="关联网篮" prop="CarrierName" width="210"></el-table-column>
-                    <el-table-column label="送包单位" prop="SupplierName" width="210"></el-table-column>
+                    <el-table-column label="送包单位" prop="SupplierName" width="210" show-overflow-tooltip></el-table-column>
                     <el-table-column label="送包人" prop="SupplierPerson" width="210"></el-table-column>
                     <el-table-column></el-table-column>
                     <el-table-column width="1" type="expand">

@@ -377,9 +377,11 @@ export default {
 
                         .el-input-number {
                             width: 160px;
+                            height: 100%;
 
                             input {
                                 text-indent: 15px;
+                                height: 40px;
                             }
                         }
 

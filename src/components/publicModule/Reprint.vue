@@ -24,7 +24,11 @@
                     <p>供应商</p>
                     <div class="el_input_box">
                         <el-select v-model="packageMessage.SupplierId" class="green24x13" @change="supplierChange">
-                            <el-option v-for="(item,index) in suppliers" :key="index" :label="item.SupplierName" :value="item.SupplierId"></el-option>
+                            <el-option v-for="(item,index) in suppliers" :key="index" :label="item.SupplierName" :value="item.SupplierId">
+                                <el-tooltip :content="item.SupplierName" placement="right" :disabled="item.SupplierName.length<9">
+                                    <p class="beyondHiding">{{item.SupplierName}}</p>
+                                </el-tooltip>
+                            </el-option>
                         </el-select>
                     </div>
                 </li>
@@ -32,7 +36,11 @@
                     <p>包名称</p>
                     <div class="el_input_box" v-if="GLOBAL.UserInfo.HospitalVersion == 'TONGJI'&&packageMessage.IsOuterProduct">
                         <el-select v-model="packageMessage.ProductId" class="green24x13">
-                            <el-option v-for="(item,index) in products" :key="index" :label="item.ProductName" :value="item.ProductId"></el-option>
+                            <el-option v-for="(item,index) in products" :key="index" :label="item.ProductName" :value="item.ProductId">
+                                <el-tooltip :content="item.ProductName" placement="right" :disabled="item.ProductName.length<9">
+                                    <p class="beyondHiding">{{item.ProductName}}</p>
+                                </el-tooltip>
+                            </el-option>
                         </el-select>
                     </div>
                     <div class="el_input_box" v-else>{{packageMessage.ProductName}}</div>
@@ -352,7 +360,7 @@ export default {
             }
         },
         //number change
-        inputNumberChange(newValue,origin) {
+        inputNumberChange(newValue, origin) {
             if (newValue == undefined) {
                 setTimeout(() => {
                     this.packageMessage[origin] = 1;

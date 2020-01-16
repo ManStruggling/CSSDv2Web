@@ -36,7 +36,11 @@
             <div class="multiSelectBox" v-if="editBoxData.Type==1?false:true">
                 <h3>
                     <el-select v-model="editBoxData.RelatedManufacturerIds" multiple class="green18x10" placeholder="请选择(必填)">
-                        <el-option v-for="item in supplierList" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+                        <el-option v-for="item in supplierList" :key="item.Id" :label="item.Name" :value="item.Id">
+                            <el-tooltip :content="item.Name" placement="right" :disabled="item.Name.length<9">
+                                <p class="beyondHiding">{{item.Name}}</p>
+                            </el-tooltip>
+                        </el-option>
                     </el-select>
                 </h3>
             </div>

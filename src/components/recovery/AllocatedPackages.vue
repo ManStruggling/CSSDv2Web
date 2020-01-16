@@ -7,7 +7,11 @@
             <el-table-column width="180" label="回收科室">
                 <template slot-scope="props">
                     <el-select v-model="props.row.ProvideSubClinicId" class="green18x10" @change="((val)=>{provideClinicChange(val,props.row)})">
-                        <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId"></el-option>
+                        <el-option v-for="(item,index) in clinicList" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId">
+                            <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName.length<8">
+                                <p class="beyondHiding">{{item.ProvideSubClinicName}}</p>
+                            </el-tooltip>
+                        </el-option>
                     </el-select>
                 </template>
             </el-table-column>

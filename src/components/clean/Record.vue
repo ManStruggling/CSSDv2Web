@@ -87,8 +87,12 @@
                                 </div>
                                 <ul>
                                     <li v-for="(selfs,myTableIndex) in props.row.PackageBarCodeDetailList" :key="myTableIndex">
-                                        <p>{{selfs.ProvideSubClinicName}}</p>
-                                        <p>{{selfs.Name}}</p>
+                                        <el-tooltip :content="selfs.ProvideSubClinicName" placement="right" :disabled="selfs.ProvideSubClinicName.length<10">
+                                            <p class="beyondHiding">{{selfs.ProvideSubClinicName}}</p>
+                                        </el-tooltip>
+                                        <el-tooltip :content="selfs.Name" placement="right" :disabled="selfs.Name.length<10">
+                                            <p class="beyondHiding">{{selfs.Name}}</p>
+                                        </el-tooltip>
                                         <p>{{selfs.Quantity}}</p>
                                     </li>
                                 </ul>
