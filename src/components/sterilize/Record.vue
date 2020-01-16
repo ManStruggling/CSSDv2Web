@@ -84,11 +84,13 @@
                                     <li v-for="(selfs,myTableIndex) in props.row.Packages" :key="myTableIndex">
                                         <p>{{selfs.PackageBarCode}}</p>
                                         <p>
-                                            <el-tooltip :content="selfs.ProductName" placement="top-start" :disabled="selfs.ProductName.length<10">
+                                            <el-tooltip :content="selfs.ProductName" placement="right" :disabled="selfs.ProductName.length<10">
                                                 <div>{{selfs.ProductName}}</div>
                                             </el-tooltip>
                                         </p>
-                                        <p>{{selfs.ProvideSubClinic}}</p>
+                                        <el-tooltip :content="selfs.ProvideSubClinic" placement="right" :disabled="selfs.ProvideSubClinic.length<10">
+                                            <p class="beyondHiding">{{selfs.ProvideSubClinic}}</p>
+                                        </el-tooltip>
                                         <p>{{selfs.ProductQuantity}}</p>
                                     </li>
                                 </ul>

@@ -44,7 +44,7 @@
         </ul>
         <div class="table_box">
             <el-table :data="trackMessage.FailedPackages">
-                <el-table-column label="所在科室" prop="SubClinicName" width="240"></el-table-column>
+                <el-table-column label="所在科室" prop="SubClinicName" width="240" show-overflow-tooltip></el-table-column>
                 <el-table-column label="有效日期" prop="validDate" width="210"></el-table-column>
                 <el-table-column label="数量" prop="Quantity" width="210"></el-table-column>
                 <el-table-column></el-table-column>

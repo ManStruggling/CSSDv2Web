@@ -39,8 +39,8 @@
       </p>
       <el-table :data="operateRecords">
         <el-table-column label="操作时间" prop="OperateTime" width="240"></el-table-column>
-        <el-table-column label="地点" prop="Location" width="210"></el-table-column>
-        <el-table-column label="包操作" prop="Description" width="210" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column label="地点" prop="Location" width="210" show-overflow-tooltip></el-table-column>
+        <el-table-column label="包操作" prop="Description" width="210" show-overflow-tooltip></el-table-column>
         <el-table-column></el-table-column>
       </el-table>
     </div>

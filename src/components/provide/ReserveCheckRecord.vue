@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <el-table :data="item.BookTasks" :default-expand-all="true">
-                    <el-table-column label="科室名称" prop="SubClinicName" width="240"></el-table-column>
+                    <el-table-column label="科室名称" prop="SubClinicName" width="240" show-overflow-tooltip></el-table-column>
                     <el-table-column label="预定条码" prop="BarCode" width="210"></el-table-column>
                     <el-table-column label="需用日期" prop="BookDate" width="210"></el-table-column>
                     <el-table-column label="预定日期" prop="CreatedDate" width="210"></el-table-column>

@@ -40,7 +40,7 @@
                 </div>
                 <el-table :data="item.Packages" :default-expand-all="true">
                     <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                    <el-table-column label="子科室" prop="SubClinic" width="210"></el-table-column>
+                    <el-table-column label="子科室" prop="SubClinic" width="210" show-overflow-tooltip></el-table-column>
                     <el-table-column label="包名称" prop="ProductName" width="210"  show-overflow-tooltip></el-table-column>
                     <el-table-column label="配包日期" prop="PackageDate" width="210"></el-table-column>
                     <el-table-column label="有效日期" prop="ValidDate" width="210"></el-table-column>

@@ -59,8 +59,8 @@
                     <el-table-column label="流程名称" prop="FlowName" width="240"></el-table-column>
                     <el-table-column label="记录时间" prop="When" width="210"></el-table-column>
                     <el-table-column label="操作人" prop="Who" width="210"></el-table-column>
-                    <el-table-column label="位置" prop="Where" width="210"></el-table-column>
-                    <el-table-column label="描述" prop="Description" width="400" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column label="位置" prop="Where" width="210" show-overflow-tooltip></el-table-column>
+                    <el-table-column label="描述" prop="Description" width="400" show-overflow-tooltip></el-table-column>
                     <el-table-column label="包状态" prop="PackageStatus" width="210"></el-table-column>
                     <el-table-column></el-table-column>
                 </el-table>

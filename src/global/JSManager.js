@@ -212,7 +212,9 @@ function ListenKeyUpEvent() {
                 CSManager.BarCode = "";
                 CSManager.startTime = new Date().getTime();
             }
-            CSManager.BarCode += event.code.charAt(event.code.length - 1);
+            if (event.code) {
+                CSManager.BarCode += event.code.charAt(event.code.length - 1);
+            }
         }
     }
 }

@@ -6,8 +6,8 @@
         </h3>
         <el-table ref="multipleTable" :data="packageList" tooltip-effect="dark" style="width: 100%" max-height="280" width="400" @selection-change="handleSelectionChange" @row-click="handleRowClick" :row-key="getRowKeys">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
-            <el-table-column prop="ProductName" label="包名称" width="120" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="ProvideSubClinicName" label="回收科室" width="120"></el-table-column>
+            <el-table-column prop="ProductName" label="包名称" width="120" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="ProvideSubClinicName" label="回收科室" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column label="数量" show-overflow-tooltip>
                 <template slot-scope="props">
                     <el-input-number v-model="props.row.ProductQuantity" :controls="false" :min="1" :max="props.row.MaxProductQuantity" @click.native.stop="GLOBAL.cancelBubble" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.$index)})"></el-input-number>

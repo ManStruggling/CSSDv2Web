@@ -16,7 +16,11 @@
             <p>
                 <span>入库科室</span>
                 <el-select v-model="putInTask.InboundSubClinicId" filterable default-first-option class="white24x13">
-                    <el-option v-for="(item,index) in GLOBAL.UserInfo.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId"></el-option>
+                    <el-option v-for="(item,index) in GLOBAL.UserInfo.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId">
+                        <el-tooltip :content="item.SubClinicName" placement="right" :disabled="item.SubClinicName.length<12">
+                            <p class="beyondHiding">{{item.SubClinicName}}</p>
+                        </el-tooltip>
+                    </el-option>
                 </el-select>
             </p>
         </div>

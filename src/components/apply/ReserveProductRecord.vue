@@ -42,7 +42,9 @@
                         <p>{{item.BookCssd}}</p>
                     </div>
                     <div class="collapseTd">
-                        <p>{{item.BookSubClinic}}</p>
+                        <el-tooltip :content="item.BookSubClinic" placement="right" :disabled="item.BookSubClinic.length<12">
+                            <p class="beyondHiding">{{item.BookSubClinic}}</p>
+                        </el-tooltip>
                     </div>
                     <div class="collapseTd">
                         <p>{{item.Operator}}</p>
@@ -251,11 +253,12 @@ export default {
         }
 
         .el-table {
-            thead{
-                th{
+            thead {
+                th {
                     border: 0;
                 }
             }
+
             tbody {
                 .cell {
                     font-size: 18px;

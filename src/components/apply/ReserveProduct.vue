@@ -31,7 +31,11 @@
                     <p class="font16gray">预定科室</p>
                     <div class="el_input_box font16blod">
                         <el-select v-model="submitData.BookSubClinicId" class="green24x13" :disabled="isChangeMode">
-                            <el-option v-for="(item,index) in subClinicList" :key="index" :label="item.BookSubClinicName" :value="item.BookSubClinicId"></el-option>
+                            <el-option v-for="(item,index) in subClinicList" :key="index" :label="item.BookSubClinicName" :value="item.BookSubClinicId">
+                                <el-tooltip :content="item.BookSubClinicName" placement="right" :disabled="item.BookSubClinicName.length<8">
+                                    <p class="beyondHiding">{{item.BookSubClinicName}}</p>
+                                </el-tooltip>
+                            </el-option>
                         </el-select>
                     </div>
                 </li>

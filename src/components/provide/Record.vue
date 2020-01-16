@@ -36,7 +36,9 @@
                         <p>{{item.Provider}}</p>
                     </div>
                     <div class="collapseTd">
-                        <p>{{item.SubClinic}}</p>
+                        <el-tooltip :content="item.SubClinic" placement="right" :disabled="item.SubClinic.length<12">
+                            <p class="beyondHiding">{{item.SubClinic}}</p>
+                        </el-tooltip>
                     </div>
                     <div class="collapseTd">
                         <p>{{item.ProvideQuantity}}</p>
@@ -53,7 +55,7 @@
                             <el-table-column label="包内个数" prop="NumberProductQuantity" width="210">
                                 <template slot-scope="props">{{props.row.NumberProductQuantity?props.row.NumberProductQuantity:'-'}}</template>
                             </el-table-column>
-                            
+
                             <el-table-column></el-table-column>
                         </el-table>
                     </el-tab-pane>

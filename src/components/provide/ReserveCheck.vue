@@ -20,8 +20,12 @@
         <el-tabs type="border-card" :tab-position="'left'" v-model="tabsActiveName">
             <el-tab-pane v-for="(item,index) in subClinics" :key="index" :name="index+''">
                 <div slot="label">
-                    <h3>{{item.ClinicName}}</h3>
-                    <h4>{{item.SubClinicName}}</h4>
+                    <el-tooltip :content="item.ClinicName" placement="right" :disabled="item.ClinicName.length<14">
+                        <h4 class="beyondHiding">{{item.ClinicName}}</h4>
+                    </el-tooltip>
+                    <el-tooltip :content="item.SubClinicName" placement="right" :disabled="item.SubClinicName.length<12">
+                        <h3 class="beyondHiding">{{item.SubClinicName}}</h3>
+                    </el-tooltip>
                 </div>
                 <div class="tab_content">
                     <div class="container table_collapse">
@@ -109,7 +113,7 @@ export default {
     inject: ['reload'],
     data() {
         return {
-            displayNav:true,
+            displayNav: true,
             hasNewTask: false,
             tabsActiveName: "0",
             subClinics: [],

@@ -11,7 +11,7 @@
     <div class="cssd_table_center cssd_totalBar table_unExpand">
       <div class="table_box">
         <el-table :data="packages">
-          <el-table-column label="科室名称" prop="ClinicName" width="240"></el-table-column>
+          <el-table-column label="科室名称" prop="ClinicName" width="240" show-overflow-tooltip></el-table-column>
           <el-table-column label="包数量" prop="PackageQuantity" width="210"></el-table-column>
           <el-table-column></el-table-column>
         </el-table>

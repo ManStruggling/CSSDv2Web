@@ -35,7 +35,9 @@
                 <el-tabs :tab-position="'left'" v-model="tabActiveName" @tab-click="handleTabClick">
                     <el-tab-pane v-for="(item,index) in provideTaskList" :key="index" :name="index+''">
                         <div slot="label" v-show="showAllTask?true:(GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'?true:item.RemainInventoryTotalQuantity)" class="el-tabs__item_clinic">
-                            <h3>{{item.ClinicName}}</h3>
+                            <el-tooltip :content="item.ClinicName" placement="right" :disabled="item.ClinicName.length<12">
+                                <h3 class="beyondHiding">{{item.ClinicName}}</h3>
+                            </el-tooltip>
                             <p>
                                 <span v-if="GLOBAL.UserInfo.HospitalVersion=='YANCHENGFUBAO'">
                                     <span>剩余总库存数:</span>
@@ -52,7 +54,11 @@
                                 <p>本次发放科室</p>
                                 <el-select default-first-option v-model="item.SelectedSubClinicId" class="green24x13" @change="((val)=>{provideSubClinicChange(val,index)})" :filterable="true">
                                     <el-option label="全部" :value="0"></el-option>
-                                    <el-option v-for="(value,idx) in item.SubClinics" :key="idx" :label="value.SubClinicName" :value="value.SubClinicId"></el-option>
+                                    <el-option v-for="(value,idx) in item.SubClinics" :key="idx" :label="value.SubClinicName" :value="value.SubClinicId">
+                                        <el-tooltip :content="value.SubClinicName" placement="right" :disabled="value.SubClinicName.length<9">
+                                            <p class="beyondHiding">{{value.SubClinicName}}</p>
+                                        </el-tooltip>
+                                    </el-option>
                                 </el-select>
                             </div>
                             <div class="content_title">
@@ -81,7 +87,11 @@
                                         <!-- 发放科室 -->
                                         <div class="collapseTd">
                                             <p v-if="GLOBAL.UserInfo.HospitalVersion=='YANCHENGFUBAO'&&value.IsCommonProduct">-</p>
-                                            <p v-else>{{value.ProvideSubClinic}}</p>
+                                            <p v-else>
+                                                <el-tooltip :content="value.ProvideSubClinic" placement="right" :disabled="value.ProvideSubClinic.length<11">
+                                                    <p class="beyondHiding">{{value.ProvideSubClinic}}</p>
+                                                </el-tooltip>
+                                            </p>
                                         </div>
                                         <!-- 预计发放数 -->
                                         <div class="collapseTd" style="width:130px;" v-if="GLOBAL.UserInfo.HospitalVersion!='YANCHENGFUBAO'">
@@ -981,6 +991,10 @@ export default {
                                     a {
                                         color: #f93e3e;
                                         line-height: 65px;
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                    }
+                                    .beyondHiding{
                                         font-size: 18px;
                                         font-weight: bold;
                                     }
