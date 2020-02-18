@@ -92,7 +92,8 @@ export default {
                 DeviceId: this.deviceList[index].SterilizeDeviceId,
                 ProgramName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
                 ProgramId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
-                IsDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram
+                IsDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram,
+                IsHighTemperatureDevice: this.deviceList[index].IsHighTemperatureDevice
             });
         },
         //重置设备状态

@@ -163,8 +163,7 @@ export default {
                 classify: 'confirm',
                 msg: '您确定要删除该项?',
                 confirmCallBack: () => {
-                    axios
-                        .delete(`/api/BasicInformation/Carrier/${this.Type}/${this.table_data[index].Id}`, {
+                    axios.delete(`/api/BasicInformation/Carrier/${this.Type}/${this.table_data[index].Id}`, {
                             headers: {}
                         })
                         .then(res => {

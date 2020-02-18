@@ -117,7 +117,7 @@
             <div class="print_number">
                 <p>打印份数</p>
                 <el-input-number v-model="packageMessage.PrintCount" :controls="false" :min="1" :max="999" placeholder="打印份数" @change="inputNumberChange('PrintCount')"></el-input-number>
-                <span>共 {{countPrintNumber}} 张</span>
+                <span v-show="packageMessage.IsOuterProduct">共 {{countPrintNumber}} 张</span>
             </div>
             <el-dialog :visible.sync="dialogVisible" width="300px" :modal="false" :show-close="false" :close-on-click-modal="false">
                 <div class="divBox">

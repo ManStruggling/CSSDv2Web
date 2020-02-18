@@ -19,10 +19,16 @@
                 <div class="basic_menu_box">
                     <el-menu class="el-menu-demo" mode="vertical" @select="handleSelect" :unique-opened="true">
                         <el-menu-item index="0">
-                            <router-link to="/management/control" :active-class="'isActive'">我的桌面</router-link>
+                            <router-link to="/management/control" :active-class="'isActive'">
+                                <i class="titleLogo deskLogo"></i>
+                                <span>我的桌面</span>
+                            </router-link>
                         </el-menu-item>
-                        <el-submenu index="1">
-                            <template slot="title">数据报表</template>
+                        <el-submenu index="1" class="dataReportPage">
+                            <template slot="title">
+                                <i class="titleLogo reportLogo"></i>
+                                <span>数据报表</span>
+                            </template>
                             <el-menu-item index="1-1">
                                 <router-link to="/management/viewReportForm" :active-class="'isActive'">查看报表</router-link>
                             </el-menu-item>
@@ -30,8 +36,11 @@
                                 <router-link to="/management/reportForm" :active-class="'isActive'">编辑报表</router-link>
                             </el-menu-item>
                         </el-submenu>
-                        <el-submenu index="2">
-                            <template slot="title">人员排班</template>
+                        <el-submenu index="2" class="workSchedulePage">
+                            <template slot="title">
+                                <i class="titleLogo workScheduleLogo"></i>
+                                <span>人员排班</span>
+                            </template>
                             <el-menu-item index="2-1">
                                 <router-link to="/management/dailyWorkSheet" :active-class="'isActive'">日常班表</router-link>
                             </el-menu-item>
@@ -39,8 +48,11 @@
                                 <router-link to="/management/schedulingWorkSheet" :active-class="'isActive'">排班</router-link>
                             </el-menu-item>
                         </el-submenu>
-                        <el-submenu index="3">
-                            <template slot="title">节假日排班</template>
+                        <el-submenu index="3" class="vocationPage">
+                            <template slot="title">
+                                <i class="titleLogo vocationLogo"></i>
+                                <span>节假日排班</span>
+                            </template>
                             <el-menu-item index="3-1">
                                 <router-link to="/management/vacationScheduleView" :active-class="'isActive'">查看班表</router-link>
                             </el-menu-item>
@@ -208,6 +220,35 @@ export default {
                     position: relative;
                     z-index: 3;
                     height: 100%;
+                    .titleLogo{
+                        margin-right: 20px;
+                        width: 24px;
+                        height: 24px;
+                        background-size: 100% 100%;
+                    }
+                    .deskLogo {
+                        background-image: url(../../assets/images/deskPage.png);
+                    }
+                    .reportLogo{
+                        background-image: url(../../assets/images/dataReportPage.png);
+                    }
+                    .workScheduleLogo{
+                        background-image: url(../../assets/images/workSchedulePage.png);
+                    }
+                    .vocationLogo{
+                        background-image: url(../../assets/images/vocationPage.png);
+                    }
+                    a {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    span {
+                        font-size: 20px;
+                        font-family: Microsoft YaHei;
+                        font-weight: bold;
+                        color: white;
+                    }
 
                     .el-submenu {
                         position: relative;
@@ -221,6 +262,8 @@ export default {
                         }
 
                         .el-submenu__title {
+                            display: flex;
+                            align-items: center;
                             line-height: 60px;
                             height: 60px;
                             font-size: 20px;
@@ -257,8 +300,7 @@ export default {
                         }
 
                         a {
-                            padding-left: 40px;
-                            display: block;
+                            padding-left: 84px;
                             width: 100%;
                             height: 100%;
                             box-sizing: border-box;

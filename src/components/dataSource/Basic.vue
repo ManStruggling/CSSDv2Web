@@ -196,6 +196,19 @@ export default {
                     ]
                 },
                 {
+                    label:'耗材',
+                    isHasSubmenu:true,
+                    children:[{
+                        label:'产品',
+                        index:'0',
+                        href:'/dataSource/consumableProduct'
+                    },{
+                        label:'请领部门',
+                        index:'1',
+                        href:'/dataSource/receiveDepartment'
+                    }]
+                },
+                {
                     label: "工作区域",
                     isHasSubmenu: false,
                     href: "/dataSource/workArea"

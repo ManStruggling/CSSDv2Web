@@ -144,6 +144,7 @@ export default {
                 HelpSterilizeQuantity: 0,
                 IsHasSubstitution: false, //是否有代消包
                 IsBiologicalTest: false, //是否生物监测
+                IsHighTemperatureDevice: this.$route.query.isHighTemperatureDevice,
                 DeviceModelName: this.$route.query.deviceName,
                 DeviceId: this.$route.query.deviceId - 0,
                 OriginDeviceId: 0,
@@ -443,11 +444,21 @@ export default {
             if (data) {
                 //扫网篮
                 if (data.CarrierBarCodeScannerVm) {
-                    data.CarrierBarCodeScannerVm.PackageBarCodeDetailList = data.Packages;
-                    this.handleAddData(data);
-                    this.activeNameNotCarriersPackage = "-1";
-                    this.activeName = `${this.submitData.Carriers.length - 1}`;
-                    return;
+                    if (data.Packages.every(val => {
+                            return val.IsHighTemperatureProduct == this.submitData.IsHighTemperatureDevice;
+                        })) {
+                        data.CarrierBarCodeScannerVm.PackageBarCodeDetailList = data.Packages;
+                        this.handleAddData(data);
+                        this.activeNameNotCarriersPackage = "-1";
+                        this.activeName = `${this.submitData.Carriers.length - 1}`;
+                        return;
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: "扫入包的灭菌类型和灭菌设备不匹配！",
+                            type: "error",
+                        })
+                    }
                 }
                 //扫包
                 if (data.SinglePackage) {
@@ -458,7 +469,15 @@ export default {
                         this.submitData.IsBiologicalTest = true;
                         this.BiologicalTestForbit = true;
                     }
-                    this.submitData.NotInCarrierPackages.push(data.SinglePackage);
+                    if (data.SinglePackage.IsHighTemperatureProduct == this.submitData.IsHighTemperatureDevice) {
+                        this.submitData.NotInCarrierPackages.push(data.SinglePackage);
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: "扫入包的灭菌类型和灭菌设备不匹配！",
+                            type: "error"
+                        })
+                    }
                 }
             }
         },
@@ -476,6 +495,8 @@ export default {
                 this.submitData.DeviceProgramId = data.ProgramId;
                 this.$route.query.isDbTestProgram = data.IsDbTestProgram;
                 this.submitData.IsDbTestProgram = data.IsDbTestProgram;
+                this.$route.query.isHighTemperatureDevice = data.IsHighTemperatureDevice;
+                this.submitData.IsHighTemperatureDevice = data.IsHighTemperatureDevice;
             }
         },
         //处理JSManager传过来的BarCode

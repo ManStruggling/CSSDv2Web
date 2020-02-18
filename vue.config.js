@@ -26,7 +26,7 @@ module.exports = {
             title: '首页',
             // chunks to include on this pages, by default includes
             //  默认情况下，要包含在此页上的块包括
-            // extracted common chunks and vendor chunks.
+            //  extracted common chunks and vendor chunks.
             //  提取的公共块和供应商块
             chunks: ['chunk-vendors', 'chunk-common', 'index']
         }

@@ -116,7 +116,8 @@ export default {
                     deviceId: this.deviceList[index].SterilizeDeviceId,
                     programName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
                     programId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
-                    isDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram
+                    isDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram,
+                    isHighTemperatureDevice:this.deviceList[index].IsHighTemperatureDevice
                 }
             });
         },

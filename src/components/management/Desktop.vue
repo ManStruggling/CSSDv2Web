@@ -123,6 +123,13 @@
         <li class="desktop_box_li desktop_box_lix480">
             <div class="li_head">
                 <p>近效期包预警</p>
+                <el-select v-model="selectedClinicId" class="green24x13" @change="selectedClinicChange">
+                    <el-option v-for="(item,index) in subClinics" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId">
+                        <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName.length<9">
+                            <p class="beyondHiding">{{item.ProvideSubClinicName}}</p>
+                        </el-tooltip>
+                    </el-option>
+                </el-select>
             </div>
             <div class="li_content">
                 <div class="empty_data" v-show="expiringPackageList===null||expiringPackageList.length==0">暂无数据</div>
@@ -150,8 +157,11 @@ export default {
         return {
             nowDate: null,
             stampInterval: null,
+            selectedClinicId: '',
+            subClinics: [],
             pageSize: 6, //每页条数
             expiringPackageList: [], //当前页显示的近效期包
+            originData: {}, //原始数据
             desktopData: {
                 BorrowedPackagesConsole: {
 
@@ -263,10 +273,23 @@ export default {
             this.nowDate += 1000;
         }, 1000);
         axios({
+            url: '/api/Clinic/SubClinic'
+        }).then(res => {
+            if (res.data.Code == 200) {
+                this.subClinics = res.data.Data;
+            } else {
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg
+                });
+            }
+        }).catch(err => {});
+        axios({
             url: `/api/MainConsole/Desktop`
         }).then(res => {
             if (res.data.Code == 200) {
                 this.desktopData = res.data.Data;
+                this.originData = JSON.parse(JSON.stringify(res.data.Data));
                 this.handleExpiringPackagesChange(1);
             } else {
                 this.showInformation({
@@ -283,9 +306,17 @@ export default {
         clearInterval(this.stampInterval);
     },
     methods: {
+        //选择的子科室change
+        selectedClinicChange() {
+            this.handleExpiringPackagesChange(1);
+        },
         //近效期包页码change
         handleExpiringPackagesChange(val) {
-            this.expiringPackageList = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.slice((val - 1) * this.pageSize, val * this.pageSize);
+            if (this.selectedClinicId) {
+                this.expiringPackageList = (this.desktopData.ExpiringPackagesWarning.ExpiringPackages.filter(value => value.SubClinicId == this.selectedClinicId)).slice((val - 1) * this.pageSize, val * this.pageSize);
+            } else {
+                this.expiringPackageList = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.slice((val - 1) * this.pageSize, val * this.pageSize);
+            }
         },
         //借包页码change
         handleBorrowedPackagesChange(val) {
@@ -307,7 +338,7 @@ export default {
         },
         //找到对应供应室的数据
         setProgressData() {
-            return (origin,field) => {
+            return (origin, field) => {
                 if (this.desktopData.TaskSchedule[origin] && this.desktopData.TaskSchedule[origin].length != 0) {
                     let arr = this.desktopData.TaskSchedule[origin].filter(val => {
                         return val.CssdId === this.GLOBAL.UserInfo.ClinicId
@@ -331,6 +362,7 @@ export default {
                     });
                     if (arr.length != 0) {
                         let num = (arr[0].AlreadyCompleteCount / arr[0].ShouldCompletedCount).toFixed(2) * 100;
+                        // return num>100?100:num;
                         return num;
                     } else {
                         return 0;
@@ -385,31 +417,48 @@ export default {
                     font-family: Microsoft YaHei;
                     font-weight: bold;
                 }
+
+                .el-select {
+                    width: 160px;
+
+                    input {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #333;
+                        font-family: Microsoft Yahei;
+                    }
+                }
             }
 
             .li_content {
                 flex: 1;
+
                 .empty_data {
                     text-align: center;
                     font-size: 18px;
                     font-weight: normal;
                     color: #D0D4DA;
                 }
-                .li_content_title{
+
+                .li_content_title {
                     display: flex;
                     justify-content: space-between;
                     margin-bottom: 20px;
                     color: #878d9f;
-                    p{
+
+                    p {
                         width: 80px;
-                        &.p_name{
+
+                        &.p_name {
                             width: 180px;
                         }
-                        &.progress_p{
+
+                        &.progress_p {
                             width: 270px;
                         }
                     }
                 }
+
                 >ol {
                     height: 318px;
 

@@ -107,6 +107,17 @@ const router = new Router({
                     name: 'workArea',
                     component: () =>
                         import ('./components/dataSource/WorkArea')
+                }, {
+                    path: '/dataSource/consumableProduct',
+                    name: '/dataSource/consumableProduct',
+                    component: () =>
+                        import ('./components/dataSource/ConsumableProduct')
+                },
+                {
+                    path: '/dataSource/receiveDepartment',
+                    name: 'receiveDepartment',
+                    component: () =>
+                        import ('./components/dataSource/ReceiveDepartment')
                 }
             ]
         },
@@ -750,6 +761,46 @@ const router = new Router({
                 component: () =>
                     import ('./components/publicModule/Reprint')
             }]
+        },
+        {
+            path: '/consumable',
+            name: 'consumable',
+            component: () =>
+                import ('./components/consumablesManagement/Basic'),
+            children: [{
+                path: '/consumable/request',
+                name: 'consumableRequest',
+                meta: {
+                    index: 1
+                },
+                component: () =>
+                    import ('./components/consumablesManagement/ConsumableRequest')
+            }, {
+                path: '/consumable/requestRecord',
+                name: 'consumableRequestRecord',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/consumablesManagement/ConsumableRequestRecord')
+            }, {
+                path: '/consumable/receive',
+                name: 'consumableReceive',
+                meta: {
+                    index: 1
+                },
+                component: () =>
+                    import ('./components/consumablesManagement/ConsumableReceive')
+            }, {
+                path: '/consumable/receiveRecord',
+                name: 'consumableReceiveRecord',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/consumablesManagement/consumableReceiveRecord')
+            }]
+
         },
         {
             path: "*",
