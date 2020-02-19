@@ -744,6 +744,11 @@ const router = new Router({
                     name: 'vacationScheduleView',
                     component: () =>
                         import ('./components/management/VacationScheduleView')
+                }, {
+                    path: '/management/workLoad',
+                    name: 'workLoad',
+                    component: () =>
+                        import ('./components/management/WorkLoad')
                 }
             ]
         },

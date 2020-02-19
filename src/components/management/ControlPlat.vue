@@ -60,8 +60,16 @@
                                 <router-link to="/management/vacationSchedule" :active-class="'isActive'">编辑班表</router-link>
                             </el-menu-item>
                         </el-submenu>
-                        <el-submenu index="4">
-                            <template slot="title">系统配置</template>
+                        <el-menu-item index="4">
+                            <router-link to="/management/workLoad" :active-class="'isActive'">
+                                <i class="titleLogo workLoadLogo"></i>
+                                <span>工作统计</span>
+                            </router-link>
+                        </el-menu-item>
+                        <el-submenu index="5">
+                            <template slot="title">
+                                <i class="titleLogo setupLogo"></i>
+                                <span>系统配置</span></template>
                             <el-menu-item index="4-1">
                                 <router-link to="/management/configure" :active-class="'isActive'">系统配置</router-link>
                             </el-menu-item>
@@ -237,6 +245,12 @@ export default {
                     }
                     .vocationLogo{
                         background-image: url(../../assets/images/vocationPage.png);
+                    }
+                    .setupLogo{
+                        background-image: url(../../assets/images/setup.png);
+                    }
+                    .workLoadLogo{
+                        background-image: url(../../assets/images/workLoad.png);
                     }
                     a {
                         display: flex;

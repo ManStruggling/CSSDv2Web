@@ -123,7 +123,8 @@
         <li class="desktop_box_li desktop_box_lix480">
             <div class="li_head">
                 <p>近效期包预警</p>
-                <el-select v-model="selectedClinicId" class="green24x13" @change="selectedClinicChange">
+                <el-select v-model="selectedClinicId" class="green24x13" filterable @change="selectedClinicChange">
+                    <el-option label="全部" :value="0"></el-option>
                     <el-option v-for="(item,index) in subClinics" :key="index" :label="item.ProvideSubClinicName" :value="item.ProvideSubClinicId">
                         <el-tooltip :content="item.ProvideSubClinicName" placement="right" :disabled="item.ProvideSubClinicName.length<9">
                             <p class="beyondHiding">{{item.ProvideSubClinicName}}</p>
@@ -132,16 +133,16 @@
                 </el-select>
             </div>
             <div class="li_content">
-                <div class="empty_data" v-show="expiringPackageList===null||expiringPackageList.length==0">暂无数据</div>
+                <div class="empty_data" v-show="filteredExpiringPackages===null||filteredExpiringPackages.length==0">暂无数据</div>
                 <ol>
-                    <li v-for="(item,index) in expiringPackageList" :key="index">
+                    <li v-for="(item,index) in currentPageExpiringPackages" :key="index">
                         <p class="p_name">{{item.SubClinicName}}</p>
                         <p class="p_name">{{item.ProductName}}</p>
                         <p>{{item.ExpiringCount}}个</p>
                         <p>{{item.RemainExpiringDays}}天</p>
                     </li>
                 </ol>
-                <el-pagination background layout="prev, pager, next" v-if="expiringPackageList===null||expiringPackageList.length" :total="Math.ceil(expiringPackageList.length / pageSize)*10" @current-change="handleExpiringPackagesChange">
+                <el-pagination background layout="prev, pager, next" v-if="filteredExpiringPackages===null||filteredExpiringPackages.length" :total="Math.ceil(filteredExpiringPackages.length / pageSize)*10" @current-change="handleExpiringPackagesChange" :current-page="expiringCurrenrPage">
                 </el-pagination>
             </div>
         </li>
@@ -157,11 +158,12 @@ export default {
         return {
             nowDate: null,
             stampInterval: null,
-            selectedClinicId: '',
+            selectedClinicId: 0,
             subClinics: [],
             pageSize: 6, //每页条数
-            expiringPackageList: [], //当前页显示的近效期包
-            originData: {}, //原始数据
+            expiringCurrenrPage: 1,
+            currentPageExpiringPackages: [], //当前页显示的近效期包
+            filteredExpiringPackages: [],
             desktopData: {
                 BorrowedPackagesConsole: {
 
@@ -289,7 +291,7 @@ export default {
         }).then(res => {
             if (res.data.Code == 200) {
                 this.desktopData = res.data.Data;
-                this.originData = JSON.parse(JSON.stringify(res.data.Data));
+                this.filteredExpiringPackages = JSON.parse(JSON.stringify(this.desktopData.ExpiringPackagesWarning.ExpiringPackages));
                 this.handleExpiringPackagesChange(1);
             } else {
                 this.showInformation({
@@ -307,15 +309,24 @@ export default {
     },
     methods: {
         //选择的子科室change
-        selectedClinicChange() {
+        selectedClinicChange(val) {
+            if (val) {
+                this.filteredExpiringPackages = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.filter(item => {
+                    return item.SubClinicId == val;
+                });
+            } else {
+                this.filteredExpiringPackages = JSON.parse(JSON.stringify(this.desktopData.ExpiringPackagesWarning.ExpiringPackages));
+            }
+            this.expiringCurrenrPage = 1;
             this.handleExpiringPackagesChange(1);
         },
         //近效期包页码change
         handleExpiringPackagesChange(val) {
+            this.expiringCurrenrPage = val;
             if (this.selectedClinicId) {
-                this.expiringPackageList = (this.desktopData.ExpiringPackagesWarning.ExpiringPackages.filter(value => value.SubClinicId == this.selectedClinicId)).slice((val - 1) * this.pageSize, val * this.pageSize);
+                this.currentPageExpiringPackages = (this.desktopData.ExpiringPackagesWarning.ExpiringPackages.filter(value => value.SubClinicId == this.selectedClinicId)).slice((val - 1) * this.pageSize, val * this.pageSize);
             } else {
-                this.expiringPackageList = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.slice((val - 1) * this.pageSize, val * this.pageSize);
+                this.currentPageExpiringPackages = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.slice((val - 1) * this.pageSize, val * this.pageSize);
             }
         },
         //借包页码change
@@ -362,8 +373,8 @@ export default {
                     });
                     if (arr.length != 0) {
                         let num = (arr[0].AlreadyCompleteCount / arr[0].ShouldCompletedCount).toFixed(2) * 100;
-                        // return num>100?100:num;
-                        return num;
+                        return num > 100 ? 100 : num;
+                        // return num;
                     } else {
                         return 0;
                     }

@@ -1,0 +1,7 @@
+不合格登记：
+    加载页面后获取不合格原因列表 GET     /api/FailedPackage/InitialVm
+    Step1：扫包 /api/Scanner/Apply/{BarCode}
+    Step2：选择不合格原因
+    Step3：提交     提交前验证：1）至少登记一个包； 2）所有登记不合格包的不合格原因都要选 3）不能扫入重复的包
+            /api/FailedPackage/FailedPackageRegister
+            提交完成code==200  --》  初始化页面

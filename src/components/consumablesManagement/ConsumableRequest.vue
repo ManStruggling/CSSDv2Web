@@ -12,10 +12,10 @@
         <div class="cssd_title_right">
             <p>
                 <span>请领部门</span>
-                <el-select v-model="submitData.InboundSubClinicId" filterable class="white24x13">
-                    <el-option v-for="(item,index) in GLOBAL.UserInfo.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId">
-                        <el-tooltip :content="item.SubClinicName" placement="right" :disabled="item.SubClinicName.length<12">
-                            <p class="beyondHiding">{{item.SubClinicName}}</p>
+                <el-select v-model="submitData.ReceiveDepartmentId" filterable class="white24x13" placeholder="选择请领部门">
+                    <el-option v-for="(item,index) in receiveDepartments" :key="index" :label="item.name" :value="item.id">
+                        <el-tooltip :content="item.name" placement="right" :disabled="item.name.length<12">
+                            <p class="beyondHiding">{{item.name}}</p>
                         </el-tooltip>
                     </el-option>
                 </el-select>
@@ -27,18 +27,22 @@
             <el-table :data="submitData.Products">
                 <el-table-column width="240" label="产品名称">
                     <template slot-scope="props">
-                        <el-select v-model="props.row.ProductId" class="green18x10" @change="getValidDate(props.$index)">
-                            <el-option v-for="(item,index) in initialData.DisposableProducts" :key="index" :label="item.ProductName" :value="item.ProductId"></el-option>
+                        <el-select v-model="props.row.Id" class="green18x10" @change="consumableChange">
+                            <el-option v-for="(item,index) in consumableProducts" :key="index" :label="item.name" :value="item.id" :disabled="item.forbid">
+                                <el-tooltip :content="item.name" placement="right" :disabled="item.name.length<12">
+                                    <p class="beyondHiding">{{item.name}}</p>
+                                </el-tooltip>
+                            </el-option>
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column width="210" label="最小规格数" prop="Quantity"></el-table-column>
-                <el-table-column width="210" label="本次请领数" prop="Quantity">
+                <el-table-column width="210" label="最小规格数" prop="MinimumUnit"></el-table-column>
+                <el-table-column width="210" label="本次请领数">
                     <template slot-scope="props">
-                        <el-input-number v-model="props.row.Quantity" :controls="false" :min="1" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.row)})"></el-input-number>
+                        <el-input-number v-model="props.row.ThisTimeRequestCount" :controls="false" :min="1" :max="999" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.row)})"></el-input-number>
                     </template>
                 </el-table-column>
-                <el-table-column width="210" label="本次请领总数" prop="Quantity"></el-table-column>
+                <el-table-column width="210" label="本次请领总数" prop="ThisTimeRequestTotal"></el-table-column>
                 <el-table-column width="210" label="操作">
                     <template slot-scope="props">
                         <a @click="deleteThisItem(props.$index)">删除</a>
@@ -65,16 +69,39 @@ export default {
     data() {
         return {
             isChangeMode: false,
+            receiveDepartments: [],
+            consumableProducts: [],
             submitData: {
+                ReceiveDepartmentId: '',
                 Products: []
             }
         };
     },
     created() {
-
+        axios({
+            url: '/consumable',
+            method: 'POST',
+            data: {
+                query: `query getReceiveDepartment{
+                            receiveDepartmentT{
+                                id,name
+                            }
+                            product{
+                                id,minimumUnit,name,receiveCode,receiveDepartmentId
+                            }
+                        }`
+            }
+        }).then(res => {
+            this.receiveDepartments = res.data.data.receiveDepartmentT;
+            this.consumableProducts = res.data.data.product;
+        }).catch(err => {})
     },
     mounted() {},
     methods: {
+        //耗材change
+        consumableChange(val) {
+            
+        },
         goBack() {
             if (this.isChangeMode) {
 
@@ -94,7 +121,10 @@ export default {
         },
         //新增
         insertItem() {
-            
+            this.submitData.Products.push({
+                Id: "",
+                ThisTimeRequestCount: 1
+            })
         },
         //提交
         submitComplete() {
@@ -104,7 +134,7 @@ export default {
         handleNumberChange(newValue, oldValue, rowItem) {
             if (newValue == undefined) {
                 setTimeout(() => {
-                    rowItem.Quantity = 1;
+                    rowItem.ThisTimeRequestCount = 1;
                 }, 0);
             }
         }
@@ -134,6 +164,7 @@ export default {
             }
         }
     }
+
     .cssd_table_center {
         overflow: hidden;
 
