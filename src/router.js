@@ -765,45 +765,61 @@ const router = new Router({
                 },
                 component: () =>
                     import ('./components/publicModule/Reprint')
+            }, {
+                path: '/publicModule/instrumentReplenishment',
+                name: 'publicModuleInstrumentReplenishment',
+                meta: {
+                    index: 1
+                },
+                component: () =>
+                    import ('./components/publicModule/InstrumentReplenishment')
+            }, {
+                path: '/publicModule/instrumentReplenishmentRecord',
+                name: 'publicModuleInstrumentReplenishmentRecord',
+                meta: {
+                    index: 2
+                },
+                component: () =>
+                    import ('./components/publicModule/InstrumentReplenishmentRecord')
             }]
         },
         {
-            path: '/consumable',
-            name: 'consumable',
+            path: '/expendables',
+            name: 'expendables',
             component: () =>
-                import ('./components/consumablesManagement/Basic'),
+                import ('./components/expendablesManagement/Basic'),
             children: [{
-                path: '/consumable/request',
-                name: 'consumableRequest',
+                path: '/expendables/request',
+                name: 'expendablesRequest',
                 meta: {
                     index: 1
                 },
                 component: () =>
-                    import ('./components/consumablesManagement/ConsumableRequest')
+                    import ('./components/expendablesManagement/ExpendablesRequest')
             }, {
-                path: '/consumable/requestRecord',
-                name: 'consumableRequestRecord',
+                path: '/expendables/requestRecord',
+                name: 'expendablesRequestRecord',
                 meta: {
                     index: 2
                 },
                 component: () =>
-                    import ('./components/consumablesManagement/ConsumableRequestRecord')
+                    import ('./components/expendablesManagement/ExpendablesRequestRecord')
             }, {
-                path: '/consumable/receive',
-                name: 'consumableReceive',
+                path: '/expendables/receive',
+                name: 'expendablesReceive',
                 meta: {
                     index: 1
                 },
                 component: () =>
-                    import ('./components/consumablesManagement/ConsumableReceive')
+                    import ('./components/expendablesManagement/ExpendablesReceive')
             }, {
-                path: '/consumable/receiveRecord',
-                name: 'consumableReceiveRecord',
+                path: '/expendables/receiveRecord',
+                name: 'expendablesReceiveRecord',
                 meta: {
                     index: 2
                 },
                 component: () =>
-                    import ('./components/consumablesManagement/consumableReceiveRecord')
+                    import ('./components/expendablesManagement/ExpendablesReceiveRecord')
             }]
 
         },

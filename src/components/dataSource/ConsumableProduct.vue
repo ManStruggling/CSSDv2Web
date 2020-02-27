@@ -15,7 +15,7 @@
             <el-table-column label="最小规格数" prop="MinimumUnit" width="210" show-overflow-tooltip></el-table-column>
             <el-table-column label="单价" prop="Price" width="210"></el-table-column>
             <el-table-column label="请领代码" prop="ReceiveCode" width="210"></el-table-column>
-            <el-table-column label="请领部门" prop="ReceiveDepartmentId" width="210"></el-table-column>
+            <el-table-column label="请领部门" prop="ReceiveDepartment" width="210"></el-table-column>
             <el-table-column label="操作" width="210">
                 <template slot-scope="props">
                     <a class="change_this_tr" @click.stop="editThisTr(props.$index)">编辑</a>

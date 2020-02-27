@@ -128,9 +128,7 @@ export default {
         },
         //搜素
         searchThisTableData() {
-            this.baseDataSearch(`/odata/staffs?$filter=contains(name,${"'"+encodeURIComponent(this.basic_search)+"'"}) or contains(shortcode,${"'" +
-          encodeURIComponent(this.basic_search) +
-          "'"})`);
+            this.baseDataSearch(`/odata/staffs?$filter=contains(name,${"'"+encodeURIComponent(this.basic_search)+"'"})`);
         },
         //新增tr
         addTableTr() {
