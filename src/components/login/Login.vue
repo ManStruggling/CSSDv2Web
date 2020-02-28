@@ -67,9 +67,11 @@ export default {
         }).then(res => {
             if (res.data.Code == 200) {
                 this.versionMsg = res.data.Data;
-                if(this.versionMsg.Configuration){
+                if (this.versionMsg.Configuration) {
                     $('title').html(this.versionMsg.Configuration.Company.Name);
-                    $('link.logo_icon').attr({href:this.versionMsg.Configuration.Company.Logo});
+                    $('link.logo_icon').attr({
+                        href: this.versionMsg.Configuration.Company.Logo
+                    });
                 }
             } else {
                 this.showInformation({

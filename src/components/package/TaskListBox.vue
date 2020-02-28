@@ -129,6 +129,8 @@ export default {
                                     ProvideState: false,
                                 }, this.$props.origin, this.$props.tabIndex);
                             } else {
+                                this.alreadyRequested = false;
+                                this.forbid = false;
                                 type = "error";
                             }
                             this.showInformation({

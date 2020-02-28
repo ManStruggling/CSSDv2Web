@@ -40,9 +40,9 @@
                         </p>
                     </div>
                 </div>
-                <el-table :data="item.Packages" :default-expand-all="true">
-                    <el-table-column label="产品名称" prop="BarCode" width="240" show-overflow-tooltip></el-table-column>
-                    <el-table-column label="本次领用数" prop="SubClinic" width="210"></el-table-column>
+                <el-table :data="item.Products" :default-expand-all="true">
+                    <el-table-column label="产品名称" prop="Name" width="240" show-overflow-tooltip></el-table-column>
+                    <el-table-column label="本次领用数" prop="ThisTimeRequestCount" width="210"></el-table-column>
                     <el-table-column></el-table-column>
                 </el-table>
             </el-collapse-item>
@@ -79,9 +79,7 @@ export default {
         collapseChange(index) {
             if (index != '' && (this.recordList[index].Products == '' || this.recordList[index].Products === null)) {
                 axios({
-                    url: `/api/Inbound/InboundRecord/${
-                this.recordList[index].Id
-              }`
+                    url: `/api/InternalRequest/InternalRequestItems/${this.recordList[index].Id}`
                 }).then(res => {
                     if (res.data.Code == 200) {
                         this.recordList[index].Products = res.data.Data;

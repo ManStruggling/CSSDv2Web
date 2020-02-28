@@ -58,7 +58,7 @@
             <p></p>
             <p>
                 <el-button @click="cancelChange" v-if="isChangeMode">取消修改</el-button>
-                <el-button type="primary" round @click="submitComplete">{{isChangeMode?'修改完成':'入库完成'}}</el-button>
+                <el-button type="primary" round @click="submitComplete">{{isChangeMode?'修改完成':'请领完成'}}</el-button>
             </p>
         </div>
     </div>

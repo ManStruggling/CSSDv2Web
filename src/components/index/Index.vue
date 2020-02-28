@@ -68,6 +68,12 @@
                             <span>重新打印包条码</span>
                         </li>
                     </router-link>
+                    <router-link to="/publicModule/instrumentReplenishment">
+                        <li>
+                            <p class="cssd_index_instrument"></p>
+                            <span>器械补货</span>
+                        </li>
+                    </router-link>
                 </ul>
             </dd>
         </dl>
@@ -185,6 +191,25 @@
                         <li>
                             <p class="cssd_index_searchSchedule"></p>
                             <span>行程查询</span>
+                        </li>
+                    </router-link>
+                </ul>
+            </dd>
+        </dl>
+        <dl>
+            <dt>耗材系统</dt>
+            <dd>
+                <ul>
+                    <router-link to="/expendables/request">
+                        <li>
+                            <p class="cssd_index_request"></p>
+                            <span>耗材请领</span>
+                        </li>
+                    </router-link>
+                    <router-link to="/expendables/receive">
+                        <li>
+                            <p class="cssd_index_receive"></p>
+                            <span>耗材领用</span>
                         </li>
                     </router-link>
                 </ul>

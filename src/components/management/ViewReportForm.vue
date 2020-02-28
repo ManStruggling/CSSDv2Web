@@ -143,6 +143,11 @@ export default {
                     }
                 ])
             ) {
+                this.$refs.customReportTable.clearSort();
+                this.$refs.customReportTable.clearFilter();
+                this.columnList = [];
+                this.dropCol = [];
+                
                 let url = "";
                 for (let i = 0; i < this.reportList.length; i++) {
                     if (this.selectReportId === this.reportList[i].ReportId) {

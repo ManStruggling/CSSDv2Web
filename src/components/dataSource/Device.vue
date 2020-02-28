@@ -74,7 +74,7 @@ export default {
                 Name: "",
                 ShortCode: "",
                 BarCode: "",
-                OwnCssdId: 1,
+                OwnCssdId: 2,
                 TotalBatch: 0, //总锅次
                 TodayBatch: 0,
                 LastMaintenanceDate: "", //上次维护时间

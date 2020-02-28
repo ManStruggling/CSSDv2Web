@@ -50,7 +50,8 @@
         <div class="cssd_table_bottom">
             <p></p>
             <p>
-                <el-button type="primary" round @click="submitComplete">领用完成</el-button>
+                <el-button v-if="isChangeMode" @click="cancelChange">取消修改</el-button>
+                <el-button type="primary" round @click="submitComplete">{{isChangeMode?"修改完成":"领用完成"}}</el-button>
             </p>
         </div>
     </div>
@@ -98,22 +99,32 @@ export default {
         ]).then(this.$http.spread((acct, perms) => {
             this.staffs = acct.data.data.staff;
             this.consumableProducts = perms.data.data.product;
+            if (this.$route.query.recordId) {
+                this.isChangeMode = true;
+                axios({
+                    url: `/api/InternalRequest/PendingUpdateInternalRequestRecord/${this.$route.query.recordId}`
+                }).then(res => {
+                    if (res.data.Code == 200) {
+                        res.data.Data.Products.forEach(element => {
+                            this.consumableProducts.forEach(item => {
+                                if (element.Id === item.id) {
+                                    item.inventoryCount += element.ThisTimeRequestCount;
+                                    element.RemainInventoryCount = item.inventoryCount;
+                                    return;
+                                }
+                            });
+                        });
+                        this.submitData = res.data.Data;
+                        this.checkConsumableCanBeUseable();
+                    } else {
+                        this.showInformation({
+                            classify: "message",
+                            msg: res.data.Msg
+                        });
+                    }
+                }).catch(err => {})
+            }
         }));
-        if (this.$route.query.recordId) {
-            axios({
-                url: `/api/InternalRequest/PendingUpdateInternalRequestRecord/${this.$route.query.recordId}`
-            }).then(res => {
-                if (res.data.Code == 200) {
-                    this.submitData = res.data.Data;
-                    this.checkConsumableCanBeUseable();
-                } else {
-                    this.showInformation({
-                        classify: "message",
-                        msg: res.data.Msg
-                    });
-                }
-            }).catch(err => {})
-        }
     },
     mounted() {},
     methods: {
@@ -145,9 +156,13 @@ export default {
             }
             this.checkConsumableCanBeUseable();
         },
+        //取消修改
+        cancelChange(){
+            this.$router.push("/expendables/receiveRecord");
+        },
         goBack() {
             if (this.isChangeMode) {
-
+                this.cancelChange();
             } else {
                 this.$router.push('/');
             }
