@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default {
     install(Vue) {
-        // axios.defaults.baseURL = "http://192.168.1.24"
+        axios.defaults.baseURL = "http://192.168.1.24"
         Vue.prototype.$http = axios;
         window.axios = axios.create({
             timeout: 30000,

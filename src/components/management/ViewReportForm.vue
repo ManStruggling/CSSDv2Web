@@ -14,7 +14,7 @@
             <el-button @click="printView">打印预览</el-button>
         </p>
     </div>
-    <el-table :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="customReportTable">
+    <el-table v-if="tableData!=''" :data="tableData" show-summary row-key="Id" border height="100%" @filter-change="tableFilteredEvent" ref="customReportTable">
         <el-table-column v-for="(item,index) in columnList" :key="index" :label="item.DisplayName" :prop="dropCol[index].SpliceName" :filters="item.FilterArr" :filter-method="filterData" :column-key="dropCol[index].SpliceName" sortable :sort-by="dropCol[index].SpliceName"></el-table-column>
     </el-table>
     <PrintPreview v-if="isShowPrintView"></PrintPreview>
@@ -23,7 +23,7 @@
 
 <script>
 import '@/assets/css/hiprint/hiprint.css';
-import '@/assets/css/hiprint/print-lock.css'
+import '@/assets/css/hiprint/print-lock.css';
 
 import Sortable from "sortablejs";
 import toExcel from "@/utils/json2excel";
@@ -110,8 +110,6 @@ export default {
             .catch(err => {});
     },
     mounted() {
-        this.rowDrop();
-        this.columnDrop();
         $(document).ready(() => {
             //初始化打印插件
             hiprint.init();
@@ -143,11 +141,12 @@ export default {
                     }
                 ])
             ) {
-                this.$refs.customReportTable.clearSort();
-                this.$refs.customReportTable.clearFilter();
                 this.columnList = [];
                 this.dropCol = [];
-                
+                this.tableData = [];
+                this.totalData = [];
+                this.$forceUpdate();
+
                 let url = "";
                 for (let i = 0; i < this.reportList.length; i++) {
                     if (this.selectReportId === this.reportList[i].ReportId) {
@@ -229,6 +228,10 @@ export default {
                                 };
                             }
                         }
+                        setTimeout(() => {
+                            this.rowDrop();
+                            this.columnDrop();
+                        }, 0);
                     })
                     .catch(err => {});
             }

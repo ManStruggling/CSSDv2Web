@@ -215,7 +215,7 @@
     </transition>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 丢失包登记 -->
-        <SelectSubClinicOfProduct v-if="isShowLostPackageList" @selectSubClinicOfProduct-to-father="lostPackageToFather" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`IsNotPrintBarCode eq false`"></SelectSubClinicOfProduct>
+        <SelectSubClinicOfProduct v-if="isShowLostPackageList" @selectSubClinicOfProduct-to-father="lostPackageToFather" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`IsNotPrintBarCode eq false and IsSingleCarrierProduct eq false`"></SelectSubClinicOfProduct>
     </transition>
 </div>
 </template>
