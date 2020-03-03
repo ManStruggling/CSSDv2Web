@@ -183,8 +183,13 @@
                 </li>
             </ul>
             <el-table :data="submitData.Packages.concat(submitData.OlderSystemPackages)">
-                <el-table-column label="包条码" prop="BarCode" width="240"></el-table-column>
-                <el-table-column label="包名称" width="210"  show-overflow-tooltip>
+                <el-table-column label="包条码" prop="BarCode" width="280">
+                    <template slot-scope="props">
+                        <p>{{props.row.BarCode}}</p>
+                        <span class="expeditedTag" v-show="props.row.HasLostInstruments">缺失器械</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="包名称" width="210" show-overflow-tooltip>
                     <template slot-scope="props">{{props.row.ProductName?props.row.ProductName:"-"}}</template>
                 </el-table-column>
                 <el-table-column label="有效日期" width="210">
@@ -309,10 +314,10 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
-        goBack(){
-            if(this.isChangeMode){
+        goBack() {
+            if (this.isChangeMode) {
                 this.cancelChange();
-            }else{
+            } else {
                 this.$router.push('/');
             }
         },
@@ -410,7 +415,7 @@ export default {
                         msg: '外来器械包绑定的住院号与本次使用的病人住院号不同，确定要使用包吗？',
                         confirmCallBack: () => {
                             if (this.GLOBAL.UserInfo.HospitalVersion == 'TONGJI') {
-                                if (this.GLOBAL.UserInfo.JobAndCompetence.includes('000') || this.GLOBAL.UserInfo.JobAndCompetence.includes('200')||this.GLOBAL.UserInfo.JobAndCompetence.includes('271')) {
+                                if (this.GLOBAL.UserInfo.JobAndCompetence.includes('000') || this.GLOBAL.UserInfo.JobAndCompetence.includes('200') || this.GLOBAL.UserInfo.JobAndCompetence.includes('271')) {
                                     this.submitRequest(url, method);
                                 } else {
                                     this.showInformation({
@@ -671,6 +676,11 @@ export default {
                         font-family: Microsoft YaHei;
                         font-weight: bold;
                         color: rgba(35, 46, 65, 1);
+                        display: flex;
+
+                        p {
+                            font-weight: bold;
+                        }
 
                         a {
                             color: #F93E3E;

@@ -66,10 +66,11 @@
                                 <p>创建时间</p>
                                 <p style="width:140px;">外包装</p>
                                 <p style="width:60px;">计划数</p>
-                                <p style="width:110px;">剩余数</p>
+                                <p style="width:60px;">剩余数</p>
                                 <p style="width:60px">可配数</p>
                                 <p style="width:100px;">本次配包数</p>
-                                <p>单包网篮</p>
+                                <p style="width:100px;">单包网篮</p>
+                                <p style="width:80px;">灭菌方式</p>
                                 <p style="width:60px" v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'||GLOBAL.UserInfo.JobAndCompetence.includes('000')">操作</p>
                             </div>
                             <el-collapse accordion v-model="activeName" @change="((activeName)=>{collapseChange(activeName,index)})">
@@ -104,20 +105,7 @@
                                                 </el-tooltip>
                                                 <i class="viewPictures" @click.stop="viewProductImg(value.ProductId)"></i>
                                             </div>
-                                            <div class="sterilizeType">
-                                                <p class="H2O2" v-show="value.DeviceType==3">
-                                                    <span>H</span>
-                                                    <b>2</b>
-                                                    <span>O</span>
-                                                    <b>2</b>
-                                                </p>
-                                                <p class="EO" v-show="value.DeviceType==4">
-                                                    <span>EO</span>
-                                                </p>
-                                                <p class="SS" v-show="value.DeviceType==2">
-                                                    <span>SS</span>
-                                                </p>
-                                            </div>
+                                            <span class="expeditedTag" v-show="value.LostInstrumentPackageQuantity!=0">缺失 : {{value.LostInstrumentPackageQuantity}}</span>
                                         </div>
                                         <!-- 回收时间 -->
                                         <div class="collapseTd">{{value.RecycleDate}}</div>
@@ -132,7 +120,7 @@
                                             <div>{{value.ScheduleQuantity}}</div>
                                         </div>
                                         <!-- 剩余数 -->
-                                        <div class="collapseTd" style="width:150px;">
+                                        <div class="collapseTd" style="width:100px;">
                                             {{value.RemainingQuantity}}
                                             <span class="expeditedTag" v-show="value.ExpeditedPackageQuantity!=0">加急 : {{value.ExpeditedPackageQuantity}}</span>
                                         </div>
@@ -158,9 +146,27 @@
                                             </template>
                                         </div>
                                         <!-- 单网篮包 -->
-                                        <div class="collapseTd">
-                                            <div v-if="value.IsSingleCarrierProduct">{{value.SingleCarrierName}}</div>
+                                        <div class="collapseTd beyondHiding" style="width:140px;">
+                                            <div v-if="value.IsSingleCarrierProduct" style="width:100%;">
+                                                <el-tooltip class="beyondHiding" :content="value.SingleCarrierName" placement="right" :disabled="value.SingleCarrierName?value.SingleCarrierName.length<8:false"  style="width:100%;">
+                                                    <span class="beyondHiding" style="display:block;font-weight:bold;">{{value.SingleCarrierName}}</span>
+                                                </el-tooltip>
+                                            </div>
                                             <div v-else>-</div>
+                                        </div>
+                                        <!-- 灭菌方式 -->
+                                        <div class="collapseTd" style="width:120px;">
+                                            <div class="sterilizeType">
+                                                <p class="H2O2" v-show="value.DeviceType==3">
+                                                    <span>低温等离子</span>
+                                                </p>
+                                                <p class="EO" v-show="value.DeviceType==4">
+                                                    <span>环氧乙烷</span>
+                                                </p>
+                                                <p class="SS" v-show="value.DeviceType==2">
+                                                    <span>高温高压</span>
+                                                </p>
+                                            </div>
                                         </div>
                                         <!-- 操作 -->
                                         <div v-show="selectOrigin=='PackageTasksFromSupportMaterialProduct'||GLOBAL.UserInfo.JobAndCompetence.includes('000')" class="collapseTd" style="width:100px;">
@@ -943,7 +949,6 @@ export default {
 
                                 .sterilizeType {
                                     line-height: 24px;
-                                    width: 40px;
                                     height: 24px;
 
                                     p {

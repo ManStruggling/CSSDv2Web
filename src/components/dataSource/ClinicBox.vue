@@ -21,7 +21,7 @@
                     <el-select v-model="editBoxData.ClinicType" class="green24x13" :disabled="clinicTypeForbit" placeholder="请选择(必填)">
                         <el-option label="供应室" :value="1"></el-option>
                         <el-option label="科室" :value="2"></el-option>
-                        <el-option label="手术室" :value="3"></el-option>
+                        <!-- <el-option label="手术室" :value="3"></el-option> -->
                         <el-option label="医院" :value="4"></el-option>
                     </el-select>
                 </li>
