@@ -824,6 +824,18 @@ const router = new Router({
 
         },
         {
+            path: '/help',
+            name: 'help',
+            component: () =>
+                import ("./components/help/Basic"),
+            children: [{
+                path: '/help/userManual',
+                name: 'helpUserManual',
+                component: () =>
+                    import ('./components/help/UserManual')
+            }]
+        },
+        {
             path: "*",
             redirect: "/"
         }

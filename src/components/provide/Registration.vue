@@ -726,6 +726,7 @@ export default {
                     //find包 并且本次发放数小于剩余发放数才添加
                     if (currentTaskList[j].ProductId == data.ProductId && currentTaskList[j].ThisTimeProvideQuantity < currentTaskList[j].RemainQuantity) {
                         currentTaskList[j].ProvidePackages.push(data);
+                        currentTaskList[j].ThisTimeProvideQuantity++;
                         let newItem = currentTaskList.splice(j, 1)[0];
                         currentTaskList.unshift(newItem);
                         this.activeName = "0";

@@ -20,7 +20,7 @@
                 <span>科室</span>
                 <el-select v-model="SubClinicId" filterable @change="changeClinicInventory" class="white24x13">
                     <el-option label="全部" :value="0"></el-option>
-                    <el-option v-for="(item,index) in inventoryData.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId"></el-option>
+                    <el-option v-for="(item,index) in GLOBAL.UserInfo.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId"></el-option>
                 </el-select>
             </p>
         </div>

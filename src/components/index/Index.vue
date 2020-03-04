@@ -228,6 +228,19 @@
                 </ul>
             </dd>
         </dl>
+        <!-- <dl>
+            <dt>帮助</dt>
+            <dd>
+                <ul>
+                    <router-link to="/help/userManual">
+                        <li>
+                            <p class="cssd_index_userManual"></p>
+                            <span>使用手册</span>
+                        </li>
+                    </router-link>
+                </ul>
+            </dd>
+        </dl> -->
     </div>
 </div>
 </template>
