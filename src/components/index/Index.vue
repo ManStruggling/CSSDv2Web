@@ -62,18 +62,24 @@
                             <span>预定审核</span>
                         </li>
                     </router-link>
+                    <router-link to="/inventory/productBasicQuantityCheck">
+                        <li>
+                            <p class="cssd_index_basicQuantityCheck"></p>
+                            <span>包基数审核</span>
+                        </li>
+                    </router-link>
                     <router-link to="/publicModule/reprint">
                         <li>
                             <p class="cssd_index_reprint"></p>
                             <span>重新打印包条码</span>
                         </li>
                     </router-link>
-                    <router-link to="/publicModule/instrumentReplenishment">
+                    <!-- <router-link to="/publicModule/instrumentReplenishment">
                         <li>
                             <p class="cssd_index_instrument"></p>
                             <span>器械补货</span>
                         </li>
-                    </router-link>
+                    </router-link> -->
                 </ul>
             </dd>
         </dl>
@@ -109,6 +115,12 @@
                         <li>
                             <p class="waiting_for_recycling"></p>
                             <span>待回收包登记</span>
+                        </li>
+                    </router-link>
+                    <router-link to="/inventory/productBasicQuantityRequest">
+                        <li>
+                            <p class="cssd_index_basicQuantityRequest"></p>
+                            <span>包基数申请</span>
                         </li>
                     </router-link>
                 </ul>
@@ -196,7 +208,7 @@
                 </ul>
             </dd>
         </dl>
-        <dl>
+        <dl v-if="GLOBAL.UserInfo.ClinicType===1">
             <dt>耗材系统</dt>
             <dd>
                 <ul>

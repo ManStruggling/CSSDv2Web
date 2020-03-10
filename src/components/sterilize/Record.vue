@@ -40,7 +40,8 @@
                     </div>
                     <div class="collapseTd">
                         <p>
-                            <el-button size="mini" @click.stop="changeRecord(collapseIndex)" :disabled="(GLOBAL.UserInfo.JobAndCompetence.includes('141')||GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('100'))&&!item.CanNotBeModified?false:true">修改</el-button>
+                            <el-button size="mini" v-if="!item.CanNotBeModified" @click.stop="changeRecord(collapseIndex)" :disabled="(GLOBAL.UserInfo.JobAndCompetence.includes('141')||GLOBAL.UserInfo.JobAndCompetence.includes('000')||GLOBAL.UserInfo.JobAndCompetence.includes('100'))&&!item.CanNotBeModified?false:true">修改</el-button>
+                            <el-button v-else @click.stop="missingPackageAdd(item)">遗漏包添加</el-button>
                         </p>
                     </div>
                 </div>
@@ -121,6 +122,16 @@ export default {
     },
     mounted() {},
     methods: {
+        //遗漏包添加
+        missingPackageAdd(item){
+            this.$router.push({
+                path: "/sterilize/missingPackageAdd",
+                query: {
+                    recordId: item.Id,
+                    sterilizeBarCode: item.SterilizeBarCode
+                }
+            });
+        },
         //修改灭菌记录
         changeRecord(index) {
             this.$router.push({

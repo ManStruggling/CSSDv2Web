@@ -5,7 +5,7 @@ import store from './store';
 
 import './assets/css/reset.css';
 import './assets/css/public.scss';
-import 'element-ui/lib/theme-chalk/index.css';
+import '@/assets/css/element-variables.scss';
 import 'animate.css'
 import $ from 'jquery';
 window.$ = $;

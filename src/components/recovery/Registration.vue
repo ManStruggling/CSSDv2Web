@@ -399,7 +399,7 @@ export default {
             if (newValue == 0 || newValue == undefined) {
                 this.showInformation({
                     classify: 'confirm',
-                    msg: '确定要删除该计数包?',
+                    msg: '确定要删除该包?',
                     confirmCallBack: () => {
                         RecycleProducts.splice(collapseIndex, 1);
                         if (this.recoveryData.Clinics[index].RecycleProducts.length == 0) {

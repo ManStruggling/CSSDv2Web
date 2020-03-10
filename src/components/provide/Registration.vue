@@ -123,6 +123,7 @@
                                         </div>
                                         <!-- 操作 -->
                                         <div class="collapseTd" style="width:90px;">
+                                            <a class="edit_a" @click.stop="editScheduledQuantity(value)">编辑</a>
                                             <a v-if="value.ProvideTaskGenerateType==3||GLOBAL.UserInfo.JobAndCompetence.includes('000')" @click.stop="deleteThisTask(value.ProvideTaskId)">删除</a>
                                             <p v-else>-</p>
                                         </div>
@@ -191,6 +192,31 @@
         <!-- 产品列表 -->
         <SelectSubClinicOfProduct v-if="isShowProductList" @selectSubClinicOfProduct-to-father="packgeList2father" :requestApi="`ProvideGenerateType eq '手动生成'`" :getApiLimit="`ProvideGenerateType eq '手动生成'`" :submitApi="`/api/Provide/AddProvideTask`"></SelectSubClinicOfProduct>
     </transition>
+    <el-dialog
+        :visible.sync="isDialogVisible"
+        center
+        :close-on-click-modal="false"
+        :show-close="false"
+    >
+        <ol>
+            <li>
+                <p>包名称</p>
+                <span>{{adjustedprovideTaskMsg.ProductName}}</span>
+            </li>
+            <li>
+                <p>原预计发放数</p>
+                <span>{{adjustedprovideTaskMsg.OriginScheduledQuantity}}</span>
+            </li>
+            <li>
+                <p>现预计发放数</p>
+                <el-input-number v-model="adjustedprovideTaskMsg.ScheduledQuantity" :controls="false" :min="0" :max="999" @change="handleAdjustedScheduledNumberChange"></el-input-number>
+            </li>
+        </ol>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="isDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="adjustComplete">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 
@@ -201,6 +227,12 @@ export default {
     inject: ['reload'],
     data() {
         return {
+            adjustedprovideTaskMsg: {
+                ProductName: "",
+                OriginScheduledQuantity: 0,
+                ScheduledQuantity: 0
+            },
+            isDialogVisible:false,
             displayNav:true,
             isShowProductList: false,
             showAllTask: false,
@@ -320,6 +352,41 @@ export default {
         CSManager.handleDataThis = null;
     },
     methods: {
+        //修改预计发放数
+        editScheduledQuantity(value){
+            Object.assign(this.adjustedprovideTaskMsg,value);
+            this.adjustedprovideTaskMsg.OriginScheduledQuantity = this.adjustedprovideTaskMsg.ScheduledQuantity;
+            this.isDialogVisible = true;
+        },
+        //预计发放数修改提交
+        adjustComplete(){
+            axios({
+                url: "/api/Provide/ProvideModify",
+                method: "PUT",
+                data: this.adjustedprovideTaskMsg
+            }).then(res=>{
+                let type;
+                if(res.data.Code==200){
+                    type="success";
+                    this.reload();
+                }else{
+                    let type = "error";
+                }
+                this.showInformation({
+                    classify: "message",
+                    msg: res.data.Msg,
+                    type: type
+                })
+            }).catch(err=>{});
+        },
+        //预计发放数修改number change
+        handleAdjustedScheduledNumberChange(newValue,oldValue){
+            if(newValue==undefined){
+                setTimeout(() => {
+                    this.adjustedprovideTaskMsg.ScheduledQuantity = oldValue;
+                }, 0);
+            }
+        },
         //刷新
         refresh() {
             this.reload();
@@ -984,6 +1051,9 @@ export default {
                                     .collapseTd {
                                         a {
                                             color: #fff;
+                                            &.edit_a{
+                                                color: #fff;
+                                            }
                                         }
                                     }
                                 }
@@ -994,6 +1064,10 @@ export default {
                                         line-height: 65px;
                                         font-size: 18px;
                                         font-weight: bold;
+                                        &.edit_a{
+                                            color: #00C16B;
+                                            margin-right: 10px;
+                                        }
                                     }
                                     .beyondHiding{
                                         font-size: 18px;
@@ -1055,6 +1129,49 @@ export default {
                     }
                 }
             }
+        }
+    }
+
+    .el-dialog{
+        position:absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        margin: auto;
+        width: 300px;
+        height: 234px;
+        margin-top: auto !important;
+        .el-dialog__header{
+            display: none;
+        }
+        ol{
+            font-size: 16px;
+            line-height: 40px;
+            li{
+                display: flex;
+                justify-content: space-between;
+                p{
+                    color: #878D9F;
+                    width: 96px;
+                    text-align: right;
+                }
+                span{
+                    font-weight: bold;
+                    color: #333;
+                    width: 148px;
+                }
+                .el-input-number{
+                    width: 148px;
+                    input{
+                        color: #333;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+        .el-dialog__footer{
+            padding: 0 20px 30px;
         }
     }
 }

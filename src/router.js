@@ -312,6 +312,14 @@ const router = new Router({
                 component: () =>
                     import ('./components/sterilize/Check')
             }, {
+                path: '/sterilize/missingPackageAdd',
+                name: 'sterilizeMissingPackageAdd',
+                meta: {
+                    index: 3,
+                },
+                component: () =>
+                    import ('./components/sterilize/MissingPackageAdd')
+            }, {
                 path: '/sterilize/checkRecord',
                 name: 'sterilizeCheckRecord',
                 meta: {
@@ -395,6 +403,24 @@ const router = new Router({
                     },
                     component: () =>
                         import ('./components/inventory/DisposableItemInboundRecord')
+                },
+                {
+                    path: '/inventory/productBasicQuantityRequest',
+                    name: 'inventoryProductBasicQuantityRequest',
+                    meta: {
+                        index: 1
+                    },
+                    component: () =>
+                        import ('./components/inventory/ProductBasicQuantityRequest')
+                },
+                {
+                    path: '/inventory/productBasicQuantityCheck',
+                    name: 'inventoryProductBasicQuantityCheck',
+                    meta: {
+                        index: 1
+                    },
+                    component: () =>
+                        import ('./components/inventory/ProductBasicQuantityCheck')
                 }
             ]
 
