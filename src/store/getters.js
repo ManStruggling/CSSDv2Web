@@ -4,7 +4,7 @@ let getters = {
     bNav: (state) => state.bNav,
     carNum: (state) => state.carNum,
     carList: (state) => state.carList,
-    carNum: (state) => state.carNum,
+    UserInfo: (state) => state.UserInfo,
     UId: (state) => state.UId,
     CssdId: (state) => state.CssdId
 }

@@ -361,7 +361,7 @@ export default {
         //预计发放数修改提交
         adjustComplete(){
             axios({
-                url: "/api/Provide/ProvideModify",
+                url: "/api/Provide/ProvideTask",
                 method: "PUT",
                 data: this.adjustedprovideTaskMsg
             }).then(res=>{

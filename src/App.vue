@@ -8,8 +8,11 @@
 
 <script>
 import Vue from 'vue';
+import * as types from "@/store/types";
+import NProgress from 'nprogress';
+import "nprogress/nprogress.css";
 import {
-    mapGetters
+    mapState
 } from 'vuex';
 export default {
     data() {
@@ -17,13 +20,21 @@ export default {
             isRouterAlive: true
         }
     },
-    computed: mapGetters(["UId", "CssdId"]),
+    // computed: mapGetters(["UId", "CssdId"]),
+    computed: {
+        ...mapState({
+            CssdId: state => state.CssdId,
+            UId: state => state.UId,
+            UserInfo: state => state.UserInfo
+        }),
+    },
     created() {
         window.VueVm = new Vue(); //用于beforeRouteEnter钩子函数的消息提示
         let loading;
         //配置发送请求前的拦截器 可以设置token信息 
         axios.interceptors.request.use(config => {
             //loading开始
+            NProgress.start()
             loading = this.$loading({
                 lock: true,
                 text: '加载中...',
@@ -33,6 +44,7 @@ export default {
             return config;
         }, error => {
             //出错，也要loading结束
+            NProgress.done()
             loading.close();
             this.showInformation({
                 classify: "message",
@@ -43,9 +55,11 @@ export default {
         // 配置响应拦截器 
         axios.interceptors.response.use(res => {
             //loading结束
+            NProgress.done()
             loading.close();
             return Promise.resolve(res);
         }, error => {
+            NProgress.done()
             loading.close();
             this.showInformation({
                 classify: "message",
@@ -57,6 +71,7 @@ export default {
         //为请求加上UId 和 LocationId
         if (sessionStorage.userInfo) {
             window.UserInfo = JSON.parse(sessionStorage.userInfo);
+            this.$store.dispatch(types.UserInfo,UserInfo);   
             this.GLOBAL.UserInfo = UserInfo;
             if (UserInfo.Configuration) {
                 $('title').html(UserInfo.Configuration.Company.Name);

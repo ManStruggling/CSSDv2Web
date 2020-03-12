@@ -9,15 +9,15 @@
         <div class="cssd_title_right">
             <p>
                 <span>调整科室</span>
-                <el-select v-model="ClinicId" filterable @change="changeClinic" class="white24x13">
-                    <el-option v-for="(item,index) in GLOBAL.UserInfo.SubClinics" :key="index" :label="item.SubClinicName" :value="item.SubClinicId"></el-option>
+                <el-select v-model="recordId" filterable @change="changeClinic" class="white24x13">
+                    <el-option v-for="(item,index) in checkTasks" :key="index" :label="item.ClinicName" :value="item.Id"></el-option>
                 </el-select>
             </p>
         </div>
     </div>
     <div class="cssd_table_center cssd_totalBar table_unExpand">
         <div class="table_box">
-            <el-table :data="submitData.Products">
+            <el-table :data="tableData()">
                 <el-table-column width="240" label="包名称" prop="ProductName"></el-table-column>
                 <el-table-column width="210" label="原包基数" prop="OriginalQuantity"></el-table-column>
                 <el-table-column width="210" label="本次调整数" prop="AdjustQuantity"></el-table-column>
@@ -27,8 +27,8 @@
         <div class="cssd_table_bottom">
             <p></p>
             <p>
-                <el-button @click="checkFailed">审核不通过</el-button>
-                <el-button type="primary" round @click="checkSuccess">审核通过</el-button>
+                <el-button @click="checkComplete('/api/ProductBasicQuantity/ReviewFailed')">审核不通过</el-button>
+                <el-button type="primary" round @click="checkComplete('/api/ProductBasicQuantity/ReviewPass')">审核通过</el-button>
             </p>
         </div>
     </div>
@@ -40,13 +40,8 @@ export default {
     inject: ['reload'],
     data() {
         return {
-            ClinicId: null,
-            checkTasks: {
-                
-            },
-            submitData: {
-                Products: []
-            }
+            recordId: null,
+            checkTasks: [],
         };
     },
     created() {
@@ -54,7 +49,7 @@ export default {
             url: `/api/ProductBasicQuantity/PendingReviewRecords`
         }).then(res=>{
             if(res.data.Code==200){
-                this.checkTasks = res.data.Data;
+                this.checkTasks = res.data.Data.ApplyRecords;
             }else{
                 this.showInformation({
                     classify: "message",
@@ -65,34 +60,55 @@ export default {
     },
     mounted() {},
     methods: {
-        //审核通过
-        checkSuccess() {
-            axios({
-                url: "/api/ProductBasicQuantity/ApplyAdjustQuantity",
-                method: "POST",
-                data: this.submitData
-            }).then(res=>{
-                let type;
-                if(res.data.Code==200){
-                    type = "success";
-                    this.reload();
-                }else{
-                    type = "error";
+        tableData(){
+            for (let i = 0; i < this.checkTasks.length; i++) {
+                if(this.checkTasks[i].Id === this.recordId){
+                    return this.checkTasks[i].Products;
                 }
-                this.showInformation({
-                    classify: "message",
-                    msg: Msg,
-                    type: type
-                })
-            }).catch(err=>{})
+            }
+            return [];
         },
-        // 审核不通过
-        checkFailed(){
-            
+        // 审核
+        checkComplete(url){
+            if(this.recordId){
+                axios({
+                    url: `${url}/${this.recordId}`,
+                    method: 'POST'
+                }).then(res=>{
+                    let type;
+                    if(res.data.Code==200){
+                        type = 'success';
+                        this.reload();
+                    }else{
+                        type = 'error';
+                    }
+                    this.showInformation({
+                        classify: 'message',
+                        type: type,
+                        msg: res.data.Msg
+                    })
+                }).catch(err=>{})
+            }else{
+                this.showInformation({
+                    classify: 'message',
+                    msg: '科室未选择！'
+                })
+            }
         },
         //调整主科室
         changeClinic(val){
-
+            if(this.checkTasks.filter(item=>item.Id==val)[0].Products==''){
+                axios({
+                    url: `/api/ProductBasicQuantity/PendingReviewRecord/Packages/${this.recordId}`
+                }).then(res=>{
+                    this.checkTasks.forEach(item=>{
+                        if(item.Id===this.recordId){
+                            item.Products = res.data.Data;
+                            return;
+                        }
+                    })
+                }).catch(err=>{})
+            }
         }
     }
 };

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import * as types from "../../store/types";
+import * as types from "@/store/types";
 export default {
     data() {
         return {
@@ -138,7 +138,7 @@ export default {
                             type = "success";
                             Object.assign(res.data.Data, this.versionMsg)
                             sessionStorage.userInfo = JSON.stringify(res.data.Data);
-                            // this.$router.push({path:'/'});
+                            this.$store.dispatch(types.UserInfo,res.data.Data);                         
                             window.location.href = '/';
                         } else {
                             type = "warning";

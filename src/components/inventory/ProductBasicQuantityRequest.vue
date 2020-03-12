@@ -46,6 +46,7 @@ export default {
         }).then(res=>{
             if(res.data.Code==200){
                 Object.assign(this.submitData,res.data.Data);
+                this.submitData.Products.sort((a,b)=>a.OriginalQuantity>b.OriginalQuantity?-1:1);
             }else{
                 this.showInformation({
                     classify: "message",

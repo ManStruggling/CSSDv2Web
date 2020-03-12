@@ -1,29 +1,51 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
 
-import './assets/css/reset.css';
-import './assets/css/public.scss';
-import '@/assets/css/element-variables.scss';
-import 'animate.css'
-import $ from 'jquery';
+import "./assets/css/reset.css";
+import "./assets/css/public.scss";
+import "@/assets/css/element-variables.scss";
+import "animate.css";
+import $ from "jquery";
 window.$ = $;
-import ElementUI from 'element-ui';
+import ElementUI from "element-ui";
 Vue.use(ElementUI);
-import global from './global/global';
+import global from "./global/global";
 Vue.prototype.GLOBAL = global;
 //全局vue
-import './global/VuePublic';
+import "./global/VuePublic";
 
-import JSManager from './global/JSManager';
+import JSManager from "./global/JSManager";
 window.CSManager = JSManager;
-import Common from './global/common';
+import Common from "./global/common";
 Vue.use(Common);
-import './global/public';
-import axios from './plugins/axios'; //引入全局方法 变量
+import "./global/public";
+import axios from "./plugins/axios"; //引入全局方法 变量
 Vue.use(axios);
-import { InputNumber, TimePicker, Input, Menu, Submenu, MenuItem, Button, CheckboxGroup, CheckboxButton, Cascader, Select, Option, DatePicker, Table, TableColumn, Tabs, TabPane, Collapse, CollapseItem, Radio, Popover } from "element-ui";
+import {
+  InputNumber,
+  TimePicker,
+  Input,
+  Menu,
+  Submenu,
+  MenuItem,
+  Button,
+  CheckboxGroup,
+  CheckboxButton,
+  Cascader,
+  Select,
+  Option,
+  DatePicker,
+  Table,
+  TableColumn,
+  Tabs,
+  TabPane,
+  Collapse,
+  CollapseItem,
+  Radio,
+  Popover
+} from "element-ui";
 Vue.use(InputNumber);
 Vue.use(TimePicker);
 Vue.use(Input);
@@ -46,10 +68,10 @@ Vue.use(CollapseItem);
 Vue.use(Radio);
 Vue.use(Popover);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
-    router,
-    store,
-    render: h => h(App)
-}).$mount('#app')
+  router,
+  store,
+  render: h => h(App)
+}).$mount("#app");

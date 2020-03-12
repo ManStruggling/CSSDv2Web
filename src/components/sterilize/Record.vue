@@ -1,5 +1,5 @@
 <template>
-<div class="cssd_box">
+<div class="cssd_box" id="sterilizeRecord">
     <div class="cssd_title">
         <ul class="cssd_menu">
             <router-link to="/sterilize/select" tag="li">
@@ -66,6 +66,11 @@
                         <p>总锅次</p>
                         <span>{{item.SterilizeTotalBatch}}</span>
                     </li>
+                    <li class="biologicalTest">
+                        <p>生物监测</p>
+                        <span class="span_txt">{{item.BiologicalReviewStatus==4?'否':'是'}}</span>
+                        <a v-show="item.BiologicalReviewStatus==4" @click="openBiologicalTest(item.Id)">开启</a>
+                    </li>
                 </ul>
                 <el-table :data="item.Carriers" :default-expand-all="true" @row-click="tableRowClick">
                     <el-table-column label="网篮条码" prop="CarrierBarCode" width="240"></el-table-column>
@@ -108,6 +113,7 @@
 
 <script>
 export default {
+    inject: ['reload'],
     data() {
         return {
             search_date: [],
@@ -122,6 +128,35 @@ export default {
     },
     mounted() {},
     methods: {
+        //开启生物监测
+        openBiologicalTest(Id){
+            this.showInformation({
+                classify: 'confirm',
+                msg: '开启本锅次生物监测为不可逆操作！确定要开启生物监测？',
+                confirmCallBack: () => {
+                    axios({
+                        url: `/api/Sterilize/SetSterilizeBiologicTest/${Id}`,
+                        method: 'POST'
+                    }).then(res=>{
+                        let type;
+                        if(res.data.Code==200){
+                            type = 'success';
+                            this.reload();
+                        }else{
+                            type = 'error';
+                        }
+                        this.showInformation({
+                            classify: 'message',
+                            type: type,
+                            msg: res.data.Msg
+                        })
+                    }).catch(err=>{})
+                },
+                cancelCallBack: () => {
+
+                }
+            });
+        },
         //遗漏包添加
         missingPackageAdd(item){
             this.$router.push({
@@ -191,4 +226,15 @@ export default {
 @import "../../assets/css/tableNav";
 @import "../../assets/css/cssdRecord";
 @import "../../assets/css/tableExpand";
+#sterilizeRecord{
+    .biologicalTest{
+        span.span_txt{
+            width: auto;
+        }
+        a{
+            color: #00C16B;
+            margin-left: 10px;
+        }
+    }
+}
 </style>

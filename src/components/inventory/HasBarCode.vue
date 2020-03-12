@@ -106,7 +106,7 @@ export default {
         //二次请求
         collapseChange(index) {
             if (index != '' && (this.inventoryData.Products[index].Packages == '' || this.inventoryData.Products[index].Packages === null) && !this.inventoryData.Products[index].IsNotPrintBarCode) {
-                let url = `/api/HasBarCodePackagesForClinic/${this.GLOBAL.UserInfo.ClinicId}/${this.inventoryData.Products[index].ProductId}`;//获取主科室的二次请求
+                let url = `/api/inventory/HasBarCodePackagesForClinic/${this.GLOBAL.UserInfo.ClinicId}/${this.inventoryData.Products[index].ProductId}`;//获取主科室的二次请求
                 if(this.SubClinicId){
                     url = `/api/Inventory/HasBarCodePackages/${this.inventoryData.Products[index].SubClinicId}/${this.inventoryData.Products[index].ProductId}`;
                 }

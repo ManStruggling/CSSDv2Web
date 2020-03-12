@@ -5,6 +5,8 @@ module.exports = {
     outputDir: 'wwwroot',
     //设置打包后的静态资源的文件夹名
     assetsDir: 'web',
+    //打包后的html文件名
+    indexPath: 'index.html',
     //文件名是否添加hash值
     filenameHashing: true,
 

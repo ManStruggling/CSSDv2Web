@@ -321,6 +321,7 @@ function timeFormatDuring(timeSeconds) {
 Vue.prototype.showInformation = showInformation;
 
 export default {
+    showInformation,
     notificationRecycling,
     timeFormatDuring,
     useWebsocketOrNot,

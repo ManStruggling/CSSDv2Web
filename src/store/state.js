@@ -4,7 +4,8 @@ let state = {
     bNav: true,
     carList: [],
     UId: 1,
-    CssdId: 1
+    CssdId: 2,
+    UserInfo: {}
 }
 
 export default state;
