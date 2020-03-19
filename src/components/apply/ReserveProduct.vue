@@ -217,15 +217,12 @@ export default {
             if (this.$route.query.recordId) {
                 method = "PUT";
             }
-            let arr = [];
-            arr = arr.concat(this.submitData.Products);
-            arr = arr.concat(this.submitData.DisposableItems);
-            this.submitData.Products = arr;
-            if (this.GLOBAL.VerificationHandle([{
-                    val: this.submitData.Products,
-                    type: "ArrayNotEmpty",
+            if (this.submitData.Products.length==0 && this.submitData.DisposableItems.length==0) {
+                this.showInformation({
+                    classify: "message",
                     msg: "请至少预定一个无菌物品或一次性物品！"
-                }])) {
+                });
+            } else {
                 axios({
                         url: `/api/Book`,
                         method: method,

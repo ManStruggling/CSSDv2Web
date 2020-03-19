@@ -14,7 +14,7 @@
                 <el-table-column width="210" label="原包基数" prop="OriginalQuantity"></el-table-column>
                 <el-table-column width="210" label="本次调整数">
                     <template slot-scope="props">
-                        <el-input-number v-model="props.row.AdjustQuantity" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.row)})"></el-input-number>
+                        <el-input-number v-model="props.row.AdjustQuantity" :min="-props.row.OriginalQuantity" @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,props.row)})"></el-input-number>
                     </template>
                 </el-table-column>
                 <el-table-column></el-table-column>

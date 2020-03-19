@@ -4,6 +4,31 @@
 <head>
     <title></title>
     <link href="css/master.css" rel="stylesheet" type="text/css" />
+    <style>
+        html,body{
+            width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if (clientWidth >= 750) {  //750是宽度，是根据UI设计稿来填写的
+                        docEl.style.fontSize = '100px';
+                    } else {
+                        docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                    }
+                    alert(docEl.style.fontSize)
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
 </head>
 
 <body>
@@ -20,21 +45,21 @@
                 <img src="" alt="Alternate Text" style="width:200px;height:200px;" />
 
                 <button onclick="GetPrinterList();">
-                获取打印机列表</button>
+                    获取打印机列表</button>
                 <button onclick="GetMediaList();">
-                获取摄像头列表
-            <button  onclick="OpenMedia();">
-                    打开摄像头
-                </button>
-                <button onclick="CloseMedia();">
-                    关闭摄像头
-                </button>
-                <button onclick="testPrint();">
-                测试打印
-            </button>
-                <button onclick="send();">
-                    测试交互
-                </button>
+                    获取摄像头列表
+                    <button onclick="OpenMedia();">
+                        打开摄像头
+                    </button>
+                    <button onclick="CloseMedia();">
+                        关闭摄像头
+                    </button>
+                    <button onclick="testPrint();">
+                        测试打印
+                    </button>
+                    <button onclick="send();">
+                        测试交互
+                    </button>
 
             </div>
             <br />
