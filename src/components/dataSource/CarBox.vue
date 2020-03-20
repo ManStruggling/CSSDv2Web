@@ -40,7 +40,7 @@ export default {
   methods: {
     //取消
     editBoxCancelSave() {
-      this.$emit("to-father", '');
+      this.$emit("to-father", "");
     },
     //保存
     editBoxSave() {
@@ -52,19 +52,40 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if(this.GLOBAL.VerificationHandle([{val:this.editBoxData.Name,type:'StringNotEmpty',msg:'车辆名称不能为空！'},{val:this.editBoxData.CarNumber,type:'StringNotEmpty',msg:'车牌号不能为空！'}])) {
-        axios({ url: "/api/LogisticsCar", method: axiosMethod, data: this.editBoxData })
+      if (
+        this.GLOBAL.VerificationHandle([
+          {
+            val: this.editBoxData.Name,
+            type: "StringNotEmpty",
+            msg: "车辆名称不能为空！"
+          },
+          {
+            val: this.editBoxData.CarNumber,
+            type: "StringNotEmpty",
+            msg: "车牌号不能为空！"
+          }
+        ])
+      ) {
+        axios({
+          url: "/api/LogisticsCar",
+          method: axiosMethod,
+          data: this.editBoxData
+        })
           .then(res => {
             let type;
             if (res.data.Code == 200) {
               //操作成功
-              type='success';
-              this.$emit("to-father",res.data.Data)
+              type = "success";
+              this.$emit("to-father", res.data.Data);
             } else {
               //其他状态码
-              type = 'error';
+              type = "error";
             }
-            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
           })
           .catch(error => {});
       }

@@ -103,7 +103,14 @@ export default {
       }
     };
   },
-  props: ["data", "carrierIndex", "packageIndex", "instrumentIndex", "maxNum"],
+  props: [
+    "data",
+    "carrierIndex",
+    "packageIndex",
+    "instrumentIndex",
+    "maxNum",
+    "UserInfo"
+  ],
   created() {
     this.cleanQuality = Object.assign({}, this.$props.data);
   },
@@ -112,7 +119,7 @@ export default {
     cancel() {
       this.$emit("UnqualifiedInstruments-to-father");
     },
-    //确认 this.GLOBAL.UserInfo.HospitalVersion=="SONGJIANGNANYUAN"
+    //确认 this.UserInfo.HospitalVersion=="SONGJIANGNANYUAN"
     comfirm() {
       // if (
       //   this.cleanQuality.Surface +
@@ -141,7 +148,7 @@ export default {
       //   return;
       // }
       if (
-        this.GLOBAL.UserInfo.HospitalVersion == "SONGJIANGNANYUAN" ||
+        this.UserInfo.HospitalVersion == "SONGJIANGNANYUAN" ||
         (this.cleanQuality.Surface +
           this.cleanQuality.Joint +
           this.cleanQuality.Tooth +

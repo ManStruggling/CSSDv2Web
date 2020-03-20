@@ -10,21 +10,21 @@
           </li>
           <li>
             <p>有效期天数</p>
-            <el-input-number 
-              v-model="editBoxData.ValidDays" 
+            <el-input-number
+              v-model="editBoxData.ValidDays"
               :min="1"
               :controls="false"
               @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ValidDays')})"
-              ></el-input-number>
+            ></el-input-number>
           </li>
           <li>
             <p>恶劣天气有效期天数</p>
-            <el-input-number 
-              v-model="editBoxData.ValidDaysOnBadWeather" 
+            <el-input-number
+              v-model="editBoxData.ValidDaysOnBadWeather"
               :min="1"
               :controls="false"
               @change="((newValue,oldValue)=>{numberChange(newValue,oldValue,'ValidDaysOnBadWeather')})"
-              ></el-input-number>
+            ></el-input-number>
           </li>
         </ul>
       </div>
@@ -49,8 +49,8 @@ export default {
   },
   methods: {
     //el-input-number change 事件
-    numberChange(newValue,oldValue,origin){
-      if(newValue==undefined){
+    numberChange(newValue, oldValue, origin) {
+      if (newValue == undefined) {
         setTimeout(() => {
           this.editBoxData[origin] = 1;
         }, 0);
@@ -71,7 +71,15 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if(this.GLOBAL.VerificationHandle([{val:this.editBoxData.Name,type:'StringNotEmpty',msg:'包装名称不能为空！'}])){
+      if (
+        this.GLOBAL.VerificationHandle([
+          {
+            val: this.editBoxData.Name,
+            type: "StringNotEmpty",
+            msg: "包装名称不能为空！"
+          }
+        ])
+      ) {
         axios({
           url: "/api/BasicInformation/ExternalPackage",
           method: axiosMethod,
@@ -81,13 +89,17 @@ export default {
             let type;
             if (res.data.Code == 200) {
               //请求成功
-              type = 'success';
+              type = "success";
               this.$emit("to-father", res.data.Data);
             } else {
               //其他状态码
-              type="error";
+              type = "error";
             }
-            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
           })
           .catch(error => {});
       }

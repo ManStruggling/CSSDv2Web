@@ -65,7 +65,7 @@ export default {
             if (res.data.Code == 200) {
               this.editBoxData = res.data.Data;
             } else {
-              this.showInformation({classify:"message",msg:res.data.Msg});
+              this.showInformation({ classify: "message", msg: res.data.Msg });
             }
           })
           .catch(err => {});
@@ -80,11 +80,11 @@ export default {
       //before submit must to do： 数据转换 表单验证;
       if (
         this.GLOBAL.VerificationHandle([
-            {
-              val: this.editBoxData.StaffId,
-              type: "NumberNotZero",
-              msg: "您还未查询人员！请查询人员！"
-            }
+          {
+            val: this.editBoxData.StaffId,
+            type: "NumberNotZero",
+            msg: "您还未查询人员！请查询人员！"
+          }
         ])
       ) {
         axios({
@@ -102,7 +102,11 @@ export default {
               //其他状态码
               type = "error";
             }
-            this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
           })
           .catch(error => {});
       }

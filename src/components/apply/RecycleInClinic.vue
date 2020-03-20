@@ -53,12 +53,13 @@
     </div>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
         <!-- 数量包登记   控制是否挂载   数据通信   类型 -->
-        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`ProvideClinicId eq ${GLOBAL.UserInfo.ClinicId} and IsCommonProduct eq false`" :headers="{LocationId:selectedCssdId}" :packageClass="'NewPurchasing'"></PackageList>
+        <PackageList v-if="isShowPackageList" @packageList-to-father="packgeList2father" :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`" :getApiLimit="`ProvideClinicId eq ${UserInfo.ClinicId} and IsCommonProduct eq false`" :headers="{LocationId:selectedCssdId}" :packageClass="'NewPurchasing'"></PackageList>
     </transition>
 </div>
 </template>
 
 <script>
+import {mapState} from "vuex";
 import PackageList from "../common/PackageList";
 export default {
     inject: ['reload'],
@@ -102,7 +103,7 @@ export default {
             this.connection
                 .invoke("CallRecycleNotification", JSON.stringify({
                     Title: "回收通知",
-                    Content: `${this.GLOBAL.UserInfo.ClinicName}有包要回收了！`
+                    Content: `${this.UserInfo.ClinicName}有包要回收了！`
                 })).catch(function (err) {
                     return console.error(err);
                 });
@@ -185,7 +186,12 @@ export default {
                 }, 0);
             }
         }
-    }
+    },
+  computed: {
+    ...mapState({
+      UserInfo: state => state.UserInfo
+    })
+  }
 };
 </script>
 

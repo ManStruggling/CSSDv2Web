@@ -5,9 +5,6 @@
             <router-link to="/inventoryCounting/registration" tag="li">
                 <p>返回</p>
             </router-link>
-            <router-link to="/inventoryCounting/disposableProductRecord" tag="li">
-                <p>盘库记录</p>
-            </router-link>
         </ul>
         <div class="cssd_title_right">
             <p>

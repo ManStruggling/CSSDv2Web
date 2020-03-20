@@ -22,7 +22,8 @@ import Common from "./global/common";
 Vue.use(Common);
 import "./global/public";
 import axios from "./plugins/axios"; //引入全局方法 变量
-Vue.use(axios);
+window.axios = axios.service;
+Vue.prototype.$http = axios.http;
 import {
   InputNumber,
   TimePicker,

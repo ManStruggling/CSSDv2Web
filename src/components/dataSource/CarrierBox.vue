@@ -39,7 +39,7 @@ export default {
   methods: {
     //取消
     editBoxCancelSave() {
-      this.$emit("to-father", '');
+      this.$emit("to-father", "");
     },
     //保存
     editBoxSave() {
@@ -51,21 +51,37 @@ export default {
         //更新模式
         axiosMethod = "put";
       }
-      if(this.GLOBAL.VerificationHandle([{val:this.editBoxData.Name,type:'StringNotEmpty',msg:'网篮名称不能为空！'}])){
-        axios({ url: "/api/BasicInformation/Carrier", method: axiosMethod, data: this.editBoxData })
-        .then(res => {
-          let type;
-          if (res.data.Code == 200) {
-            //操作成功
-            type='success';
-            this.$emit("to-father",res.data.Data)
-          } else {
-            //其他状态码
-            type = 'error';
+      if (
+        this.GLOBAL.VerificationHandle([
+          {
+            val: this.editBoxData.Name,
+            type: "StringNotEmpty",
+            msg: "网篮名称不能为空！"
           }
-          this.showInformation({classify:"message",msg:res.data.Msg,type: type});
+        ])
+      ) {
+        axios({
+          url: "/api/BasicInformation/Carrier",
+          method: axiosMethod,
+          data: this.editBoxData
         })
-        .catch(error => {});
+          .then(res => {
+            let type;
+            if (res.data.Code == 200) {
+              //操作成功
+              type = "success";
+              this.$emit("to-father", res.data.Data);
+            } else {
+              //其他状态码
+              type = "error";
+            }
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg,
+              type: type
+            });
+          })
+          .catch(error => {});
       }
     }
   }
