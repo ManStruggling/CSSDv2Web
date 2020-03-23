@@ -6,7 +6,7 @@ import GLOBAL from "@/global/global";
 import store from "@/store";
 
 const service = axios.create({
-  baseURL: "http://192.168.1.13", // url = base url + request url
+  // baseURL: "http://192.168.1.3:8255", // url = base url + request url
   headers: {
     "X-Requested-With": "XMLHttpRequest",
     "Access-Control-Allow-Origin": "*"

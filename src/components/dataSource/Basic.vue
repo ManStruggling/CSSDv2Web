@@ -6,7 +6,7 @@
       <router-link
         to="/"
         tag="p"
-      >{{UserInfo.Configuration?UserInfo.Configuration.Company.Name:'上海倍而纳医疗器械科技有限公司'}}</router-link>
+      >{{UserInfo.Configuration.Company?UserInfo.Configuration.Company.Name:'上海倍而纳医疗器械科技有限公司'}}</router-link>
       <div class="head_user">
         <p>{{UserInfo.ClinicName}}</p>
         <p>{{UserInfo.UserName}}</p>

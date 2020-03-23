@@ -31,9 +31,13 @@ export default {
       window.UserInfo = UserInfo;
       store.dispatch("UserInfo", UserInfo);
       if (UserInfo.Configuration) {
-        document.title = UserInfo.Configuration.Company.Name;
+        document.title = UserInfo.Configuration.Company
+          ? UserInfo.Configuration.Company.Name
+          : "上海倍而纳医疗器械科技有限公司";
         $("link.logo_icon").attr({
-          href: UserInfo.Configuration.Company.Logo
+          href: UserInfo.Configuration.Company
+            ? UserInfo.Configuration.Company.Logo
+            : "/images/login_logo.png"
         });
       }
     }
