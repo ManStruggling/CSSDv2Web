@@ -6,7 +6,7 @@ import GLOBAL from "@/global/global";
 import store from "@/store";
 
 const service = axios.create({
-  // baseURL: "http://192.168.1.3:8255", // url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   headers: {
     "X-Requested-With": "XMLHttpRequest",
     "Access-Control-Allow-Origin": "*"
@@ -29,8 +29,8 @@ service.interceptors.request.use(
       background: "rgba(0, 0, 0, 0)"
     });
     if (store.getters.UserInfo.ClinicId && store.getters.UserInfo.UId) {
-        config.headers.LocationId = store.getters.UserInfo.ClinicId;
-        config.headers.UId = store.getters.UserInfo.UId;
+      config.headers.LocationId = store.getters.UserInfo.ClinicId;
+      config.headers.UId = store.getters.UserInfo.UId;
     }
     return config;
   },
