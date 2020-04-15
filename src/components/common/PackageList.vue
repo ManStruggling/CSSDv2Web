@@ -120,7 +120,7 @@ export default {
       multipleSelection: [],
       isRequested: false, //是否请求
       clinicList: [],
-      pageSize: 5,
+      pageSize: 100,
       currenrPage: 1,
       totalProduct: []
     };
