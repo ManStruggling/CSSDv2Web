@@ -69,6 +69,15 @@
             </el-select>
           </li>
           <li>
+            <p>灭菌包数阈值</p>
+            <el-input-number
+              v-model="setData.SterilizeDeviceMaxScanAmount"
+              :min="0"
+              :controls="false"
+              @change="((newValue,oldValue)=>{handleNumberChange(newValue,oldValue,'SterilizeDeviceMaxScanAmount')})"
+            ></el-input-number>
+          </li>
+          <li>
             <p>软件名称</p>
             <el-input v-model.trim="setData.Company.Name"></el-input>
           </li>
@@ -112,6 +121,7 @@ export default {
       setData: {
         ResetDeviceBatchTime: "00:00",
         EarlyWarningDay: 7,
+        SterilizeDeviceMaxScanAmount: 0,
         IsActiveNotBarCodeProduct: false,
         IsActiveNumberProduct: false,
         IsActiveNewTaskNotification: false,

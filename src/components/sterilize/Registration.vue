@@ -221,7 +221,7 @@ export default {
         HelpSterilizeQuantity: 0,
         IsHasSubstitution: false, //是否有代消包
         IsBiologicalTest: false, //是否生物监测
-        IsHighTemperatureDevice: this.$route.query.isHighTemperatureDevice,
+        IsHighTemperatureDevice: JSON.parse(this.$route.query.isHighTemperatureDevice),
         DeviceModelName: this.$route.query.deviceName,
         DeviceId: this.$route.query.deviceId - 0,
         OriginDeviceId: 0,
@@ -543,9 +543,7 @@ export default {
           ) {
             data.CarrierBarCodeScannerVm.PackageBarCodeDetailList =
               data.Packages;
-            this.handleAddData(data);
-            this.activeNameNotCarriersPackage = "-1";
-            this.activeName = `${this.submitData.Carriers.length - 1}`;
+            this.handleAddData(data, "carrier_package");
             return;
           } else {
             this.showInformation({
@@ -557,18 +555,11 @@ export default {
         }
         //扫包
         if (data.SinglePackage) {
-          this.activeName = "-1";
-          this.activeNameNotCarriersPackage = "0";
-          if (data.HasImplants) {
-            //有植入物to limit
-            this.submitData.IsBiologicalTest = true;
-            this.BiologicalTestForbit = true;
-          }
           if (
             data.SinglePackage.IsHighTemperatureProduct ==
             this.submitData.IsHighTemperatureDevice
           ) {
-            this.submitData.NotInCarrierPackages.push(data.SinglePackage);
+            this.handleAddData(data, "package");
           } else {
             this.showInformation({
               classify: "message",
@@ -634,13 +625,48 @@ export default {
       }
     },
     //添加数据处理
-    handleAddData(data) {
-      if (data.HasImplants) {
-        //有植入物to limit
-        this.submitData.IsBiologicalTest = true;
-        this.BiologicalTestForbit = true;
+    handleAddData(data, type) {
+      if (type == "carrier_package") {
+        //判断是否超过灭菌器设置的阈值
+        if (
+          this.submitData.TotalNumber +
+            data.CarrierBarCodeScannerVm.PackageBarCodeDetailList.length <=
+          this.UserInfo.Configuration.SterilizeDeviceMaxScanAmount
+        ) {
+          if (data.HasImplants) {
+            //有植入物to limit
+            this.submitData.IsBiologicalTest = true;
+            this.BiologicalTestForbit = true;
+          }
+          this.submitData.Carriers.push(data.CarrierBarCodeScannerVm);
+          this.activeNameNotCarriersPackage = "-1";
+          this.activeName = `${this.submitData.Carriers.length - 1}`;
+        } else {
+          this.showInformation({
+            classify: "message",
+            msg: "超过了灭菌器的阈值！"
+          });
+        }
+      } else if (type == "package") {
+        if (
+          this.submitData.TotalNumber + 1 <=
+          this.UserInfo.Configuration.SterilizeDeviceMaxScanAmount
+        ) {
+          this.activeName = "-1";
+          this.activeNameNotCarriersPackage = "0";
+          if (data.HasImplants) {
+            //有植入物to limit
+            this.submitData.IsBiologicalTest = true;
+            this.BiologicalTestForbit = true;
+          }
+          this.submitData.NotInCarrierPackages.push(data.SinglePackage);
+        } else {
+          this.showInformation({
+            classify: "message",
+            msg: "超过了灭菌器的阈值！"
+          });
+        }
       }
-      this.submitData.Carriers.push(data.CarrierBarCodeScannerVm);
     }
   },
   computed: {

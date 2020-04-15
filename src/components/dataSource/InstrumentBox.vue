@@ -72,7 +72,9 @@
         <div class="photoOption">
           <span>已拍照片</span>
           <p>
-            <s>{{computedPhotoNumber}}</s>
+            <s>{{this.editBoxData.InstrumentPictures == null
+                ? 0
+                : this.editBoxData.InstrumentPictures.length}}</s>
             <a @click="handleShowPhotos">拍照</a>
           </p>
         </div>
@@ -179,13 +181,6 @@ export default {
           })
           .catch(error => {});
       }
-    }
-  },
-  computed: {
-    computedPhotoNumber() {
-      return this.editBoxData.InstrumentPictures == null
-        ? 0
-        : this.editBoxData.InstrumentPictures.length;
     }
   },
   created() {
