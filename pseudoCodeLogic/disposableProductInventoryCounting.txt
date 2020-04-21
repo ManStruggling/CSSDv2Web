@@ -1,0 +1,19 @@
+一次性物品盘库：
+    step1：
+        /api/Inventory/DisposableProductInitialVm
+        获取{
+            CurrentProducts: [], //当前库存已存在的一次性物品
+            DisposableProducts: [], //基础资料维护的一次性物品
+            SubClinics: [] //盘库子科室列表 如果只有一个子科室，自动选择。多个子科室用户自己选择
+        }
+        /api/Inventory/DisposableCheckInventoryInitial
+        获取页面的当前一次性物品的库存信息
+    step2：
+        新增一次性物品
+            不能新增相同ProductId并且批次相同的产品
+            如果新增的ProductId在当前库存中已存在（CurrentProducts），则自动拉出该ProductId的有效日期
+    step3：提交
+        /api/Inventory/DisposableProductCheckInventory
+            产品、批号或有效日期不能为空
+            至少入库一个产品！
+            入库科室不能为空

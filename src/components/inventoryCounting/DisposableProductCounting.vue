@@ -51,7 +51,7 @@
         </div>
         <div class="cssd_table_bottom">
             <p>共计
-                <span>23</span> 包</p>
+                <span>{{countNumber}}</span> 包</p>
             <p>
                 <el-button type="primary" round @click="submitComplete">盘库完成</el-button>
             </p>
@@ -189,6 +189,17 @@ export default {
                     rowItem.Quantity = 1;
                 }, 0);
             }
+        }
+    },
+    computed: {
+        countNumber() {
+            let num = 0;
+            this.submitData.Products.forEach(element => {
+                if(element.Quantity) {
+                    num += element.Quantity;
+                }
+            });
+            return num;
         }
     }
 };
