@@ -9,6 +9,7 @@ import "@/assets/css/element-variables.scss";
 import "animate.css";
 import $ from "jquery";
 window.$ = $;
+window.jQuery = $;
 import ElementUI from "element-ui";
 Vue.use(ElementUI);
 import global from "./global/global";
