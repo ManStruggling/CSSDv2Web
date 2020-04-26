@@ -17,6 +17,10 @@
             <el-input type="text" v-model="editBoxData.BarCode" :disabled="true"></el-input>
           </li>
           <li>
+            <p>设备编号</p>
+            <el-input type="text" v-model="editBoxData.DeviceNumber"></el-input>
+          </li>
+          <li>
             <p>生产日期</p>
             <el-date-picker
               :editable="false"

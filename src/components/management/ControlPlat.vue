@@ -73,12 +73,24 @@
                   <router-link to="/management/vacationSchedule" :active-class="'isActive'">编辑班表</router-link>
                 </el-menu-item>
               </el-submenu>
-              <el-menu-item index="4">
-                <router-link to="/management/workLoad" :active-class="'isActive'">
+              <el-submenu index="4" class="statistics">
+                <template slot="title">
                   <i class="titleLogo workLoadLogo"></i>
                   <span>工作统计</span>
-                </router-link>
-              </el-menu-item>
+                </template>
+                <el-menu-item index="4-1">
+                  <router-link to="/management/workLoad" :active-class="'isActive'">
+                    <i></i>
+                    <span>工作量统计</span>
+                  </router-link>
+                </el-menu-item>
+                <el-menu-item index="4-2">
+                  <router-link to="/management/statistics" :active-class="'isActive'">
+                    <i></i>
+                    <span>合格率统计</span>
+                  </router-link>
+                </el-menu-item>
+              </el-submenu>
               <el-submenu index="5">
                 <template slot="title">
                   <i class="titleLogo setupLogo"></i>

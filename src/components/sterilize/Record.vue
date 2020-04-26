@@ -90,6 +90,12 @@
               <span class="span_txt">{{item.BiologicalReviewStatus==4?'否':'是'}}</span>
               <a v-show="item.BiologicalReviewStatus==4" @click="openBiologicalTest(item.Id)">开启</a>
             </li>
+            <li>
+              <p>监控</p>
+              <span>
+                <a @click="reviewEchars(item.Id)">查看</a>
+              </span>
+            </li>
           </ul>
           <el-table :data="item.Carriers" :default-expand-all="true" @row-click="tableRowClick">
             <el-table-column label="网篮条码" prop="CarrierBarCode" width="240"></el-table-column>
@@ -135,17 +141,31 @@
       </el-collapse>
       <div class="recordNoData" v-show="recordList==''">暂无数据</div>
     </div>
+    <!-- 设备监控图标 -->
+    <transition
+      name="fade"
+      enter-active-class="animated fadeIn faster"
+      leave-active-class="animated fadeOut faster"
+    >
+      <MyEchars v-if="displayEchars" :echarsData="requestData" @echars-to-father="Echars2father"></MyEchars>
+    </transition>
   </div>
 </template>
 
 <script>
+import MyEchars from "@/components/common/MyEchars";
 export default {
   inject: ["reload"],
   props: {
-    UserInfo: Object
+    UserInfo: Object,
+    requestData: {}
+  },
+  components: {
+    MyEchars
   },
   data() {
     return {
+      displayEchars: false,
       search_date: [],
       endDateLimit: {},
       recordList: []
@@ -158,6 +178,22 @@ export default {
   },
   mounted() {},
   methods: {
+    Echars2father() {
+      this.displayEchars = false;
+    },
+    reviewEchars(id) {
+      axios(`/api/Sterilize/SterilizeRawData/${id}`).then(res => {
+        if (res.data.Code == 200) {
+          this.requestData = res.data.Data;
+          this.displayEchars = true;
+        } else {
+          this.showInformation({
+            classify: "message",
+            msg: res.data.Msg
+          });
+        }
+      });
+    },
     //开启生物监测
     openBiologicalTest(Id) {
       this.showInformation({
@@ -261,6 +297,7 @@ export default {
 @import "../../assets/css/tableExpand";
 #sterilizeRecord {
   .biologicalTest {
+    width: 272px;
     span.span_txt {
       width: auto;
     }

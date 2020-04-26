@@ -1,21 +1,17 @@
 <template>
-  <div class="basic_main" id="workLoad">
+  <div class="basic_main" id="qualifiedRate">
     <div class="content">
       <div class="title">
         <p>
           <el-select
             class="green24x13"
-            v-model="selectedStaff"
+            v-model="reportType"
             filterable
-            @change="filteredStaffChange"
+            @change="filteredTypeChange"
           >
-            <el-option label="全部人员" :value="0"></el-option>
-            <el-option
-              v-for="(item,index) in staffs"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
+            <el-option :value="0" label="清洗合格率"></el-option>
+            <el-option :value="1" label="配包合格率"></el-option>
+            <el-option :value="2" label="灭菌合格率"></el-option>
           </el-select>
         </p>
         <p>
@@ -30,17 +26,20 @@
             :picker-options="GLOBAL.pickerOptions"
             value-format="yyyy-MM-dd"
           ></el-date-picker>
-          <el-button type="primary" @click="searchWorkLoad" class="btn120x40">查询</el-button>
+          <el-button type="primary" @click="searchQualifiedRate" class="btn120x40">查询</el-button>
         </p>
       </div>
-      <el-table :data="workLoadList" border :height="tableHeight">
+      <el-table :data="dataList" border :height="tableHeight">
         <el-table-column label="序号" width="80" type="index"></el-table-column>
-        <el-table-column label="姓名" prop="name" width="120"></el-table-column>
-        <el-table-column label="回收" prop="recycleWorkLoad" width="120" sortable></el-table-column>
-        <el-table-column label="清洗" prop="cleanWorkLoad" width="120" sortable></el-table-column>
-        <el-table-column label="配包" prop="packageWorkLoad" width="120" sortable></el-table-column>
-        <el-table-column label="灭菌" prop="sterilizeWorkLoad" width="120" sortable></el-table-column>
-        <el-table-column label="发放" prop="provideWorkLoad" width="120" sortable></el-table-column>
+        <el-table-column label="姓名" prop="who" width="120"></el-table-column>
+        <el-table-column label="地点" prop="where" width="120"></el-table-column>
+        <el-table-column label="总数" prop="totalCount" width="120" sortable></el-table-column>
+        <el-table-column label="合格数" prop="passCount" width="120" sortable></el-table-column>
+        <el-table-column label="不合格数" prop="failedCount" width="120" sortable></el-table-column>
+        <el-table-column label="合格率" prop="passRate" width="120" sortable></el-table-column>
+        <!-- <el-table-column label="报表类型" width="120" sortable>
+          <template slot-scope="props">{{props.row.passRateReportType===0?"清洗合格率":(props.row.passRateReportType===1?"配包合格率":"灭菌合格率")}}</template>
+        </el-table-column> -->
       </el-table>
     </div>
   </div>
@@ -55,9 +54,8 @@ export default {
   data() {
     return {
       tableHeight: window.innerHeight - 165,
-      selectedStaff: 0,
-      staffs: [],
-      workLoadList: [],
+      reportType: null,
+      dataList: [],
       totalData: [],
       search_date: []
     };
@@ -65,50 +63,41 @@ export default {
   created() {
     let date = this.GLOBAL.GetNowDate();
     this.search_date = [date, date];
-    axios({
-      url: `/basic`,
-      method: "POST",
-      data: {
-        query: `query getStaffs{
-                        staff(clinicId:${this.UserInfo.ClinicId}){
-                            id,name
-                        }
-                    }`
-      }
-    })
-      .then(res => {
-        this.staffs = res.data.data.staff;
-      })
-      .catch(err => {});
   },
   methods: {
-    //查询工作量
-    searchWorkLoad() {
-      this.selectedStaff = 0;
-      axios({
-        url: "/report",
-        method: "POST",
-        data: {
-          query: `query getWorkLoad{
-                                workLoad(startYearMonth:"${this.search_date[0]}",endYearMonth:"${this.search_date[1]}"){
-                                    id,name,recycleWorkLoad,cleanWorkLoad,packageWorkLoad,sterilizeWorkLoad,provideWorkLoad
-                                }
-                            }`
-        }
-      })
-        .then(res => {
-          this.totalData = res.data.data.workLoad;
-          this.workLoadList = JSON.parse(JSON.stringify(this.totalData));
+    //查询合格率
+    searchQualifiedRate() {
+      if (this.reportType != null) {
+        axios({
+          url: "/passratereport",
+          method: "POST",
+          data: {
+            query: `query getPassRate {
+                      passRate(type:${this.reportType},startYearMonth:"${this.search_date[0]}",endYearMonth:"${this.search_date[1]}") {
+                        id,passCount,failedCount,passRate,passRateReportType,totalCount,who,where
+                      }
+                    }`
+          }
         })
-        .catch(err => {});
+          .then(res => {
+            this.totalData = res.data.data.passRate;
+            this.dataList = JSON.parse(JSON.stringify(this.totalData));
+          })
+          .catch(err => {});
+      } else {
+        this.showInformation({
+          classify: "message",
+          msg: "请选择报表类型"
+        });
+      }
     },
-    filteredStaffChange(val) {
+    filteredTypeChange(val) {
       if (val) {
-        this.workLoadList = this.totalData.filter(item => {
+        this.dataList = this.totalData.filter(item => {
           return item.id == val;
         });
       } else {
-        this.workLoadList = JSON.parse(JSON.stringify(this.totalData));
+        this.dataList = JSON.parse(JSON.stringify(this.totalData));
       }
     }
   },
@@ -138,7 +127,7 @@ export default {
   }
 }
 
-#workLoad {
+#qualifiedRate {
   position: relative;
   padding: 30px 0;
   overflow-y: hidden;

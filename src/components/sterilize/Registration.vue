@@ -221,7 +221,7 @@ export default {
         HelpSterilizeQuantity: 0,
         IsHasSubstitution: false, //是否有代消包
         IsBiologicalTest: false, //是否生物监测
-        IsHighTemperatureDevice: JSON.parse(this.$route.query.isHighTemperatureDevice),
+        IsHighTemperatureDevice: this.$route.query.isHighTemperatureDevice?JSON.parse(this.$route.query.isHighTemperatureDevice):false,
         DeviceModelName: this.$route.query.deviceName,
         DeviceId: this.$route.query.deviceId - 0,
         OriginDeviceId: 0,

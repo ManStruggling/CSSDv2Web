@@ -85,6 +85,7 @@ export default {
         Manufacturer: "", //生产商名称
         Supplier: "", //供应商名称
         DeviceModelId: 0, //设备型号id
+        DeviceNumber: "",
         ProduceDate: "",
         IsActive: true,
         DevicePrograms: [],

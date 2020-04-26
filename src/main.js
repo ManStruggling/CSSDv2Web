@@ -24,50 +24,7 @@ import "./global/public";
 import axios from "./plugins/axios"; //引入全局方法 变量
 window.axios = axios.service;
 Vue.prototype.$http = axios.http;
-import {
-  InputNumber,
-  TimePicker,
-  Input,
-  Menu,
-  Submenu,
-  MenuItem,
-  Button,
-  CheckboxGroup,
-  CheckboxButton,
-  Cascader,
-  Select,
-  Option,
-  DatePicker,
-  Table,
-  TableColumn,
-  Tabs,
-  TabPane,
-  Collapse,
-  CollapseItem,
-  Radio,
-  Popover
-} from "element-ui";
-Vue.use(InputNumber);
-Vue.use(TimePicker);
-Vue.use(Input);
-Vue.use(Menu);
-Vue.use(Submenu);
-Vue.use(MenuItem);
-Vue.use(Button);
-Vue.use(CheckboxGroup);
-Vue.use(CheckboxButton);
-Vue.use(Cascader);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(DatePicker);
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(Tabs);
-Vue.use(TabPane);
-Vue.use(Collapse);
-Vue.use(CollapseItem);
-Vue.use(Radio);
-Vue.use(Popover);
+
 
 Vue.config.productionTip = false;
 
