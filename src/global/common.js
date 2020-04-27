@@ -6,11 +6,4 @@ exports.install = function(Vue, options) {
             console.log(err)
         })
     };
-    Vue.prototype.text2 = function() { //全局函数2
-        alert('执行成功2');
-    };
-    // Vue.prototype.restore = function(str) { //全局函数3
-    //     str = str.replace(/(^\s*)|(\s*$)/g, "");
-    //     return str;
-    // };
 };

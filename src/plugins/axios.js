@@ -29,7 +29,7 @@ service.interceptors.request.use(
       background: "rgba(0, 0, 0, 0)"
     });
     if (store.getters.UserInfo.ClinicId && store.getters.UserInfo.UId) {
-      config.headers.LocationId = store.getters.UserInfo.ClinicId;
+      config.headers.LocationId = config.headers.LocationId?config.headers.LocationId:store.getters.UserInfo.ClinicId;
       config.headers.UId = store.getters.UserInfo.UId;
     }
     return config;

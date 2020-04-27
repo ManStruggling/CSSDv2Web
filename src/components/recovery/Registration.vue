@@ -728,7 +728,9 @@ export default {
               ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
               ClinicList[i].RecycleProducts[j].IsLostPackage === false &&
               data.IsLostPackage === false &&
-              data.PackageBarCodeId != 0
+              ClinicList[i].RecycleProducts[j].IsNotPrintBarCode === false &&
+              data.IsNotPrintBarCode === false &&
+              data.PackageBarCodeId
             ) {
               //条码包 finded 包类型  ##扫描枪
               this.collapseActiveName = j + "";
@@ -742,6 +744,7 @@ export default {
               return;
             }
             //计数包
+
             if (
               ClinicList[i].RecycleProducts[j].ProductId == data.ProductId &&
               data.IsNotPrintBarCode &&
