@@ -17,8 +17,8 @@
               :editable="false"
               @change="dateChange"
               :picker-options="{
-                            disabledDate:disabledDate
-                        }"
+                  disabledDate:disabledDate
+              }"
               value-format="yyyy-MM"
               :disabled="viewModule.id?true:false"
             ></el-date-picker>
@@ -591,9 +591,8 @@ export default {
     },
     //重置班种激活状态
     resetPeriodStatus() {
-      this.submitData.PeriodArray.forEach(element => {
-        element.IsActive = false;
-      });
+      this.submitData.PeriodArray.map(element => (element.IsActive = false));
+      this.periodType.WorkArea.map(item => (item.IsActive = false));
     },
     //重置cell激活状态
     resetCellStatus() {
