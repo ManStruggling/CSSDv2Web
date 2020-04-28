@@ -29,6 +29,7 @@
         @to-father="child2father"
         :viewModule="toChildData"
         :scheduledWorks="table_data"
+        :UserInfo="UserInfo"
       ></VacationScheduleBox>
     </transition>
   </div>
