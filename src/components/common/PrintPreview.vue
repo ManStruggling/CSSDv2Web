@@ -2,11 +2,11 @@
 <div id="printPreviewBox">
     <div class="container">
         <div class="title">
-            <div class="title_left">打印预览</div>
+            <div class="title_left">打印排版</div>
             <div class="title_right">
                 <el-button class="btn88x32empty" @click="rotatePaper">旋转</el-button>
                 <el-button class="btn88x32empty" @click="cancelPrint">取消</el-button>
-                <el-button type="primary" class="btn88x32" @click="confirmPrint">确定</el-button>
+                <el-button type="primary" class="btn88x32" @click="confirmPrint">打印预览</el-button>
             </div>
         </div>
         <div class="content">

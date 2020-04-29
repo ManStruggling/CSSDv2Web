@@ -4,7 +4,7 @@
         <i class="closeStatisticalTable" @click="closeStatisticalTable"></i>
         <div class="staticstical_title">
             <p></p>
-            <el-button @click="printView">打印预览</el-button>
+            <el-button @click="printView">打印排版</el-button>
         </div>
         <el-table ref="statisticalTable" :data="tableData.Staffs" border row-key="StaffId" style="width:100%;" :height="tableHeight" fit>
             <el-table-column label="序号" fixed width="60" type="index"></el-table-column>
@@ -80,7 +80,7 @@
         </el-table>
     </div>
     <transition name="fade" enter-active-class="animated fadeIn faster" leave-active-class="animated fadeOut faster">
-        <!-- 打印预览 -->
+        <!-- 打印排版 -->
         <PrintPreview v-if="isShowPrintView"></PrintPreview>
     </transition>
 </div>
@@ -170,7 +170,7 @@ export default {
             this.$forceUpdate()
 
         },
-        //打印预览
+        //打印排版
         printView() {
             let printTablefields = [{
                 "title": "序号",

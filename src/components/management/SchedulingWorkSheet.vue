@@ -26,7 +26,7 @@
         </ul>
         <p>
           <el-button @click="statisticalTableView">查看统计表</el-button>
-          <el-button type="primary" @click="printView">打印预览</el-button>
+          <el-button type="primary" @click="printView">打印排版</el-button>
         </p>
       </div>
       <div class="workSheetRemark">
@@ -180,7 +180,7 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 打印预览 -->
+      <!-- 打印排版 -->
       <PrintPreview v-if="isShowPrintView"></PrintPreview>
     </transition>
     <transition
@@ -260,7 +260,7 @@ export default {
       },
       toChildData: {}, //传递给子组件统计表的数据
       isNameFixed: true, //name是否固定
-      isShowPrintView: false, //是否显示打印预览
+      isShowPrintView: false, //是否显示打印排版
       hiprintTemplate: null, //打印实例
       //打印模板
       customPrintJson: {
@@ -708,7 +708,7 @@ export default {
     rotatePrintPaper() {
       this.hiprintTemplate.rotatePaper();
     },
-    //打印预览
+    //打印排版
     printView() {
       if (this.submitData.Days != "") {
         let printTablefields = [
