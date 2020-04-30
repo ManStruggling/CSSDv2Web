@@ -1,5 +1,5 @@
 <template>
-  <div class="basic_package_box">
+  <div class="basic_package_box product_float_box">
     <div class="package_box">
       <h3>
         <el-select
@@ -337,7 +337,7 @@ export default {
       this.currenrPage = val;
       this.packageList = this.totalProduct.slice(
         (val - 1) * this.pageSize,
-        val*this.pageSize
+        val * this.pageSize
       );
     }
   }
@@ -346,4 +346,37 @@ export default {
 
 <style lang="scss">
 @import "../../assets/css/packageList";
+.basic_package_box.product_float_box {
+  .package_box {
+    height: 471px;
+    .el-pagination {
+      margin: 10px 0;
+      .el-pager {
+        li {
+          background: #fff;
+          border: 1px solid #878d9f;
+          border-radius: 4px;
+          &.active {
+            border-color: rgba(0, 193, 107, 1);
+            &:hover {
+              color: #fff;
+            }
+          }
+          &:hover {
+            border-color: rgba(0, 193, 107, 1);
+          }
+        }
+      }
+      button {
+        background: #fff;
+        border: 1px solid #878d9f;
+        border-radius: 4px;
+        &:not(disabled):hover {
+          border-color: rgba(0, 193, 107, 1);
+          color: rgba(0, 193, 107, 1);
+        }
+      }
+    }
+  }
+}
 </style>

@@ -10,7 +10,7 @@
   .package_box {
     background: #fff;
     width: 556px;
-    height: 471px;
+    height: 441px;
     position: absolute;
     left: 0;
     right: 0;
@@ -119,36 +119,9 @@
         font-size: 18px;
       }
     }
-    .el-pagination {
-      margin: 10px 0;
-      .el-pager {
-        li {
-          background: #fff;
-          border: 1px solid #878d9f;
-          border-radius: 4px;
-          &.active {
-            border-color: rgba(0, 193, 107, 1);
-            &:hover {
-              color: #fff;
-            }
-          }
-          &:hover {
-            border-color: rgba(0, 193, 107, 1);
-          }
-        }
-      }
-      button {
-        background: #fff;
-        border: 1px solid #878d9f;
-        border-radius: 4px;
-        &:not(disabled):hover {
-          border-color: rgba(0, 193, 107, 1);
-          color: rgba(0, 193, 107, 1);
-        }
-      }
-    }
     h4 {
       text-align: center;
+      margin-top: 20px;
       .el-button {
         width: 88px;
         height: 32px;
