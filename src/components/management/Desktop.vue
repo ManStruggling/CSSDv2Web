@@ -83,6 +83,17 @@
       <li class="desktop_box_li desktop_box_lix480">
         <div class="li_head">
           <p>不合格因素占比</p>
+          <el-date-picker
+            v-model="search_date"
+            type="daterange"
+            align="right"
+            :clearable="false"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="GLOBAL.pickerOptions"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
         </div>
         <div class="myEchars li_content"></div>
       </li>
@@ -92,49 +103,25 @@
           <p>借包天数</p>
         </div>
         <div class="li_content">
+          <div
+            class="empty_data"
+            v-show="desktopData.BorrowedPackagesConsole===null||desktopData.BorrowedPackagesConsole.BorrowedPackages===null||desktopData.BorrowedPackagesConsole.BorrowedPackages.length===0"
+          >暂无数据</div>
           <ol>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
-            </li>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
-            </li>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
-            </li>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
-            </li>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
-            </li>
-            <li>
-              <p class="p_name">XXXX科室</p>
-              <p class="p_name">骨穿包</p>
-              <p>4个</p>
-              <p>5天</p>
+            <li v-for="(item,index) in currentPageBorrowedPackages" :key="index">
+              <p class="p_name">{{item.SubClinicName}}</p>
+              <p class="p_name">{{item.ProductName}}</p>
+              <p>{{item.BorrowedCount}}个</p>
+              <p>{{item.BorrowedDays}}天</p>
             </li>
           </ol>
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="100"
-            @current-change="handleBorrowedPackagesChange"
+            v-if="desktopData.BorrowedPackagesConsole&&desktopData.BorrowedPackagesConsole.BorrowedPackages&&desktopData.BorrowedPackagesConsole.BorrowedPackages.length"
+            :total="Math.ceil(desktopData.BorrowedPackagesConsole.BorrowedPackages.length / pageSize)*10"
+            @current-change="handleBorrowedPackagesPageNumberChange"
+            :current-page="borrowedCurrentPage"
           ></el-pagination>
         </div>
       </li>
@@ -184,7 +171,7 @@
             v-if="filteredExpiringPackages===null||filteredExpiringPackages.length"
             :total="Math.ceil(filteredExpiringPackages.length / pageSize)*10"
             @current-change="handleExpiringPackagesChange"
-            :current-page="expiringCurrenrPage"
+            :current-page="expiringCurrentPage"
           ></el-pagination>
         </div>
       </li>
@@ -201,16 +188,21 @@ export default {
   },
   data() {
     return {
-      nowDate: null,
-      stampInterval: null,
-      selectedClinicId: 0,
-      subClinics: [],
+      search_date: [], //不合格因素筛选日期
+      nowDate: null, //当前时间戳
+      stampInterval: null, //定时器id
+      selectedClinicId: 0, //过期包筛选科室
+      subClinics: [], //科室列表
       pageSize: 6, //每页条数
-      expiringCurrenrPage: 1,
+      expiringCurrentPage: 1, //过期包当前页码
       currentPageExpiringPackages: [], //当前页显示的近效期包
-      filteredExpiringPackages: [],
+      filteredExpiringPackages: [], //过滤后的过期包数据
+      borrowedCurrentPage: 1, //借包当前页码
+      currentPageBorrowedPackages: [], //当前页面显示的近效期包
       desktopData: {
-        BorrowedPackagesConsole: {},
+        BorrowedPackagesConsole: {
+          BorrowedPackages: []
+        },
         ExpiringPackagesWarning: {
           ExpiringPackages: []
         },
@@ -343,6 +335,7 @@ export default {
             )
           );
           this.handleExpiringPackagesChange(1);
+          this.handleBorrowedPackagesPageNumberChange(1);
         } else {
           this.showInformation({
             classify: "message",
@@ -374,12 +367,12 @@ export default {
           )
         );
       }
-      this.expiringCurrenrPage = 1;
+      this.expiringCurrentPage = 1;
       this.handleExpiringPackagesChange(1);
     },
     //近效期包页码change
     handleExpiringPackagesChange(val) {
-      this.expiringCurrenrPage = val;
+      this.expiringCurrentPage = val;
       if (this.selectedClinicId) {
         this.currentPageExpiringPackages = this.desktopData.ExpiringPackagesWarning.ExpiringPackages.filter(
           value => value.SubClinicId == this.selectedClinicId
@@ -392,8 +385,17 @@ export default {
       }
     },
     //借包页码change
-    handleBorrowedPackagesChange(val) {
-      console.log(val);
+    handleBorrowedPackagesPageNumberChange(val) {
+      this.borrowedCurrentPage = val;
+      if (
+        this.desktopData.BorrowedPackagesConsole &&
+        this.desktopData.BorrowedPackagesConsole.BorrowedPackages
+      ) {
+        this.currentPageBorrowedPackages = this.desktopData.BorrowedPackagesConsole.BorrowedPackages.slice(
+          (val - 1) * this.pageSize,
+          val * this.pageSize
+        );
+      }
     },
     //绘制echars
     SetEchart() {
@@ -500,8 +502,16 @@ export default {
           font-size: 20px;
           font-family: Microsoft YaHei;
           font-weight: bold;
+          &.el-range-separator{
+            color: #C4C9D1;
+            font-weight: normal;
+          }
         }
-
+        .el-range-input{
+          font-size: 18px;
+          font-weight: bold;
+          color: #232E41;
+        }
         .el-select {
           width: 160px;
 
