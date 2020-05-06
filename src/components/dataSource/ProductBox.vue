@@ -88,6 +88,7 @@
               <li v-if="editBoxData.Type != 82">
                 <p>灭菌类型</p>
                 <el-select v-model="editBoxData.DeviceType" class="green24x13">
+                  <el-option label="不限制" :value="0"></el-option>
                   <el-option label="高温蒸汽" :value="2"></el-option>
                   <el-option label="低温等离子" :value="3"></el-option>
                   <el-option label="环氧乙烷" :value="4"></el-option>

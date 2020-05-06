@@ -505,10 +505,11 @@ export default {
           &.el-range-separator{
             color: #C4C9D1;
             font-weight: normal;
+            font-size: 16px;
           }
         }
         .el-range-input{
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
           color: #232E41;
         }

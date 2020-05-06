@@ -228,12 +228,9 @@ export default {
         IsSingleCarrierProduct: false,
         NumberProductQuantity: 0,
         ProvideGenerateType: 0,
-        DeviceType: 2,
+        DeviceType: 0,
         ProductPictures: []
       };
-      if (this.Type == 82) {
-        this.toChildData.DeviceType = 0;
-      }
       this.showEditBox = true;
     },
     //禁用this package
