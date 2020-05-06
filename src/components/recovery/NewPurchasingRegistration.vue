@@ -184,6 +184,24 @@ export default {
     PackageList,
     ManualEnter
   },
+  beforeRouteEnter(to, from, next) {
+    if (
+      UserInfo.JobAndCompetence.includes("111") ||
+      UserInfo.JobAndCompetence.includes("000") ||
+      UserInfo.JobAndCompetence.includes("100")
+    ) {
+      next();
+    } else {
+      next(from.path);
+      VueVm.$message({
+        type: "warning",
+        message: "您没有新购入包模块访问权限！",
+        center: true,
+        duration: 2000,
+        showClose: true
+      });
+    }
+  },
   created() {
     CSManager.handleDataThis = this;
     if (this.$route.query.recordId) {
