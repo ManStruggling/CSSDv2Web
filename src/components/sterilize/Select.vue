@@ -128,13 +128,10 @@ export default {
         query: {
           deviceName: this.deviceList[index].SterilizeDeviceName,
           deviceId: this.deviceList[index].SterilizeDeviceId,
-          programName: this.deviceList[index].SterilizePrograms[idx]
-            .ProgramName,
+          programName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
           programId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
-          isDbTestProgram: this.deviceList[index].SterilizePrograms[idx]
-            .IsDbTestProgram,
-          isHighTemperatureDevice: this.deviceList[index]
-            .IsHighTemperatureDevice
+          isDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram,
+          deviceType: this.deviceList[index].DeviceType
         }
       });
     },

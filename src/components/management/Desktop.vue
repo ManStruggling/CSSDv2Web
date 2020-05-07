@@ -634,7 +634,6 @@ export default {
         }
       }
 
-      // #878D9F
       .el-pagination {
         .btn-quickprev,
         .btn-quicknext,

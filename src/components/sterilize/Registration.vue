@@ -221,13 +221,13 @@ export default {
         HelpSterilizeQuantity: 0,
         IsHasSubstitution: false, //是否有代消包
         IsBiologicalTest: false, //是否生物监测
-        IsHighTemperatureDevice: this.$route.query.isHighTemperatureDevice?JSON.parse(this.$route.query.isHighTemperatureDevice):false,
         DeviceModelName: this.$route.query.deviceName,
         DeviceId: this.$route.query.deviceId - 0,
         OriginDeviceId: 0,
         DeviceModelProgramName: this.$route.query.programName,
         DeviceProgramId: this.$route.query.programId - 0,
         IsDbTestProgram: this.$route.query.isDbTestProgram,
+        DeviceType: +this.$route.query.deviceType,
         Carriers: [],
         NotInCarrierPackages: []
       }
@@ -534,17 +534,13 @@ export default {
         //扫网篮
         if (data.CarrierBarCodeScannerVm) {
           if (
-            data.Packages.every(val => {
-              return (
-                val.IsHighTemperatureProduct ==
-                this.submitData.IsHighTemperatureDevice
-              );
-            })
+            data.CarrierBarCodeScannerVm.DeviceType === 5 ||
+            data.CarrierBarCodeScannerVm.DeviceType ===
+              this.submitData.DeviceType
           ) {
             data.CarrierBarCodeScannerVm.PackageBarCodeDetailList =
               data.Packages;
             this.handleAddData(data, "carrier_package");
-            return;
           } else {
             this.showInformation({
               classify: "message",
@@ -556,8 +552,8 @@ export default {
         //扫包
         if (data.SinglePackage) {
           if (
-            data.SinglePackage.IsHighTemperatureProduct ==
-            this.submitData.IsHighTemperatureDevice
+            data.SinglePackage.DeviceType === 5 ||
+            data.SinglePackage.DeviceType === this.submitData.DeviceType
           ) {
             this.handleAddData(data, "package");
           } else {
@@ -575,18 +571,12 @@ export default {
       this.isShowSterilizeSelect = false;
       if (data) {
         this.$route.query.deviceName = data.DeviceName;
-        this.submitData.DeviceModelName = data.DeviceName;
         this.$route.query.deviceId = data.DeviceId;
-        this.submitData.DeviceId = data.DeviceId;
         this.$route.query.programName = data.ProgramName;
-        this.submitData.DeviceModelProgramName = data.ProgramName;
         this.$route.query.programId = data.ProgramId;
-        this.submitData.DeviceProgramId = data.ProgramId;
         this.$route.query.isDbTestProgram = data.IsDbTestProgram;
-        this.submitData.IsDbTestProgram = data.IsDbTestProgram;
-        this.$route.query.isHighTemperatureDevice =
-          data.IsHighTemperatureDevice;
-        this.submitData.IsHighTemperatureDevice = data.IsHighTemperatureDevice;
+        this.$route.query.deviceType = data.DeviceType;
+        Object.assign(this.submitData, data);
       }
     },
     //处理JSManager传过来的BarCode
