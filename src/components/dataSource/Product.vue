@@ -228,7 +228,7 @@ export default {
         IsSingleCarrierProduct: false,
         NumberProductQuantity: 0,
         ProvideGenerateType: 0,
-        DeviceType: 0,
+        DeviceType: 5,
         ProductPictures: []
       };
       this.showEditBox = true;

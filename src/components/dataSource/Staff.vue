@@ -65,11 +65,7 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <StaffBox
-        v-if="showEditBox"
-        @to-father="child2father"
-        :data="toChildData"
-      ></StaffBox>
+      <StaffBox v-if="showEditBox" @to-father="child2father" :data="toChildData"></StaffBox>
     </transition>
   </div>
 </template>
@@ -173,6 +169,8 @@ export default {
     searchThisTableData() {
       this.baseDataSearch(
         `/odata/staffs?$filter=contains(name,${"'" +
+          encodeURIComponent(this.basic_search) +
+          "'"}) or contains(shortcode,${"'" +
           encodeURIComponent(this.basic_search) +
           "'"})`
       );
