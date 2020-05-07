@@ -401,8 +401,7 @@ export default {
       })
         .then(res => {
           if (res.data.Code == 200) {
-            console.log(res.data);
-            this.option.series[0].data = res.data.Data.Causes;
+            this.option.series[0].data = res.data.Data.Causes.sort((a,b)=>a.value-b.value);
             this.SetEchart();
           }
         })
