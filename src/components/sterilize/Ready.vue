@@ -132,6 +132,7 @@ export default {
       submitData: {
         CarrierId: 0,
         CarrierName: "",
+        DeviceType: 5, //2高温高压  3低温等离子 4环氧乙烷 5不限制
         PackageBarCodes: []
       }
     };
@@ -243,6 +244,9 @@ export default {
         msg: "确定要删除该包吗?",
         confirmCallBack: () => {
           this.submitData.PackageBarCodes.splice(index, 1);
+          if(this.submitData.PackageBarCodes.every(item=>item.DeviceType===5)){
+            this.submitData.DeviceType = 5;
+          }
         },
         cancelCallBack: () => {}
       });
@@ -307,7 +311,24 @@ export default {
       if (data) {
         //扫包
         if (data.PackageBarCodeScannerVm) {
-          this.submitData.PackageBarCodes.push(data.PackageBarCodeScannerVm);
+          if (
+            data.PackageBarCodeScannerVm.DeviceType === 5 ||
+            this.submitData.DeviceType === 5 ||
+            data.PackageBarCodeScannerVm.DeviceType ==
+              this.submitData.DeviceType
+          ) {
+            //insert data
+            if (data.PackageBarCodeScannerVm.DeviceType != 5) {
+              this.submitData.DeviceType = data.PackageBarCodeScannerVm.DeviceType;
+            }
+            this.submitData.PackageBarCodes.push(data.PackageBarCodeScannerVm);
+          } else {
+            //error
+            this.showInformation({
+              classify: "message",
+              msg: "扫入的包和网篮内的包灭菌类型不匹配！"
+            });
+          }
           return;
         }
         //扫网篮
