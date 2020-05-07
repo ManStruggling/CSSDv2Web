@@ -155,8 +155,8 @@
       <SterilizeSelectBox
         v-if="isShowSterilizeSelect"
         @to-father="deviceProgram2father"
-        :OriginDeviceId="submitData.OriginDeviceId"
         :mode="sterilizeRecordModle"
+        :DeviceType="submitData.DeviceType"
       ></SterilizeSelectBox>
     </transition>
     <transition
@@ -223,7 +223,6 @@ export default {
         IsBiologicalTest: false, //是否生物监测
         DeviceModelName: this.$route.query.deviceName,
         DeviceId: this.$route.query.deviceId - 0,
-        OriginDeviceId: 0,
         DeviceModelProgramName: this.$route.query.programName,
         DeviceProgramId: this.$route.query.programId - 0,
         IsDbTestProgram: this.$route.query.isDbTestProgram,
@@ -252,7 +251,6 @@ export default {
         .then(res => {
           if (res.data.Code == 200) {
             this.submitData = res.data.Data;
-            this.submitData.OriginDeviceId = this.submitData.DeviceId;
             this.$route.query.deviceId = this.submitData.DeviceId;
             this.$route.query.programId = this.submitData.DeviceProgramId;
             if (this.submitData.HelpSterilizeQuantity) {
@@ -570,10 +568,10 @@ export default {
     deviceProgram2father(data) {
       this.isShowSterilizeSelect = false;
       if (data) {
-        this.$route.query.deviceName = data.DeviceName;
+        this.$route.query.deviceName = data.DeviceModelName;
         this.$route.query.deviceId = data.DeviceId;
-        this.$route.query.programName = data.ProgramName;
-        this.$route.query.programId = data.ProgramId;
+        this.$route.query.programName = data.DeviceModelProgramName;
+        this.$route.query.programId = data.DeviceProgramId;
         this.$route.query.isDbTestProgram = data.IsDbTestProgram;
         this.$route.query.deviceType = data.DeviceType;
         Object.assign(this.submitData, data);

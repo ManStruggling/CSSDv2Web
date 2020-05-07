@@ -33,7 +33,7 @@
                 </dl>
                 <ol class="clear_float">
                     <li v-for="(val,idx) in item.SterilizePrograms" :key="idx">
-                        <el-button :disabled="item.Status==0||(mode&&OriginDeviceId==item.SterilizeDeviceId)?false:true" :class="$route.query.deviceId==item.SterilizeDeviceId&&$route.query.programId==val.ProgramId?'is-selected':''" @click="selectProgram(index,idx)">{{val.IsDbTestProgram?`${val.ProgramName}(BD测试程序)`:val.ProgramName}}</el-button>
+                        <el-button :disabled="(!mode&&item.Status!=0)||DeviceType!=item.DeviceType" :class="$route.query.deviceId==item.SterilizeDeviceId&&$route.query.programId==val.ProgramId?'is-selected':''" @click="selectProgram(index,idx)">{{val.IsDbTestProgram?`${val.ProgramName}(BD测试程序)`:val.ProgramName}}</el-button>
                     </li>
                 </ol>
             </div>
@@ -45,7 +45,7 @@
 <script>
 export default {
     inject: ['reload'],
-    props: ['mode', 'OriginDeviceId'],
+    props: ['mode',"DeviceType"],
     data() {
         return {
             deviceList: []
@@ -88,10 +88,10 @@ export default {
         //选择程序
         selectProgram(index, idx) {
             this.$emit("to-father", {
-                DeviceName: this.deviceList[index].SterilizeDeviceName,
+                DeviceModelName: this.deviceList[index].SterilizeDeviceName,
                 DeviceId: this.deviceList[index].SterilizeDeviceId,
-                ProgramName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
-                ProgramId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
+                DeviceModelProgramName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
+                DeviceProgramId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
                 IsDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram,
                 DeviceType: this.deviceList[index].DeviceType
             });
