@@ -91,11 +91,13 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="searchDateChange"
             :picker-options="GLOBAL.pickerOptions"
             value-format="yyyy-MM-dd"
           ></el-date-picker>
         </div>
         <div class="myEchars li_content"></div>
+        <div class="empty_data_txt" v-show="option.series[0].data.length===0">暂无数据</div>
       </li>
       <!-- 借包天数 -->
       <li class="desktop_box_li desktop_box_lix480">
@@ -188,6 +190,7 @@ export default {
   },
   data() {
     return {
+      failedCauseEchars: null,
       search_date: [], //不合格因素筛选日期
       nowDate: null, //当前时间戳
       stampInterval: null, //定时器id
@@ -216,6 +219,7 @@ export default {
         }
       },
       option: {
+        color: ["#96E842", "#FFDC49", "#FFB749", "#FF7533", "#FF3948"],
         backgroundColor: "#fff",
         tooltip: {
           trigger: "item",
@@ -230,38 +234,23 @@ export default {
             data: [
               {
                 value: 400,
-                name: "搜索引擎",
-                itemStyle: {
-                  color: "#FF3948"
-                }
+                name: "搜索引擎"
               },
               {
                 value: 335,
-                name: "直接访问",
-                itemStyle: {
-                  color: "#FF7533"
-                }
+                name: "直接访问"
               },
               {
                 value: 310,
-                name: "邮件营销",
-                itemStyle: {
-                  color: "#FFB749"
-                }
+                name: "邮件营销"
               },
               {
                 value: 274,
-                name: "联盟广告",
-                itemStyle: {
-                  color: "#FFDC49"
-                }
+                name: "联盟广告"
               },
               {
                 value: 235,
-                name: "视频广告",
-                itemStyle: {
-                  color: "#96E842"
-                }
+                name: "视频广告"
               }
             ].sort(function(a, b) {
               return a.value - b.value;
@@ -305,6 +294,9 @@ export default {
     MyCalendar
   },
   created() {
+    let date = this.GLOBAL.GetNowDate();
+    this.search_date = [date, date];
+    this.searchDateChange();
     this.nowDate = new Date().getTime();
     this.stampInterval = setInterval(() => {
       this.nowDate += 1000;
@@ -346,7 +338,8 @@ export default {
       .catch(err => {});
   },
   mounted() {
-    this.SetEchart();
+    // 基于准备好的dom，初始化echarts实例
+    this.failedCauseEchars = echarts.init(document.querySelector(".myEchars"));
   },
   beforeDestroy() {
     clearInterval(this.stampInterval);
@@ -399,10 +392,21 @@ export default {
     },
     //绘制echars
     SetEchart() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = echarts.init(document.querySelector(".myEchars"));
       // 绘制图表
-      myChart.setOption(this.option);
+      this.failedCauseEchars.setOption(this.option);
+    },
+    searchDateChange() {
+      axios({
+        url: `/api/MainConsole/FailedCauseStatistics/${this.search_date[0]}/${this.search_date[1]}`
+      })
+        .then(res => {
+          if (res.data.Code == 200) {
+            console.log(res.data);
+            this.option.series[0].data = res.data.Data.Causes;
+            this.SetEchart();
+          }
+        })
+        .catch(err => {});
     }
   },
   computed: {
@@ -502,16 +506,16 @@ export default {
           font-size: 20px;
           font-family: Microsoft YaHei;
           font-weight: bold;
-          &.el-range-separator{
-            color: #C4C9D1;
+          &.el-range-separator {
+            color: #c4c9d1;
             font-weight: normal;
             font-size: 16px;
           }
         }
-        .el-range-input{
+        .el-range-input {
           font-size: 16px;
           font-weight: bold;
-          color: #232E41;
+          color: #232e41;
         }
         .el-select {
           width: 160px;
@@ -534,6 +538,7 @@ export default {
           font-weight: normal;
           color: #d0d4da;
         }
+        
 
         .li_content_title {
           display: flex;
@@ -576,6 +581,14 @@ export default {
           }
         }
       }
+      .empty_data_txt {
+          text-align: center;
+          line-height: 65px;
+          font-size: 18px;
+          font-family: Microsoft YaHei;
+          color: #d0d4da;
+          transform: translate(10px, -340px);
+        }
 
       &.taskProgress {
         ol {
