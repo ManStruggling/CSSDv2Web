@@ -528,7 +528,6 @@ export default {
           }
         }
       }
-
       .li_content {
         flex: 1;
 
