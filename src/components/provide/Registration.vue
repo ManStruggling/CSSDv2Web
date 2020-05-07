@@ -319,8 +319,7 @@
       <SelectSubClinicOfProduct
         v-if="isShowProductList"
         @selectSubClinicOfProduct-to-father="packgeList2father"
-        :requestApi="`ProvideGenerateType eq '手动生成'`"
-        :getApiLimit="`ProvideGenerateType eq '手动生成'`"
+        :requestApi="`IsCommonProduct`"
         :submitApi="`/api/Provide/AddProvideTask`"
       ></SelectSubClinicOfProduct>
     </transition>

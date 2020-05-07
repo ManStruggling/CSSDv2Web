@@ -146,20 +146,19 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <!-- 数量包登记   控制是否挂载   数据通信   类型 -->
-      <PackageList
+      <!-- 新购入包登记 -->
+      <SelectSubClinicOfProduct
         v-if="isShowPackageList"
-        @packageList-to-father="packgeList2father"
+        @selectSubClinicOfProduct-to-father="packgeList2father"
         :requestApi="`type eq '高水平消毒包' or type eq '追溯的无菌包'`"
-        :packageClass="'NewPurchasing'"
-      ></PackageList>
+      ></SelectSubClinicOfProduct>
     </transition>
   </div>
 </template>
 
 <script>
-import PackageList from "../common/PackageList";
 import ManualEnter from "../common/ManualEnter";
+import SelectSubClinicOfProduct from "../common/SelectSubClinicOfProduct";
 export default {
   inject: ["reload"],
   props: {
@@ -181,8 +180,8 @@ export default {
     };
   },
   components: {
-    PackageList,
-    ManualEnter
+    ManualEnter,
+    SelectSubClinicOfProduct
   },
   beforeRouteEnter(to, from, next) {
     if (
@@ -534,6 +533,7 @@ export default {
           ProvideSubClinicId: data.ProvideSubClinicId,
           Packages: arr
         });
+        
       }
     },
     //处理扫描枪条码
