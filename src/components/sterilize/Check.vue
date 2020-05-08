@@ -101,6 +101,14 @@
                           <el-option :label="'未检测'" :value="4"></el-option>
                         </el-select>
                       </li>
+                       <li>
+                        <p>物理检测结果</p>
+                        <el-select v-model="item.PhysicalReviewStatus" class="green24x13">
+                          <el-option :label="'合格'" :value="2"></el-option>
+                          <el-option :label="'不合格'" :value="3"></el-option>
+                          <el-option :label="'未检测'" :value="4"></el-option>
+                        </el-select>
+                      </li>
                     </ul>
                     <div class="photoOption">
                       <span>已拍照片</span>

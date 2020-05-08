@@ -81,6 +81,32 @@
             <p>软件名称</p>
             <el-input v-model.trim="setData.Company.Name"></el-input>
           </li>
+          <li v-if="setData.PackageBarCoreExternalString">
+            <p>模板额外字段</p>
+            <div class="switch_box">
+              <el-switch
+                v-model="setData.PackageBarCoreExternalString.IsActive"
+                active-color="#01BF6A"
+                inactive-color="#dbdde6"
+                :active-value="true"
+                :inactive-value="false"
+              ></el-switch>
+            </div>
+          </li>
+          <li
+            v-if="setData.PackageBarCoreExternalString"
+            v-show="setData.PackageBarCoreExternalString.IsActive"
+          >
+            <p>清洗人</p>
+            <el-input v-model.trim="setData.PackageBarCoreExternalString.Cleaner"></el-input>
+          </li>
+          <li
+            v-if="setData.PackageBarCoreExternalString"
+            v-show="setData.PackageBarCoreExternalString.IsActive"
+          >
+            <p>灭菌人</p>
+            <el-input v-model.trim="setData.PackageBarCoreExternalString.Sterilizer"></el-input>
+          </li>
         </ul>
         <ul>
           <li class="img_upload">
@@ -126,6 +152,11 @@ export default {
         IsActiveNumberProduct: false,
         IsActiveNewTaskNotification: false,
         IsProxyProductPrintBarCode: true,
+        PackageBarCoreExternalString: {
+          IsActive: false,
+          Cleaner: "",
+          Sterilizer: ""
+        },
         Company: {
           Name: "",
           Logo: ""
@@ -140,6 +171,15 @@ export default {
     })
       .then(res => {
         if (res.data.Code == 200) {
+          if (!res.data.Data.PackageBarCoreExternalString) {
+            Object.assign(res.data.Data, {
+              PackageBarCoreExternalString: {
+                IsActive: false,
+                Cleaner: "",
+                Sterilizer: ""
+              }
+            });
+          }
           this.setData = res.data.Data;
         } else {
           this.showInformation({

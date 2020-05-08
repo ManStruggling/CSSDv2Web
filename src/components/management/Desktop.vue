@@ -231,28 +231,7 @@ export default {
             type: "pie",
             radius: "90%",
             center: ["50%", "50%"],
-            data: [
-              {
-                value: 400,
-                name: "搜索引擎"
-              },
-              {
-                value: 335,
-                name: "直接访问"
-              },
-              {
-                value: 310,
-                name: "邮件营销"
-              },
-              {
-                value: 274,
-                name: "联盟广告"
-              },
-              {
-                value: 235,
-                name: "视频广告"
-              }
-            ].sort(function(a, b) {
+            data: [ ].sort(function(a, b) {
               return a.value - b.value;
             }),
             roseType: "radius",
@@ -585,7 +564,7 @@ export default {
           font-size: 18px;
           font-family: Microsoft YaHei;
           color: #d0d4da;
-          transform: translate(10px, -340px);
+          transform: translate(10px, -300px);
         }
 
       &.taskProgress {
