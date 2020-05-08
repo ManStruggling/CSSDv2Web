@@ -81,7 +81,7 @@
             <p>软件名称</p>
             <el-input v-model.trim="setData.Company.Name"></el-input>
           </li>
-          <li v-if="setData.PackageBarCoreExternalString">
+          <li>
             <p>模板额外字段</p>
             <div class="switch_box">
               <el-switch
@@ -93,17 +93,11 @@
               ></el-switch>
             </div>
           </li>
-          <li
-            v-if="setData.PackageBarCoreExternalString"
-            v-show="setData.PackageBarCoreExternalString.IsActive"
-          >
+          <li v-show="setData.PackageBarCoreExternalString.IsActive">
             <p>清洗人</p>
             <el-input v-model.trim="setData.PackageBarCoreExternalString.Cleaner"></el-input>
           </li>
-          <li
-            v-if="setData.PackageBarCoreExternalString"
-            v-show="setData.PackageBarCoreExternalString.IsActive"
-          >
+          <li v-show="setData.PackageBarCoreExternalString.IsActive">
             <p>灭菌人</p>
             <el-input v-model.trim="setData.PackageBarCoreExternalString.Sterilizer"></el-input>
           </li>
