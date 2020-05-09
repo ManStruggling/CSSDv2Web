@@ -374,6 +374,7 @@ export default {
       // 绘制图表
       this.failedCauseEchars.setOption(this.option);
     },
+    //不合格因素占比饼状图
     searchDateChange() {
       axios({
         url: `/api/MainConsole/FailedCauseStatistics/${this.search_date[0]}/${this.search_date[1]}`

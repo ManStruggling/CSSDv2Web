@@ -81,6 +81,8 @@
             <p>软件名称</p>
             <el-input v-model.trim="setData.Company.Name"></el-input>
           </li>
+        </ul>
+        <ul>
           <li>
             <p>模板额外字段</p>
             <div class="switch_box">
@@ -100,6 +102,35 @@
           <li v-show="setData.PackageBarCoreExternalString.IsActive">
             <p>灭菌人</p>
             <el-input v-model.trim="setData.PackageBarCoreExternalString.Sterilizer"></el-input>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <p>每周生物检测</p>
+            <div class="switch_box">
+              <el-switch
+                v-model="setData.ForceEveryWeeksSomedayBiologicalReview.IsActive"
+                active-color="#01BF6A"
+                inactive-color="#dbdde6"
+                :active-value="true"
+                :inactive-value="false"
+              ></el-switch>
+            </div>
+          </li>
+          <li v-show="setData.ForceEveryWeeksSomedayBiologicalReview.IsActive">
+            <p>生物检测日期</p>
+            <el-select
+              v-model="setData.ForceEveryWeeksSomedayBiologicalReview.Day"
+              class="green24x13"
+            >
+              <el-option label="星期天" :value="0"></el-option>
+              <el-option label="星期一" :value="1"></el-option>
+              <el-option label="星期二" :value="2"></el-option>
+              <el-option label="星期三" :value="3"></el-option>
+              <el-option label="星期四" :value="4"></el-option>
+              <el-option label="星期五" :value="5"></el-option>
+              <el-option label="星期六" :value="6"></el-option>
+            </el-select>
           </li>
         </ul>
         <ul>
@@ -151,6 +182,10 @@ export default {
           Cleaner: "",
           Sterilizer: ""
         },
+        ForceEveryWeeksSomedayBiologicalReview: {
+          IsActive: false,
+          Day: ""
+        },
         Company: {
           Name: "",
           Logo: ""
@@ -171,6 +206,14 @@ export default {
                 IsActive: false,
                 Cleaner: "",
                 Sterilizer: ""
+              }
+            });
+          }
+          if (!res.data.Data.ForceEveryWeeksSomedayBiologicalReview) {
+            Object.assign(res.data.Data, {
+              ForceEveryWeeksSomedayBiologicalReview: {
+                IsActive: false,
+                Day: ""
               }
             });
           }

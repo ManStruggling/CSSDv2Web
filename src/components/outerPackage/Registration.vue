@@ -154,7 +154,7 @@
             </li>-->
           </ul>
         </template>
-        <!-- 非同济版本 -->
+        <!-- 通用版本 -->
         <template v-if="UserInfo.HospitalVersion!='TONGJI'&&!submitData.IsBackupPackage">
           <ul>
             <li>
@@ -233,6 +233,22 @@
                   class="font16blod"
                 ></el-input>
               </div>
+            </li>
+            <li>
+              <p class="font16gray">生日</p>
+              <div class="el_input_box font16blod">
+                  <el-date-picker
+                    class="font16blod"
+                    :editable="false"
+                    :clearable="false"
+                    v-model="submitData.Patient.Birthday"
+                    type="date"
+                    placeholder="选择日期"
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd"
+                    :disabled="!submitData.Patient.HospitalId"
+                  ></el-date-picker>
+                </div>
             </li>
             <li>
               <p class="font16gray">入院时间</p>
@@ -460,7 +476,8 @@ export default {
           SurgicalRoom: "", //手术间
           SurgicalSite: "", //手术部位
           SurgicalDate: "", //手术时间
-          Stage: "" //台次
+          Stage: "", //台次
+          Birthday: "" //生日
         },
         Packages: []
       }
@@ -526,7 +543,8 @@ export default {
           SurgicalRoom: "", //手术间
           SurgicalSite: "", //手术部位
           SurgicalDate: "", //手术时间
-          Stage: "" //台次
+          Stage: "", //台次
+          Birthday: "" //生日
         },
         Packages: []
       };
@@ -571,7 +589,8 @@ export default {
                 SurgicalRoom: "",
                 SurgicalSite: "",
                 SurgicalDate: "",
-                Stage: ""
+                Stage: "",
+                Birthday: ""
               };
             }
             this.showInformation({

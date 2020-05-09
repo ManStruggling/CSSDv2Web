@@ -30,6 +30,20 @@
               <el-option label="医院" :value="4"></el-option>
             </el-select>
           </li>
+          <li>
+            <p>未使用包回收</p>
+            <el-select v-model="editBoxData.CanRecycleIfDoNotApplyPackage" class="green24x13">
+              <el-option label="能" :value="true"></el-option>
+              <el-option label="否" :value="false"></el-option>
+            </el-select>
+          </li>
+          <li>
+            <p>打印发放清单</p>
+            <el-select v-model="editBoxData.IsNotPrintProvideList" class="green24x13">
+              <el-option label="是" :value="true"></el-option>
+              <el-option label="否" :value="false"></el-option>
+            </el-select>
+          </li>
         </ul>
         <el-table :data="editBoxData.SubClinics">
           <el-table-column label="子科室名称" width="240">
@@ -75,7 +89,7 @@
 
 <script>
 export default {
-  props: ["data","UserInfo"],
+  props: ["data", "UserInfo"],
   data() {
     return {
       clinicTypeForbit: false,

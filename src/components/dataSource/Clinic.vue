@@ -73,7 +73,12 @@
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
-      <ClinicBox v-if="showEditBox" @to-father="child2father" :data="toChildData" :UserInfo="UserInfo"></ClinicBox>
+      <ClinicBox
+        v-if="showEditBox"
+        @to-father="child2father"
+        :data="toChildData"
+        :UserInfo="UserInfo"
+      ></ClinicBox>
     </transition>
   </div>
 </template>
@@ -188,6 +193,8 @@ export default {
         ShortCode: "",
         Telephone: "",
         ClinicType: "",
+        CanRecycleIfDoNotApplyPackage: false,
+        IsNotPrintProvideList: false,
         SubClinics: []
       };
       this.showEditBox = true;

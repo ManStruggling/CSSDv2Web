@@ -92,7 +92,7 @@
                     </div>
           </li>-->
         </ul>
-        <!-- 非同济版本 -->
+        <!-- 通用版 -->
         <ul v-if="UserInfo.HospitalVersion!='TONGJI'">
           <li>
             <p class="font16gray">住院号</p>
@@ -128,6 +128,21 @@
             <p class="font16gray">年龄</p>
             <div class="el_input_box font16blod">
               <el-input v-model.trim="submitData.Patient.Age" :disabled="forbid"></el-input>
+            </div>
+          </li>
+          <li>
+            <p class="font16gray">生日</p>
+              <div class="el_input_box font16blod">
+                <el-date-picker
+                  :editable="false"
+                  :clearable="false"
+                  v-model="submitData.Patient.Birthday"
+                  type="date"
+                  placeholder="选择日期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  :disabled="forbid"
+                ></el-date-picker>
             </div>
           </li>
           <li>
@@ -298,6 +313,7 @@ export default {
           SurgicalDoctor: "",
           RegisteredClinic: "",
           RegisteredDate: "",
+          Birthday: "",
           SurgicalRoom: "",
           SurgicalSite: "",
           SurgicalDate: "",
@@ -408,6 +424,7 @@ export default {
                 SurgicalDoctor: "",
                 RegisteredClinic: "",
                 RegisteredDate: "",
+                Birthday: "",
                 SurgicalRoom: "",
                 SurgicalSite: "",
                 SurgicalDate: "",
