@@ -137,7 +137,7 @@ function PrintBarcode(msg) {
     try {
         JSManager.PrintBarcode(msg);
     } catch (error) {
-
+        console.log(error);
     }
 }
 
