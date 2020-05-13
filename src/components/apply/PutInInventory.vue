@@ -172,7 +172,11 @@ export default {
     })
       .then(res => {
         if (res.data.Code == 200) {
-          res.data.Data.InboundSubClinicId = "";
+          if (this.UserInfo.SubClinics.length === 1) {
+            res.data.Data.InboundSubClinicId = this.UserInfo.SubClinics[0].SubClinicId;
+          } else {
+            res.data.Data.InboundSubClinicId = "";
+          }
           this.putInTask = res.data.Data;
         } else {
           this.showInformation({
