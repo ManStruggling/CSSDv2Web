@@ -17,8 +17,8 @@ Vue.prototype.GLOBAL = global;
 //全局vue
 import "./global/VuePublic";
 
-import JSManager from "./global/JSManager";
-window.CSManager = JSManager;
+import ClientJSManager from "./global/JSManager";
+window.CSManager = ClientJSManager;
 import Common from "./global/common";
 Vue.use(Common);
 import "./global/public";
@@ -26,11 +26,18 @@ import axios from "./plugins/axios"; //引入全局方法 变量
 window.axios = axios.service;
 Vue.prototype.$http = axios.http;
 
+if (window.JSManager && window.JSManager.IsActiveCOMPort) {
+  if (JSManager.IsActiveCOMPort === false) {
+    CSManager.ListenKeyUpEvent();
+  }
+} else {
+  CSManager.ListenKeyUpEvent();
+}
 
 Vue.config.productionTip = false;
 
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

@@ -25,7 +25,7 @@
             <p>
                 <span>借包人</span>
                 <el-select v-model="submitData.Borrower" filterable allow-create default-first-option placeholder="选择人员" class="white24x13">
-                    <el-option v-for="(item,index) in staffList" :key="index" :label="item.name" :value="item.name"></el-option>
+                    <el-option v-for="(item,index) in staffList" :key="index" :label="item.Name" :value="item.Id"></el-option>
                 </el-select>
             </p>
         </div>
@@ -81,9 +81,7 @@ export default {
             isShowManualEnter: false,
             // isShowCountNumberPackageList: false,
             clinicList: [],
-            staffList: [{
-                name: "张三"
-            }],
+            staffList: [],
             submitData: {
                 Borrower: "",
                 BorrowedSubClinicId: "",
@@ -111,6 +109,11 @@ export default {
                 }
             })
             .catch(err => {});
+        axios({
+            url: `/odata/Staffs?$select=id,name`
+        }).then(res=>{
+            this.staffList = res.data.value;
+        })
     },
     mounted() {},
     beforeDestroy() {
@@ -124,6 +127,11 @@ export default {
                         val: this.submitData.BorrowedSubClinicId,
                         type: "StringNotEmpty",
                         msg: "请选择借包科室"
+                    },
+                    {
+                        val: this.submitData.Borrower,
+                        type: "stringNotEmpty",
+                        msg: "请选择借包人！"
                     },
                     {
                         val: this.submitData.Packages,

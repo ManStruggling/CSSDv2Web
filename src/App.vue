@@ -42,9 +42,6 @@ export default {
       }
     }
   },
-  mounted() {
-    CSManager.ListenKeyUpEvent();
-  },
   provide() {
     return {
       reload: this.reload,

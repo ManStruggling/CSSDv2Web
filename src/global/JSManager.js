@@ -1,79 +1,78 @@
 ﻿// JSManager 处理C#和JS交互
-import Vue from 'vue';
-let VM = new Vue;
+import Vue from "vue";
+let VM = new Vue();
 /** 接收CS传来的信息
  *   type 消息类型
  *   msg  消息内容
- *   userInfo 用户自定义信息 
+ *   userInfo 用户自定义信息
  */
 let handleDataThis = null; //定位当前组件this
 
 function ReceiveMessage(type, msg, userInfo) {
-    type = type == "" || type == undefined ? 'info' : type;
-    switch (type) {
-        case "Alert": //弹窗提示
-
-            break;
-        case "Warning": //警告
-            break;
-        case "Error": //错误
-            VM.$message.error(msg);
-            break;
-        case "Message": //消息
-            VM.$message({
-                message: msg,
-                center: true,
-                showClose: true,
-                duration: 2000,
-                type: type
-            })
-            break;
-        case "DataImage": //图片数据
-            DataImage(type, msg, userInfo);
-            break;
-        case "OK": //弹窗保存
-            break;
-        case "Cancel": //弹窗取消
-            break;
-        case "Close": //弹窗关闭
-            break;
-        case "Jump": //跳转模块
-            break;
-        case "Check": //审核
-            break;
-        case "User": //用户输入条码
-            break;
-        case "Package": //包条码
-            // VM.$alert(msg, '标题名称', {
-            //     confirmButtonText: '确定',
-            //     callback: action => {
-            //         this.$message({
-            //             type: 'info',
-            //             message: `action: ${ action }`
-            //         });
-            //     }
-            // });
-            if (CSManager.handleDataThis && CSManager.handleDataThis.handleBarCode) {
-                CSManager.handleDataThis.handleBarCode(msg);
-            }
-            break;
-        case "CleanBasket": //清洗网篮条码
-            break;
-        case "CleanDevice": //清洗设备条码
-            break;
-        case "SterilizeBasket": //灭菌网篮
-            break;
-        case "SterilizeCar": //灭菌车
-            break;
-        case "SterilizeDevice": //灭菌设备
-            break;
-        case "BiologicalSterilize": //生物灭菌监测
-            break;
-        case "ChemicalSterilize": //化学灭菌监测
-            break;
-        default:
-            break;
-    }
+  type = type == "" || type == undefined ? "info" : type;
+  switch (type) {
+    case "Alert": //弹窗提示
+      break;
+    case "Warning": //警告
+      break;
+    case "Error": //错误
+      VM.$message.error(msg);
+      break;
+    case "Message": //消息
+      VM.$message({
+        message: msg,
+        center: true,
+        showClose: true,
+        duration: 2000,
+        type: type,
+      });
+      break;
+    case "DataImage": //图片数据
+      DataImage(type, msg, userInfo);
+      break;
+    case "OK": //弹窗保存
+      break;
+    case "Cancel": //弹窗取消
+      break;
+    case "Close": //弹窗关闭
+      break;
+    case "Jump": //跳转模块
+      break;
+    case "Check": //审核
+      break;
+    case "User": //用户输入条码
+      break;
+    case "Package": //包条码
+      // VM.$alert(msg, '标题名称', {
+      //     confirmButtonText: '确定',
+      //     callback: action => {
+      //         this.$message({
+      //             type: 'info',
+      //             message: `action: ${ action }`
+      //         });
+      //     }
+      // });
+      if (CSManager.handleDataThis && CSManager.handleDataThis.handleBarCode) {
+        CSManager.handleDataThis.handleBarCode(msg);
+      }
+      break;
+    case "CleanBasket": //清洗网篮条码
+      break;
+    case "CleanDevice": //清洗设备条码
+      break;
+    case "SterilizeBasket": //灭菌网篮
+      break;
+    case "SterilizeCar": //灭菌车
+      break;
+    case "SterilizeDevice": //灭菌设备
+      break;
+    case "BiologicalSterilize": //生物灭菌监测
+      break;
+    case "ChemicalSterilize": //化学灭菌监测
+      break;
+    default:
+      break;
+  }
 }
 /** 获取本地配置文件及硬件设备信息
 *   type 消息类型
@@ -87,24 +86,20 @@ function ReceiveMessage(type, msg, userInfo) {
     }
 */
 function GetLocalConfig() {
-    try {
-        var response = JSManager.GetLocalConfig();
-        response = JSON.parse(response); //LocalConfigModel
-        return response;
-    } catch (error) {
-
-    }
+  try {
+    var response = JSManager.GetLocalConfig();
+    response = JSON.parse(response); //LocalConfigModel
+    return response;
+  } catch (error) {}
 }
 /** 保存默认设置
  * model  LocalConfigModel   MediaList和PrinterList可以为空数组
  */
 function SaveLocalConfig(model) {
-    try {
-        var msg = JSON.stringify(model);
-        JSManager.SaveLocalConfig(msg);
-    } catch (error) {
-
-    }
+  try {
+    var msg = JSON.stringify(model);
+    JSManager.SaveLocalConfig(msg);
+  } catch (error) {}
 }
 
 /*
@@ -113,40 +108,36 @@ function SaveLocalConfig(model) {
  *userInfo 用户自定义信息  可以传打开摄像头后展示容器的id
  */
 function OpenVideo(frequency, deveice, userInfo) {
-    try {
-        CSManager.video_this = userInfo; //vue组件this
-        JSManager.OpenVideo(frequency, deveice, "");
-    } catch (error) {
-        console.log(error)
-    }
+  try {
+    CSManager.video_this = userInfo; //vue组件this
+    JSManager.OpenVideo(frequency, deveice, "");
+  } catch (error) {
+    console.log(error);
+  }
 }
 /*
  * 关闭摄像头
  */
 function CloseVideo() {
-    try {
-        JSManager.CloseVideo();
-    } catch (error) {
-
-    }
+  try {
+    JSManager.CloseVideo();
+  } catch (error) {}
 }
 /*打印条形码
  * msg 打印内容  PrintModel
  */
 function PrintBarcode(msg) {
-    try {
-        JSManager.PrintBarcode(msg);
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    JSManager.PrintBarcode(msg);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function PrintPaper(msg) {
-    try {
-        JSManager.PrintPaper(msg);
-    } catch (error) {
-
-    }
+  try {
+    JSManager.PrintPaper(msg);
+  } catch (error) {}
 }
 /*
 public class PrintModel
@@ -177,7 +168,7 @@ public class PackageForPrint
 }
 */
 function DataImage(type, msg, userInfo) {
-    CSManager.video_this.image = msg;
+  CSManager.video_this.image = msg;
 }
 let startTime;
 let endTime;
@@ -186,50 +177,57 @@ let onOff = true;
 
 //监听程序键盘事件
 function ListenKeyUpEvent() {
-    document.onkeyup = e => {
-        let event = e || window.event;
-        if (CSManager.onOff) {
-            //键盘口扫描枪，数据初始化
-            CSManager.startTime = new Date().getTime();
-            CSManager.BarCode = "";
-            CSManager.onOff = false;
-        }
-        let keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-        if (keyCode == 16) {
-            return;
-        } else if (keyCode == 13) {
-            //以enter回车键为后缀字符
-            CSManager.endTime = new Date().getTime();
-            if (CSManager.endTime - CSManager.startTime < 300 && CSManager.BarCode) {
-                //阻止默认事件
-                event.preventDefault();
-                ReceiveMessage("Package", CSManager.BarCode);
-            }
-            CSManager.BarCode = "";
-            CSManager.onOff = true;
-        } else {
-            if (new Date().getTime() - CSManager.startTime > 300) {
-                CSManager.BarCode = "";
-                CSManager.startTime = new Date().getTime();
-            }
-            if (event.code) {
-                CSManager.BarCode += event.code.charAt(event.code.length - 1);
-            }
-        }
+  document.onkeyup = (e) => {
+    let event = e || window.event;
+    if (CSManager.onOff) {
+      //键盘口扫描枪，数据初始化
+      CSManager.startTime = new Date().getTime();
+      CSManager.BarCode = "";
+      CSManager.onOff = false;
     }
+    let keyCode = event.keyCode
+      ? event.keyCode
+      : event.which
+      ? event.which
+      : event.charCode;
+    if (keyCode == 16) {
+      return;
+    } else if (keyCode == 13) {
+      //以enter回车键为后缀字符
+      CSManager.endTime = new Date().getTime();
+      if (
+        CSManager.endTime - CSManager.startTime < 300 &&
+        CSManager.BarCode.length > 5
+      ) {
+        //阻止默认事件
+        event.preventDefault();
+        ReceiveMessage("Package", CSManager.BarCode);
+      }
+      CSManager.BarCode = "";
+      CSManager.onOff = true;
+    } else {
+      if (new Date().getTime() - CSManager.startTime > 300) {
+        CSManager.BarCode = "";
+        CSManager.startTime = new Date().getTime();
+      }
+      if (event.code) {
+        CSManager.BarCode += event.code.charAt(event.code.length - 1);
+      }
+    }
+  };
 }
 export default {
-    startTime,
-    endTime,
-    BarCode,
-    onOff,
-    ListenKeyUpEvent,
-    ReceiveMessage,
-    GetLocalConfig,
-    SaveLocalConfig,
-    OpenVideo,
-    CloseVideo,
-    PrintBarcode,
-    PrintPaper,
-    handleDataThis
-}
+  startTime,
+  endTime,
+  BarCode,
+  onOff,
+  ListenKeyUpEvent,
+  ReceiveMessage,
+  GetLocalConfig,
+  SaveLocalConfig,
+  OpenVideo,
+  CloseVideo,
+  PrintBarcode,
+  PrintPaper,
+  handleDataThis,
+};
