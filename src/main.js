@@ -27,7 +27,7 @@ window.axios = axios.service;
 Vue.prototype.$http = axios.http;
 
 if (window.JSManager && window.JSManager.IsActiveCOMPort) {
-  if (JSManager.IsActiveCOMPort === false) {
+  if (JSManager.IsActiveCOMPort() === false) {
     CSManager.ListenKeyUpEvent();
   }
 } else {
