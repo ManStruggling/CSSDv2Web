@@ -193,6 +193,7 @@ export default {
       ) {
         if (
           this.UserInfo.HospitalVersion === "YUXISHIRENMIN" &&
+          this.status &&
           !this.GLOBAL.VerificationHandle([
             {
               val: this.data.BiologicalStartTime,
