@@ -52,7 +52,7 @@
               <p>{{item.SterilizeType}}</p>
             </div>
           </div>
-          <ul class="record_detail clear_float">
+          <ul class="record_detail clear_float" v-if="UserInfo.HospitalVersion === 'YUXISHIRENMIN'">
             <li>
               <p>生物培养开始时间</p>
               <span>{{item.BiologicalStartTime}}</span>
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -211,6 +212,11 @@ export default {
         this
       );
     }
+  },
+   computed: {
+    ...mapState({
+      UserInfo: state => state.UserInfo
+    })
   }
 };
 </script>
