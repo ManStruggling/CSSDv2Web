@@ -52,16 +52,6 @@
               <p>{{item.SterilizeType}}</p>
             </div>
           </div>
-          <ul class="record_detail clear_float" v-if="UserInfo.HospitalVersion === 'YUXISHIRENMIN'">
-            <li>
-              <p>生物培养开始时间</p>
-              <span>{{item.BiologicalStartTime}}</span>
-            </li>
-            <li>
-              <p>生物培养结束时间</p>
-              <span>{{item.BiologicalEndTime}}</span>
-            </li>
-          </ul>
           <el-table :data="item.SterilizeTasks" :default-expand-all="true" @row-click="rowClick">
             <el-table-column label="灭菌编码" prop="SterilizeBarCode" width="240"></el-table-column>
             <el-table-column label="灭菌日期" prop="SterilizeDate" width="210"></el-table-column>
@@ -124,7 +114,6 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -212,11 +201,6 @@ export default {
         this
       );
     }
-  },
-   computed: {
-    ...mapState({
-      UserInfo: state => state.UserInfo
-    })
   }
 };
 </script>
