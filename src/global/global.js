@@ -223,6 +223,15 @@ let pickerOptions = {
 };
 
 //消息提示
+/**
+ * 
+ * @param {*object} option
+ * @param {*type required} option.classify
+ * @param {*msg} option.message
+ * @param {*center} option.center
+ * 
+ */
+
 function showInformation(option) {
   if (option.classify === "confirm") {
     option.title = option.title === undefined ? "提示" : option.title;

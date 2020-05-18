@@ -61,6 +61,7 @@
                   :disabled="(UserInfo.JobAndCompetence.includes('141')||UserInfo.JobAndCompetence.includes('000')||UserInfo.JobAndCompetence.includes('100'))&&!item.CanNotBeModified?false:true"
                 >修改</el-button>
                 <el-button v-else @click.stop="missingPackageAdd(item)">遗漏包添加</el-button>
+                <el-button @click.stop="handlePrint(item.Id)">打印标签</el-button>
               </p>
             </div>
           </div>
@@ -87,7 +88,7 @@
             </li>
             <li class="biologicalTest">
               <p>生物监测</p>
-              <span class="span_txt">{{item.BiologicalReviewStatus==4?'否':'是'}}</span>
+              <span class="span_txt">{{item.BiologicalReviewStatus==4?'未做':'已做'}}</span>
               <a v-show="item.BiologicalReviewStatus==4" @click="openBiologicalTest(item.Id)">开启</a>
             </li>
             <li>
@@ -286,6 +287,25 @@ export default {
         `/api/Sterilize/SterilizeRecords/${this.search_date[0]}/${this.search_date[1]}`,
         this
       );
+    },
+    //打印
+    handlePrint(Id) {
+      axios({
+        url: `/api/Sterilize/PrintSterilizeBarCode?id=${Id}`
+      })
+        .then(res => {
+          if (res.data.Code == 200) {
+            res.data.Data.forEach(element => {
+              CSManager.PrintBarcode(JSON.stringify(element));
+            });
+          } else {
+            this.showInformation({
+              classify: "message",
+              msg: res.data.Msg
+            });
+          }
+        })
+        .catch(err => {});
     }
   }
 };
