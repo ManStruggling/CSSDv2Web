@@ -84,6 +84,8 @@ export default {
                 })
                 .then(res => {
                     if (res.data.Code == 200) {
+                        res.data.Data.BiologycalStartTime = this.$route.query.biologycalStartTime;
+                        res.data.Data.BiologycalEndTime = this.$route.query.biologycalEndTime;
                         this.submitData = res.data.Data;
                     } else {
                         this.showInformation({

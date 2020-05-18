@@ -37,7 +37,7 @@
               placeholder="选择日期时间"
               align="right"
               format="yyyy-MM-dd HH:mm"
-              value-format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-ddTHH:mm:ss"
               :clearable="false"
               :picker-options="Object.assign({disabledDate:disabledStartDate},GLOBAL.pickerOptions)"
               @change="wetherStartDateGtEndDate"
@@ -51,7 +51,7 @@
               placeholder="选择日期时间"
               align="right"
               format="yyyy-MM-dd HH:mm"
-              value-format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-ddTHH:mm:ss"
               :clearable="false"
               @change="wetherStartDateGtEndDate"
               :picker-options="Object.assign({disabledDate:disabledEndDate},GLOBAL.pickerOptions)"
@@ -214,6 +214,8 @@ export default {
             method: "POST",
             data: {
               SterilizeTaskId: this.data.SterilizeTaskId,
+              BiologicalStartTime: this.data.BiologicalStartTime,
+              BiologicalEndTime: this.data.BiologicalEndTime,
               Pictures: this.data.Pictures
             }
           }).then(res => {
@@ -234,7 +236,9 @@ export default {
               this.$router.push({
                 path: "/sterilize/recall",
                 query: {
-                  sterilizeTaskId: this.data.SterilizeTaskId
+                  sterilizeTaskId: this.data.SterilizeTaskId,
+                  biologycalStartTime: this.data.BiologicalStartTime,
+                  biologycalEndTime: this.data.BiologicalEndTime
                 }
               });
             },

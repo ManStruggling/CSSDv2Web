@@ -30,7 +30,13 @@
           <div class="device_box">
             <dl class="clear_float">
               <dt>
-                <h3>{{item.SterilizeDeviceName}}</h3>
+                <el-tooltip
+                  :content="item.SterilizeDeviceName"
+                  placement="top-start"
+                  :disabled="item.SterilizeDeviceName.length<10"
+                >
+                  <h3 class="beyondHiding">{{item.SterilizeDeviceName}}</h3>
+                </el-tooltip>
                 <div class="devicePot clear_float">
                   <p>
                     <span>总锅次:</span>
@@ -128,9 +134,11 @@ export default {
         query: {
           deviceName: this.deviceList[index].SterilizeDeviceName,
           deviceId: this.deviceList[index].SterilizeDeviceId,
-          programName: this.deviceList[index].SterilizePrograms[idx].ProgramName,
+          programName: this.deviceList[index].SterilizePrograms[idx]
+            .ProgramName,
           programId: this.deviceList[index].SterilizePrograms[idx].ProgramId,
-          isDbTestProgram: this.deviceList[index].SterilizePrograms[idx].IsDbTestProgram,
+          isDbTestProgram: this.deviceList[index].SterilizePrograms[idx]
+            .IsDbTestProgram,
           deviceType: this.deviceList[index].DeviceType
         }
       });
