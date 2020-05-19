@@ -214,7 +214,10 @@ export default {
             url: `/api/Sterilize/BiologicalReviewSuccess`,
             method: "POST",
             data: {
-              SterilizeTaskId: this.data.SterilizeTaskId
+              SterilizeTaskId: this.data.SterilizeTaskId,
+              BiologicalStartTime: this.data.BiologicalStartTime,
+              BiologicalEndTime: this.data.BiologicalEndTime,
+              Pictures: []
             }
           }).then(res => {
             if (res.data.Code == 200) {
