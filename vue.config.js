@@ -1,12 +1,4 @@
 const port = process.env.port || process.env.npm_config_port || 9000; // dev port
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const smp = new SpeedMeasurePlugin({
-  outputFormat: "human",
-});
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
-const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
-
 module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
   //打包过后的文件夹名
@@ -17,6 +9,7 @@ module.exports = {
   indexPath: "index.html",
   //文件名是否添加hash值
   filenameHashing: true,
+
   //在多页模式下构建时，Webpack配置将包含不同的插件
   // (将有多个HTML Webpack插件和预加载Webpack插件实例).
   // 如果您试图修改这些插件的选项，请确保运行vue inspect。
@@ -37,8 +30,8 @@ module.exports = {
       //  默认情况下，要包含在此页上的块包括
       //  extracted common chunks and vendor chunks.
       //  提取的公共块和供应商块
-      chunks: ["chunk-vendors", "chunk-common", "index"],
-    },
+      chunks: ["chunk-vendors", "chunk-common", "index"]
+    }
     // when using the entry-only string format,
     //  使用仅输入字符串格式时
     // template is inferred to be `public/subpage.html`
@@ -66,20 +59,16 @@ module.exports = {
   // corsUseCredentials: false,
   // webpack 配置，键值对象时会合并配置，为方法时会改写配置
   // https://cli.vuejs.org/guide/webpack.html#simple-configuration
-  configureWebpack: smp.wrap({
-    devtool: "eval-source-map",
-    plugins: [
-      new HardSourceWebpackPlugin(),
-      // new BundleAnalyzerPlugin(), // 这个要放在所有 plugins 最后
-    ],
-  }),
+  configureWebpack: {
+    devtool: "eval-source-map"
+  },
 
   // webpack 链接 API，用于生成和修改 webapck 配置
   // https://github.com/mozilla-neutrino/webpack-chain
-  chainWebpack: (config) => {
+  chainWebpack: config => {
     // 因为是多页面，所以取消 chunks，每个页面只对应一个单独的 JS / CSS
     config.optimization.splitChunks({
-      cacheGroups: {},
+      cacheGroups: {}
     });
 
     // 'src/lib' 目录下为外部库文件，不参与 eslint 检测
@@ -108,8 +97,8 @@ module.exports = {
 
       postcss: {
         // options here will be passed to postcss-loader
-      },
-    },
+      }
+    }
   },
 
   // 支持webpack dev server的所有选项
@@ -132,14 +121,14 @@ module.exports = {
         //ws: true, // proxy websockets
         //pathRewrite方法重写url
         pathRewrite: {
-          "^/api": "/api",
+          "^/api": "/api"
           //pathRewrite: {'^/api': '/'} 重写之后url为 http://192.168.1.16:8085/xxxx
           //pathRewrite: {'^/api': '/api'} 重写之后url为 http://192.168.1.16:8085/api/xxxx
-        },
-      },
+        }
+      }
     },
 
-    before: (app) => {},
+    before: app => {}
   },
   // 构建时开启多进程处理 babel 编译
   parallel: require("os").cpus().length > 1,
@@ -148,5 +137,5 @@ module.exports = {
   pwa: {},
 
   // 第三方插件配置
-  pluginOptions: {},
+  pluginOptions: {}
 };
