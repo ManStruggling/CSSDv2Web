@@ -621,11 +621,6 @@ export default {
                     return console.error(err);
                   });
               }
-              if (res.data.Data && Array.isArray(res.data.Data)) {
-                res.data.Data.forEach(element => {
-                  CSManager.PrintBarcode(JSON.stringify(element));
-                });
-              }
               if (this.recoveryRecordModle) {
                 this.$router.push({
                   path: "/recovery/record",

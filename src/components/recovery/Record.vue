@@ -67,7 +67,6 @@
                   @click.stop="changeRecycleRecord(collapseIndex)"
                   :disabled="(UserInfo.JobAndCompetence.includes('111')||UserInfo.JobAndCompetence.includes('000')||UserInfo.JobAndCompetence.includes('100'))&&!item.CanNotBeModified?false:true"
                 >修改</el-button>
-                <el-button size="mini" @click.stop="handlePrint(item.Id)">打印回收清单</el-button>
               </p>
             </div>
           </div>
@@ -189,25 +188,6 @@ export default {
           recordId: this.recordList[index].Id
         }
       });
-    },
-    //打印回收清单
-    handlePrint(Id) {
-      axios({
-        url: `/api/Recycle/PrintRecycleList?recycleId=${Id}`
-      })
-        .then(res => {
-          if (res.data.Code == 200 && res.data.Data) {
-            res.data.Data.forEach(element => {
-              CSManager.PrintBarcode(JSON.stringify(element));
-            });
-          } else {
-            this.showInformation({
-              classify: "message",
-              msg: res.data.Msg
-            });
-          }
-        })
-        .catch(err => {});
     },
     searchRecordsData() {
       this.GLOBAL.searchRecord(

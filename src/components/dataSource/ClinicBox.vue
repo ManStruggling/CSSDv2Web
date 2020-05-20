@@ -40,8 +40,8 @@
           <li>
             <p>打印发放清单</p>
             <el-select v-model="editBoxData.IsNotPrintProvideList" class="green24x13">
-              <el-option label="是" :value="false"></el-option>
-              <el-option label="否" :value="true"></el-option>
+              <el-option label="是" :value="true"></el-option>
+              <el-option label="否" :value="false"></el-option>
             </el-select>
           </li>
         </ul>

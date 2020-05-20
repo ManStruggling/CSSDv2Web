@@ -62,18 +62,6 @@
             </div>
           </li>
           <li>
-            <p>打印回收清单</p>
-            <div class="switch_box">
-              <el-switch
-                v-model="setData.IsPrintRecycleList"
-                active-color="#01BF6A"
-                inactive-color="#dbdde6"
-                :active-value="true"
-                :inactive-value="false"
-              ></el-switch>
-            </div>
-          </li>
-          <li>
             <p>代销包控制</p>
             <el-select v-model="setData.IsProxyProductPrintBarCode" class="green24x13">
               <el-option label="打印条码" :value="true"></el-option>
@@ -188,7 +176,6 @@ export default {
         IsActiveNotBarCodeProduct: false,
         IsActiveNumberProduct: false,
         IsActiveNewTaskNotification: false,
-        IsPrintRecycleList: false,
         IsProxyProductPrintBarCode: true,
         PackageBarCoreExternalString: {
           IsActive: false,
